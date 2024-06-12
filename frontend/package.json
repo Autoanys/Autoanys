@@ -1,7 +1,13 @@
 {
-  "name": "autoany",
+  "name": "autoanys",
   "version": "0.0.2",
+  "description": "Autoanys is a scalable and flexible low-code platform that allows you to build automation visually",
+  "author": "Charles Lo, Autoanys <developer.charleslo@gmail.com>",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CharlesArea/Autoanys.git"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",

@@ -4,3 +4,7 @@ frontend/node_modules
 backend/storage/*.png
 #All bat files in all folders
 **/*.bat
+#All files that end with db
+**/*.db
+backend/prisma/database.db
+frontend/prisma/dev.db
