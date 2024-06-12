@@ -1,0 +1,100 @@
+// database
+datasource db {
+  provider = "sqlite"
+  url      = "file:database.db"
+}
+
+// generator
+generator client {
+  provider = "prisma-client-py"
+  recursive_type_depth = 5
+}
+
+model SubFlow {
+  id   String @id @default(cuid())
+  name    String
+  description String  @default("")
+  flowjson String
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+}
+
+model MainFlow {
+  id  String @id @default(cuid())
+  name    String
+  description String  @default("")
+  flowjson String 
+  active Boolean @default(false)
+  schedule String @default("* * * * *")
+}
+
+model SimpleLogs{
+  id   String @id @default(cuid())
+  nodeID String
+  created_at DateTime @default(now())
+  message String
+  result String  
+}
+
+model Component {
+  id   String @id @default(cuid())
+  name    String
+  description String
+  category String
+  coding String
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+}
+
+model Logs {
+  id   String @id @default(cuid())
+  triggerID String
+  flowID    String
+  result String
+  created_at DateTime @default(now())
+  type String
+  steplog StepLogs[]
+}
+
+model StepLogs {
+  id   String @id @default(cuid())
+  api     String
+  step  Int
+  result String
+  created_at DateTime @default(now())
+  log   Logs @relation(fields: [logID], references: [id])
+  logID String
+}
+
+model EmailProfile {
+  id   String @id @default(cuid())
+  name    String
+  email String
+  password String
+  smtp String
+  port Int
+  ssl Boolean
+  tls Boolean
+}
+
+
+model PluginCategory {
+  id   String @id @default(cuid())
+  name        String
+  description String
+  endpoint    String
+  image       String
+  active     Boolean
+  plugins     Plugin[]
+}
+
+model Plugin {
+  id   String @id @default(cuid())
+  name        String
+  description String
+  endpoint    String
+  link        String
+  icon       String
+  category    PluginCategory @relation(fields: [categoryID], references: [id]) 
+  categoryID  String
+}

@@ -1,0 +1,23 @@
+{
+  "plugins": [
+    {
+      "name": "Open Google",
+      "category": "browser",
+      "description": "Open Google website",
+      "method": "GET",
+      "endpoint": "/browser/OpenGoogle",
+      "coding": "driver.get('https://www.google.com')",
+      "return": "{\"message\": \"Google Opened\"}"
+    },
+    {
+      "name": "Find element by Xpath / ID / Name",
+      "category": "browser",
+      "description": "Find elements using xpath or id or name",
+      "method": "POST",
+      "endpoint": "/browser/findBy{find_by}/",
+      "arguments": { "xpath_data": "dict" },
+      "coding": "query = xpath_data.get('query')\nif query:\n    print(find_by, query)\n    element = driver.find_element(find_by, query)\n    return {'message': 'Element Found'}\nelse:\n    return {'message': 'Element Not Found'}",
+      "return": "{\"message\": \"Element Found\"}"
+    }
+  ]
+}

@@ -1,0 +1,427 @@
+"use client";
+import { useState, useEffect, Component } from "react";
+import Link from "next/link";
+import {
+  useSignal,
+  useComputed,
+  useSignalEffect,
+  signal,
+} from "@preact/signals";
+
+const LoggingTable = () => {
+  const [subflows, setSubflows] = useState([]);
+  const [allFlow, setAllFlow] = useState([]);
+  const [deleted, setDeleted] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(20);
+  const [playing, setPlaying] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
+  const [collapsedIndex, setCollapsedIndex] = useState(null);
+
+  const toggleCollapse = (index) => {
+    setCollapsedIndex(collapsedIndex === index ? null : index);
+  };
+
+  const truncateText = (text, maxLength) => {
+    if (text.length <= maxLength) {
+      return text;
+    }
+    return text.substring(0, maxLength) + "...";
+  };
+
+  const getFlow = (flow_id) => {
+    return async () => {
+      try {
+        let post_data = await fetch(
+          process.env.NEXT_PUBLIC_BACKEND_URL +
+            "/components/componentID/" +
+            flow_id,
+          {
+            method: "GET",
+          },
+        );
+
+        console.log("Check return post_data", await post_data.json());
+        // get the data and flowjson within the post_data json
+        let flowdata = await post_data.json();
+
+        //console.log(post_data, "post_data");
+        const res = await fetch(
+          process.env.NEXT_PUBLIC_BACKEND_URL + "/flow/",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: post_data.flowjson,
+          },
+        );
+        console.log(res.status);
+        if (res.status === 450) {
+          console.log("IN");
+          setShowNotification(true);
+          setTimeout(() => {
+            setShowNotification(false);
+          }, 3000);
+        } else {
+          const data = await res.json();
+
+          console.log("from api", data);
+          let tmp_id;
+          for (let i = 0, l = data.steps.length; i < l; i++) {
+            setPlaying(true);
+            console.log("i wor", i + 1);
+            console.log("datastep", data.steps[i]);
+
+            await fetch(data.steps[i], {
+              method: "GET",
+            });
+
+            if (i === data.steps.length - 1) {
+              setPlaying(false);
+            }
+          }
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch(
+          process.env.NEXT_PUBLIC_BACKEND_URL + "/logs/all/",
+        );
+        const data = await res.json();
+        if (data && data.data) {
+          setSubflows(data.data);
+          setAllFlow(data.data); // Ensure allFlow is set initially
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+    setDeleted(false);
+  }, [deleted]); // Removed allFlow dependency
+
+  const deleteFlow = (id) => async () => {
+    setDeleted(true);
+    try {
+      const res = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_URL + "/subflow/delete/" + id,
+        {
+          method: "GET",
+        },
+      );
+      const data = await res.json();
+      if (data && data.data) {
+        console.log("Before update:", subflows);
+        setSubflows((prevSubflows) => {
+          const updatedSubflows = prevSubflows.filter(
+            (subflow) => subflow.id !== id,
+          );
+          console.log("Updated subflows:", updatedSubflows);
+          return updatedSubflows;
+        });
+        setAllFlow((prevAllFlow) => {
+          const updatedAllFlow = prevAllFlow.filter(
+            (subflow) => subflow.id !== id,
+          );
+          console.log("Updated allFlow:", updatedAllFlow);
+          return updatedAllFlow;
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentSubflows = subflows.slice(startIndex, endIndex);
+  const [logDetails, setLogDetails] = useState({});
+  const [detailPopup, setDetailPopup] = useState(false);
+
+  const getLog = (triggerID) => {
+    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/logs/step/" + triggerID, {
+      method: "GET",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setLogDetails(data.data);
+        setDetailPopup(true);
+      })
+      .catch((err) => console.error("Error fetching data:", err));
+  };
+
+  const closePopup = () => {
+    setDetailPopup(false);
+  };
+
+  const handleClickOutside = (event) => {
+    if (event.target === event.currentTarget) {
+      closePopup();
+    }
+  };
+
+  return (
+    <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+      <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
+        Execution Logging
+      </h4>
+
+      <div className="flex flex-col">
+        <div className="grid grid-cols-5 rounded-sm dark:bg-meta-4 sm:grid-cols-5">
+          <div className="xl:bt-5 pl-2.5 pt-5  xl:pb-2.5 xl:pl-2.5">
+            <h5 className=" text-sm font-medium xsm:text-base">
+              <b>Trigger ID</b>
+            </h5>
+          </div>
+
+          <div className="xl:bt-5 pl-2.5 pt-5  xl:pb-2.5 xl:pl-2.5">
+            <h5 className="text-sm font-medium  xsm:text-base">
+              <b>Execution result</b>
+            </h5>
+          </div>
+
+          <div className="xl:bt-5 pl-2.5 pt-5  xl:pb-2.5 xl:pl-2.5">
+            <h5 className="text-sm font-medium  xsm:text-base">
+              <b>Execution Type</b>
+            </h5>
+          </div>
+
+          <div className="xl:bt-5 pl-2.5 pt-5  xl:pb-2.5 xl:pl-2.5">
+            <h5 className="text-sm font-medium  xsm:text-base">
+              <b>Log DateTime</b>
+            </h5>
+          </div>
+
+          <div className="xl:bt-5 pl-2.5 pt-5  xl:pb-2.5 xl:pl-2.5">
+            <h5 className="text-sm font-medium  xsm:text-base">
+              <b>Actions</b>
+            </h5>
+          </div>
+        </div>
+
+        {currentSubflows.map((subflow, index) => (
+          <div
+            className={`grid grid-cols-5 sm:grid-cols-5 ${
+              index === subflows.length - 1
+                ? ""
+                : "border-b border-stroke dark:border-strokedark"
+            }`}
+            key={subflow.triggerID}
+          >
+            <div className="flex items-center gap-3 pl-2.5 ">
+              <p
+                className="text-bla ck
+              hidden dark:text-white sm:block"
+              >
+                {subflow.triggerID}
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3 pl-2.5 ">
+              <p
+                className={`hidden font-semibold text-black dark:text-white sm:block ${
+                  subflow.result === "Success"
+                    ? "text-green-500"
+                    : "text-red-500"
+                }`}
+              >
+                {/* {subflow.id} */}
+                {truncateText(subflow.result, 15)}
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3 pl-2.5 ">
+              <p className="hidden text-black dark:text-white sm:block">
+                {/* {subflow.id} */}
+                {truncateText(subflow.type, 15)}
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3 pl-2.5 ">
+              <p
+                className="hidden text-black dark:text-white sm:block"
+                title={subflow.result}
+              >
+                {truncateText(subflow.created_at, 23)}
+              </p>
+            </div>
+
+            <div className="flex items-center gap-4 pl-2.5 ">
+              <p className="hidden text-black dark:text-white sm:block">
+                <div className="flex gap-4">
+                  <button
+                    className="font-sans bg-gray-900 shadow-gray-900/10 hover:shadow-gray-900/20 relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle text-xs font-medium uppercase text-white shadow-md transition-all hover:shadow-lg focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                    type="button"
+                    onClick={() => getLog(subflow.triggerID)}
+                  >
+                    <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform">
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 1024 1024"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fill="#000000"
+                          d="M512 160c320 0 512 352 512 352S832 864 512 864 0 512 0 512s192-352 512-352zm0 64c-225.28 0-384.128 208.064-436.8 288 52.608 79.872 211.456 288 436.8 288 225.28 0 384.128-208.064 436.8-288-52.608-79.872-211.456-288-436.8-288zm0 64a224 224 0 1 1 0 448 224 224 0 0 1 0-448zm0 64a160.192 160.192 0 0 0-160 160c0 88.192 71.744 160 160 160s160-71.808 160-160-71.744-160-160-160z"
+                        />
+                      </svg>
+                    </span>
+                  </button>
+                </div>
+              </p>
+            </div>
+
+            {/* Render other columns here */}
+          </div>
+        ))}
+      </div>
+      <div className="mt-4 flex items-center justify-between">
+        <div>
+          <label htmlFor="itemsPerPage" className="mr-2 font-bold	">
+            Items per page:
+          </label>
+          <select
+            id="itemsPerPage"
+            value={itemsPerPage}
+            onChange={(e) => {
+              setItemsPerPage(Number(e.target.value));
+              setCurrentPage(1); // Reset to first page when items per page change
+            }}
+          >
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
+          </select>
+        </div>
+        <div>
+          <div className="mt-4 flex items-center justify-end">
+            <button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className={
+                currentPage === 1 ? "cursor-not-allowed" : "text-blue-700	"
+              }
+            >
+              Previous
+            </button>
+            <span className="mx-2">
+              Page {currentPage} of {Math.ceil(subflows.length / itemsPerPage)}
+            </span>
+            <button
+              onClick={() =>
+                setCurrentPage((prev) =>
+                  prev < Math.ceil(subflows.length / itemsPerPage)
+                    ? prev + 1
+                    : prev,
+                )
+              }
+              disabled={
+                currentPage === Math.ceil(subflows.length / itemsPerPage)
+              }
+              className={
+                currentPage === Math.ceil(subflows.length / itemsPerPage)
+                  ? "cursor-not-allowed"
+                  : "text-blue-700	"
+              }
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      </div>
+      {detailPopup && (
+        <div
+          id="popup"
+          className="popup fixed inset-0 z-999 flex w-full items-center justify-center bg-black bg-opacity-50"
+          onClick={handleClickOutside}
+        >
+          <div className="relative h-3/5 w-1/2 rounded-lg bg-white p-4 shadow-lg">
+            <button
+              className="absolute right-2 top-2 text-black"
+              onClick={closePopup}
+            >
+              Close
+            </button>
+            {logDetails ? (
+              <div>
+                <h2 className="mb-4 text-xl font-bold">🧾 Log Details</h2>
+                <div className="space-y-2">
+                  {logDetails.length === 0 && (
+                    <p>No Step logs found for this trigger ID</p>
+                  )}
+                  {logDetails.map((item, index) => {
+                    let result = {};
+                    try {
+                      result = JSON.parse(item.result);
+                    } catch (e) {
+                      console.error("Failed to parse result", e);
+                    }
+                    return (
+                      <div key={item.id} className="rounded-lg border">
+                        <div
+                          className="text-gray-900 bg-gray-100 flex cursor-pointer justify-between rounded-lg px-4 py-2 text-left text-sm font-medium"
+                          onClick={() => toggleCollapse(index)}
+                        >
+                          <span className="font-semibold">
+                            Step {item.step}
+                          </span>
+                          <span
+                            className="transform transition-transform duration-300"
+                            onClick={() => toggleCollapse(index)}
+                          >
+                            {collapsedIndex === index ? "-" : "+"}
+                          </span>
+                        </div>
+                        {collapsedIndex === index && (
+                          <div className="text-gray-500 px-4 pb-2 pt-4 text-sm">
+                            <p>
+                              <strong>API:</strong> {item.api}
+                            </p>
+                            <p className="">
+                              <strong>Result:</strong> {result.message}
+                              <p className="inline">
+                                {result.preview && (
+                                  <button className="ml-5 inline rounded-lg bg-blue-500 px-2 py-1 text-white">
+                                    <a href={result.preview} target="_blank">
+                                      {" "}
+                                      Image Preview{" "}
+                                    </a>
+                                  </button>
+                                )}
+                              </p>
+                              {item.result.preview && (
+                                <img src={item.result.preview} />
+                              )}
+                            </p>
+                            <p>
+                              <strong>Created At:</strong>{" "}
+                              {new Date(item.created_at).toLocaleString()}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
+              <p>Loading...</p>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default LoggingTable;

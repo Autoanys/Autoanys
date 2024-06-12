@@ -1,0 +1,100 @@
+/* styles.css */
+.node {
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 12px;
+}
+
+/* Add a CSS class for selected nodes */
+
+.selected-node {
+  border: 2px solid #ff005c; /* Change border color to your preference */
+}
+
+/* Define styles for the selected state */
+.selected-node .react-flow__node {
+  border-color: blue; /* Change the border color to blue */
+  /* Add other styles for the selected state */
+}
+
+.selected {
+  border: 2px solid #ff005c;
+  border-radius: 7%;
+}
+
+.input-node {
+  background-color: #e3f2fd;
+  border: 2px solid #2196f3;
+}
+
+.default-node {
+  background-color: #e8f5e9;
+  border: 2px solid #4caf50;
+}
+
+.output-node {
+  background-color: #ffebee;
+  border: 2px solid #f44336;
+}
+
+.node-header {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.node-input {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  margin-top: 5px;
+}
+
+.text-updater-node {
+  padding: 10px;
+  border: 1px solid #ddd;
+  background: #fff;
+  border-radius: 4px;
+}
+.text-updater-node label {
+  display: block;
+  margin-bottom: 5px;
+}
+.text-updater-node input {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+}
+
+.start-node {
+  width: 100%;
+  background-color: green;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+}
+
+.end-node {
+  width: 100%;
+  background-color: red;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+}
+
+/* styles.css */
+.edgebutton-foreignobject {
+  pointer-events: all;
+}
+
+.edgebutton {
+  background: #ff6f61;
+  border: none;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  line-height: 20px;
+  font-size: 12px;
+}
