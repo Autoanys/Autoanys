@@ -1,3 +1,5 @@
+English | [中文](./README_CN.md)
+
 <p align="center"> <img src="https://raw.githubusercontent.com/CharlesArea/Autoanys/main/logo.png" alt="Project Logo" width="350"> </p>
 <p align="center"> <b>A scalable, flexible, and comprehensive platform for pipeline automation.</b> </p> <p align="center"> <a href="https://github.com/CharlesArea/Autoanys/issues"><img src="https://img.shields.io/github/issues/CharlesArea/Autoanys" alt="Issues"></a> <a href="https://github.com/CharlesArea/Autoanys/pulls"><img src="https://img.shields.io/github/issues-pr/CharlesArea/Autoanys" alt="Pull Requests"></a> <a href="https://github.com/CharlesArea/AutoAnys/blob/main/LICENSE"><img src="https://img.shields.io/github/license/CharlesArea/Autoanys" alt="License"></a> </p>
 
