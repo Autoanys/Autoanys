@@ -1,4 +1,4 @@
-English | [中文](./README_CN.md)
+English | [中文](./README_zcn.md)
 
 <p align="center"> <img src="https://raw.githubusercontent.com/autoanys/autoanys/main/logo.png" alt="Project Logo" width="350"> </p>
 <p align="center"> <b>A scalable, flexible, and comprehensive platform for pipeline automation.</b> </p> <p align="center"> <a href="https://github.com/Autoanys/Autoanys/issues"><img src="https://img.shields.io/github/issues/Autoanys/Autoanys" alt="Issues"></a> <a href="https://github.com/Autoanys/Autoanys/pulls"><img src="https://img.shields.io/github/issues-pr/Autoanys/Autoanys" alt="Pull Requests"></a> <a href="https://github.com/Autoanys/AutoAnys/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Autoanys/Autoanys" alt="License"></a> </p>
