@@ -23,6 +23,29 @@ const ComponentsEditor = (editing, componentID) => {
   });
   const parms = useSearchParams();
 
+  const validateCoding = () => {
+    try {
+      fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/components/validate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          component_coding: codingValue,
+        }),
+      }).then((response) => {
+        if (response.ok) {
+          console.log("response", response.body);
+          alert(JSON.stringify(response));
+        } else {
+          alert(JSON.stringify(response));
+        }
+      });
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   useEffect(() => {
     console.log("Editing", editing);
 
@@ -158,6 +181,7 @@ const ComponentsEditor = (editing, componentID) => {
               </button>
 
               <button
+                onClick={() => validateCoding()}
                 className={`mb-2 rounded border border-blue-500 bg-transparent px-4 py-2 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white 
                 `}
               >
