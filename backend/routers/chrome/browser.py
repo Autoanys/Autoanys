@@ -9,6 +9,10 @@ from fastapi.responses import FileResponse
 from general.header import *
 import random
 import string
+import socket
+
+hostname = socket.getfqdn()
+ip = socket.gethostbyname_ex(hostname)[2][1]
 
 router = APIRouter()
 
@@ -38,7 +42,7 @@ async def OpenWebsite(json: dict):
             driver.get(url)
             driver.save_screenshot("storage/"+imageFile)
             
-    return {"message": url+" Opened", "preview" : "http://localhost:8000/browser/screenshot/"+ imageFile}
+    return {"message": url+" Opened", "preview" : f"http://{ip}:8000/browser/screenshot/"+ imageFile}
 
 @router.get("/browser/screenshot/{imageFile}")
 async def GetScreenshot(imageFile: str):

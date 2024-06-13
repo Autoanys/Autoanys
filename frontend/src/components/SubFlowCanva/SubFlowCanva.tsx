@@ -115,6 +115,7 @@ const SubFlowCanva = (editing, flowid) => {
   const [file, setFile] = useState(null);
   const [files, setFiles] = React.useState([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [isVariablePopupOpen, setIsVariablePopupOpen] = useState(false);
   const popupRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -1303,6 +1304,74 @@ const SubFlowCanva = (editing, flowid) => {
       {isPopupOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div ref={popupRef} className="w-2/5 rounded bg-white p-6 shadow-lg">
+            <h2 className="mb-4 text-xl font-semibold">Workflow Setting</h2>
+            <form onSubmit={handleSubmit}>
+              <div className="mb-4">
+                <label
+                  className="text-gray-700 mb-2 block text-sm font-bold"
+                  htmlFor="website-url"
+                >
+                  Node ID : {parms}
+                </label>
+              </div>
+              <div className="mb-4">
+                <label
+                  className="text-gray-700 mb-2 block text-sm font-bold"
+                  htmlFor="website-parm"
+                >
+                  Flow Name :
+                </label>
+                <input
+                  className="text-gray-900 focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight shadow focus:outline-none"
+                  id="flow_name"
+                  type="text"
+                  placeholder="Flow name"
+                  defaultValue={flowKeys}
+                />
+              </div>
+
+              <div className="mb-4">
+                <label
+                  className="text-gray-700 mb-2 block text-sm font-bold"
+                  htmlFor="flow_description"
+                >
+                  Flow Description :
+                </label>
+                <textarea
+                  className="text-gray-900 focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight shadow focus:outline-none"
+                  id="flow_description"
+                  placeholder="Flow Description"
+                  defaultValue={flowDescription}
+                  rows="5"
+                ></textarea>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <button
+                  className="focus:shadow-outline rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700 focus:outline-none"
+                  type="submit"
+                >
+                  Save
+                </button>
+                <button
+                  className="bg-red-500 hover:bg-red-700 focus:shadow-outline rounded px-4 py-2 font-bold text-white focus:outline-none"
+                  onClick={togglePopup}
+                  type="button"
+                >
+                  Close
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {isVariablePopupOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div
+            ref={variablePopupRef}
+            className="w-2/5 rounded bg-white p-6 shadow-lg"
+          >
             <h2 className="mb-4 text-xl font-semibold">Workflow Setting</h2>
             <form onSubmit={handleSubmit}>
               <div className="mb-4">

@@ -100,7 +100,7 @@ const CustomNode = ({ data, isConnectable }) => {
           </div>
           {/* if data.inputs exist and length larger than 0 then render*/}
           {data.inputs && data.inputs.length > 0 && (
-            <div className="float-right flex justify-center text-xs">
+            <div className="float-right inline flex justify-center text-xs">
               Parameters: {data.inputs?.length}
             </div>
           )}

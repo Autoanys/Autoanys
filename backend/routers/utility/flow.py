@@ -3,6 +3,11 @@ from PIL import Image
 #from Screenshot import Screenshot_clipping
 from pathlib import Path
 from routers.db.logs import write_logging
+import socket
+
+
+hostname = socket.getfqdn()
+ip = socket.gethostbyname_ex(hostname)[2][1]
 
 router = APIRouter()
 
@@ -44,11 +49,11 @@ async def analyze_json(json_datas: dict):
                     source = step["source"]
                     source_node = next((node for node in json_datas["nodes"] if node["id"] == source), None)
                     if source_node['type'] == "openBrowserLink":
-                        steps.append("http://localhost:8000" + source_node['data']['api'] +  source_node['data']['value'])
+                        steps.append(f"http://{ip}:8000" + source_node['data']['api'] +  source_node['data']['value'])
                     if source_node['type'] == "waitSecond":
-                        steps.append("http://localhost:8000" + source_node['data']['api'] +  source_node['data']['value'])
+                        steps.append(f"http://{ip}:8000" + source_node['data']['api'] +  source_node['data']['value'])
                     else:
-                        steps.append("http://localhost:8000" + source_node['data']['api'])
+                        steps.append(f"http://{ip}:8000" + source_node['data']['api'])
             print(steps)
             return {"message":"Start to end valid", "steps":steps}
         else:
@@ -76,9 +81,8 @@ async def analyze_json(json_datas: dict):
                     print("OK", source_node['data']['inputs'])
                           
                     if len(source_node['data']['inputs']) > 0 and source_node['data']['method'] == "POST":
-                        # steps.append("http://localhost:8000" + source_node['data']['api'] +  source_node['data']['value'])
                         print(source_node['data']['inputs'], "testest")
-                        temp["api"] = "http://localhost:8000" + source_node['data']['api']
+                        temp["api"] = f"http://{ip}:8000" + source_node['data']['api']
                         temp["method"] = source_node['data']['method']
                         
                         for i in source_node['data']['inputs']:
@@ -93,21 +97,15 @@ async def analyze_json(json_datas: dict):
                         steps.append(temp)
                         temp = {}
                     else:
-                        temp["api"] = "http://localhost:8000" + source_node['data']['api']
+                        temp["api"] = f"http://{ip}:8000" + source_node['data']['api']
                         temp["method"] = source_node['data']['method']
                         steps.append(temp)
                         temp = {}
-                        # temp["mtho"] =
-                    # if source_node['type'] == "waitSecond":
-                    #     steps.append("http://localhost:8000" + source_node['data']['api'] +  source_node['data']['value'])
-                    # else:
-                    #     steps.append("http://localhost:8000" + source_node['data']['api'])
+                      
             print("STEP", steps)
             return {"message":"Start to end valid", "steps":steps}
         else:
             raise HTTPException(status_code=451, detail="Error in analyzing flow")
     except Exception as e:
-        print(e)
-        # raise HTTPException(status_code=404, detail="Error in analyzing flow")
         print(e)
         raise HTTPException(status_code=450,  detail="Errosr in analyzing flow")

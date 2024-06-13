@@ -9,7 +9,7 @@ import {
 } from "@preact/signals";
 
 const LoggingTable = () => {
-  const [subflows, setSubflows] = useState([]);
+  const [logData, setLogData] = useState([]);
   const [allFlow, setAllFlow] = useState([]);
   const [deleted, setDeleted] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,65 +29,6 @@ const LoggingTable = () => {
     return text.substring(0, maxLength) + "...";
   };
 
-  const getFlow = (flow_id) => {
-    return async () => {
-      try {
-        let post_data = await fetch(
-          process.env.NEXT_PUBLIC_BACKEND_URL +
-            "/components/componentID/" +
-            flow_id,
-          {
-            method: "GET",
-          },
-        );
-
-        console.log("Check return post_data", await post_data.json());
-        // get the data and flowjson within the post_data json
-        let flowdata = await post_data.json();
-
-        //console.log(post_data, "post_data");
-        const res = await fetch(
-          process.env.NEXT_PUBLIC_BACKEND_URL + "/flow/",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: post_data.flowjson,
-          },
-        );
-        console.log(res.status);
-        if (res.status === 450) {
-          console.log("IN");
-          setShowNotification(true);
-          setTimeout(() => {
-            setShowNotification(false);
-          }, 3000);
-        } else {
-          const data = await res.json();
-
-          console.log("from api", data);
-          let tmp_id;
-          for (let i = 0, l = data.steps.length; i < l; i++) {
-            setPlaying(true);
-            console.log("i wor", i + 1);
-            console.log("datastep", data.steps[i]);
-
-            await fetch(data.steps[i], {
-              method: "GET",
-            });
-
-            if (i === data.steps.length - 1) {
-              setPlaying(false);
-            }
-          }
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    };
-  };
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -96,8 +37,8 @@ const LoggingTable = () => {
         );
         const data = await res.json();
         if (data && data.data) {
-          setSubflows(data.data);
-          setAllFlow(data.data); // Ensure allFlow is set initially
+          setLogData(data.data);
+          setAllFlow(data.data);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -105,46 +46,35 @@ const LoggingTable = () => {
     };
     fetchData();
     setDeleted(false);
-  }, [deleted]); // Removed allFlow dependency
-
-  const deleteFlow = (id) => async () => {
-    setDeleted(true);
-    try {
-      const res = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_URL + "/subflow/delete/" + id,
-        {
-          method: "GET",
-        },
-      );
-      const data = await res.json();
-      if (data && data.data) {
-        console.log("Before update:", subflows);
-        setSubflows((prevSubflows) => {
-          const updatedSubflows = prevSubflows.filter(
-            (subflow) => subflow.id !== id,
-          );
-          console.log("Updated subflows:", updatedSubflows);
-          return updatedSubflows;
-        });
-        setAllFlow((prevAllFlow) => {
-          const updatedAllFlow = prevAllFlow.filter(
-            (subflow) => subflow.id !== id,
-          );
-          console.log("Updated allFlow:", updatedAllFlow);
-          return updatedAllFlow;
-        });
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+  }, [deleted]);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentSubflows = subflows.slice(startIndex, endIndex);
+  const currentLog = logData.slice(startIndex, endIndex);
   const [logDetails, setLogDetails] = useState({});
   const [detailPopup, setDetailPopup] = useState(false);
 
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+
+    const dateOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+
+    const timeOptions = {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    };
+
+    const formattedDate = date.toLocaleDateString(undefined, dateOptions);
+    const formattedTime = date.toLocaleTimeString(undefined, timeOptions);
+
+    return `${formattedDate}, ${formattedTime}`;
+  }
   const getLog = (triggerID) => {
     fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/logs/step/" + triggerID, {
       method: "GET",
@@ -206,50 +136,49 @@ const LoggingTable = () => {
           </div>
         </div>
 
-        {currentSubflows.map((subflow, index) => (
+        {currentLog.map((log, index) => (
           <div
             className={`grid grid-cols-5 sm:grid-cols-5 ${
-              index === subflows.length - 1
+              index === log.length - 1
                 ? ""
                 : "border-b border-stroke dark:border-strokedark"
             }`}
-            key={subflow.triggerID}
+            key={log.triggerID}
           >
             <div className="flex items-center gap-3 pl-2.5 ">
               <p
                 className="text-bla ck
               hidden dark:text-white sm:block"
               >
-                {subflow.triggerID}
+                {log.triggerID}
               </p>
             </div>
 
             <div className="flex items-center gap-3 pl-2.5 ">
               <p
                 className={`hidden font-semibold text-black dark:text-white sm:block ${
-                  subflow.result === "Success"
-                    ? "text-green-500"
-                    : "text-red-500"
+                  log.result === "Success" ? "text-green-500" : "text-red-500"
                 }`}
               >
                 {/* {subflow.id} */}
-                {truncateText(subflow.result, 15)}
+                {truncateText(log.result, 15)}
               </p>
             </div>
 
             <div className="flex items-center gap-3 pl-2.5 ">
               <p className="hidden text-black dark:text-white sm:block">
                 {/* {subflow.id} */}
-                {truncateText(subflow.type, 15)}
+                {truncateText(log.type, 15)}
               </p>
             </div>
 
             <div className="flex items-center gap-3 pl-2.5 ">
               <p
                 className="hidden text-black dark:text-white sm:block"
-                title={subflow.result}
+                title={log.result}
               >
-                {truncateText(subflow.created_at, 23)}
+                {/* {truncateText(log.created_at, 23)} */}
+                {formatDate(log.created_at)}
               </p>
             </div>
 
@@ -259,7 +188,7 @@ const LoggingTable = () => {
                   <button
                     className="font-sans bg-gray-900 shadow-gray-900/10 hover:shadow-gray-900/20 relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle text-xs font-medium uppercase text-white shadow-md transition-all hover:shadow-lg focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                     type="button"
-                    onClick={() => getLog(subflow.triggerID)}
+                    onClick={() => getLog(log.triggerID)}
                   >
                     <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform">
                       <svg
@@ -315,21 +244,21 @@ const LoggingTable = () => {
               Previous
             </button>
             <span className="mx-2">
-              Page {currentPage} of {Math.ceil(subflows.length / itemsPerPage)}
+              Page {currentPage} of {Math.ceil(logData.length / itemsPerPage)}
             </span>
             <button
               onClick={() =>
                 setCurrentPage((prev) =>
-                  prev < Math.ceil(subflows.length / itemsPerPage)
+                  prev < Math.ceil(logData.length / itemsPerPage)
                     ? prev + 1
                     : prev,
                 )
               }
               disabled={
-                currentPage === Math.ceil(subflows.length / itemsPerPage)
+                currentPage === Math.ceil(logData.length / itemsPerPage)
               }
               className={
-                currentPage === Math.ceil(subflows.length / itemsPerPage)
+                currentPage === Math.ceil(logData.length / itemsPerPage)
                   ? "cursor-not-allowed"
                   : "text-blue-700	"
               }
