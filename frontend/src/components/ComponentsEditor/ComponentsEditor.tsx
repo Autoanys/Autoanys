@@ -13,6 +13,7 @@ import {
   signal,
 } from "@preact/signals";
 import Editor, { DiffEditor, useMonaco, loader } from "@monaco-editor/react";
+import comConfig from "./comConfig";
 
 const ComponentsEditor = (editing, componentID) => {
   const [codingValue, setCodingValue] = useState("");
@@ -44,6 +45,24 @@ const ComponentsEditor = (editing, componentID) => {
     } catch (error) {
       console.error("Error:", error);
     }
+  };
+
+  const onDragStart = (event, key) => {
+    console.log("dragging", key);
+    event.dataTransfer.setData("text", comConfig[key].value);
+  };
+
+  const onDropOver = (event) => {
+    event.preventDefault();
+    const data = event.dataTransfer.getData("text");
+    console.log("data", data);
+    const el = document.getElementById(data);
+    const text = el.innerText;
+    const start = event.target.selectionStart;
+    const end = event.target.selectionEnd;
+    const before = codingValue.substring(0, start);
+    const after = codingValue.substring(end);
+    setCodingValue(before + text + after);
   };
 
   useEffect(() => {
@@ -145,6 +164,28 @@ const ComponentsEditor = (editing, componentID) => {
                 </a>{" "}
                 make sure you have enabled for more plugins.
               </span>
+
+              <div className="ml-1 mr-1">
+                <div className="ml-1 mr-1">
+                  {Object.keys(comConfig).map((key) => (
+                    <div
+                      key={key}
+                      className="start mt-2 border border-slate-400"
+                      onDragStart={(event) => onDragStart(event, key)}
+                      draggable
+                    >
+                      <div className="content flex py-2">
+                        <img
+                          className="ml-2 h-5 w-5"
+                          src={comConfig[key].icon}
+                          alt={`${comConfig[key].label} icon`}
+                        />
+                        <p className="pl-2 text-sm">{comConfig[key].label}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </aside>
         </div>
@@ -203,6 +244,7 @@ const ComponentsEditor = (editing, componentID) => {
               defaultLanguage="python"
               theme="light"
               onChange={codingUpdate}
+              onDropOver={onDropOver}
             />
           </div>
         </div>
