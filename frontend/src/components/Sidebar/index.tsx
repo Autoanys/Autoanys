@@ -7,6 +7,15 @@ import Image from "next/image";
 import SidebarLinkGroup from "./SidebarLinkGroup";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useRouter } from "next/router";
+import {
+  HomeIcon,
+  PluginIcon,
+  SubFlowIcon,
+  MainFlowIcon,
+  ComponentIcon,
+  LoggingIcon,
+  SettingIcon,
+} from "./icon";
 
 import Head from "next/head";
 
@@ -22,6 +31,51 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const sidebar = useRef<any>(null);
 
   let storedSidebarExpanded = "true";
+
+  const sideBarItem = [
+    {
+      name: "Dashboard",
+      icon: <HomeIcon />,
+      link: "/",
+      sn: "/",
+    },
+    {
+      name: "Main Flow",
+      icon: <MainFlowIcon />,
+      link: "/mainflow",
+      sn: "main",
+    },
+    {
+      name: "Sub Flow",
+      icon: <SubFlowIcon />,
+      link: "/subflow",
+      sn: "sub",
+    },
+    {
+      name: "Custom Components",
+      icon: <ComponentIcon />,
+      link: "/customcomponents",
+      sn: "component",
+    },
+    {
+      name: "Plugins & Extensions",
+      icon: <PluginIcon />,
+      link: "/plugins",
+      sn: "plugin",
+    },
+    {
+      name: "Logging",
+      icon: <LoggingIcon />,
+      link: "/logging",
+      sn: "log",
+    },
+    {
+      name: "Settings",
+      icon: <SettingIcon />,
+      link: "/settings",
+      sn: "setting",
+    },
+  ];
 
   const [sidebarExpanded, setSidebarExpanded] = useState(
     storedSidebarExpanded === null ? false : storedSidebarExpanded === "true",
@@ -63,13 +117,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   }, [sidebarExpanded]);
 
   return (
-    // <aside
-    //   ref={sidebar}
-    //   className={`absolute left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-black duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${
-    //     sidebarOpen ? "translate-x-0" : "-translate-x-full"
-    //   }`}
-    // >
-    // dark:bg-boxdark
     <aside
       ref={sidebar}
       className={`w-58 absolute left-0 top-0 z-9999 flex h-screen flex-col overflow-y-hidden bg-slate-50 duration-300 
@@ -77,7 +124,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       }`}
     >
-      {/* <!-- SIDEBAR HEADER --> */}
       <div className="flex items-center justify-between gap-2 bg-slate-50 px-6 py-4 pb-4.5 shadow-1 drop-shadow-1 dark:bg-slate-900 dark:drop-shadow  ">
         <Link href="/">
           <Image
@@ -85,7 +131,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             width={245}
             height={32}
             src={"/images/logo/newLogo.png"}
-            //src={"/images/logo/logo.svg"}
             alt="Logo"
             priority
           />
@@ -95,7 +140,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             width={245}
             height={32}
             src={"/images/logo/logo-dark.png"}
-            //src={"/images/logo/logo.svg"}
             alt="Logo"
             priority
           />
@@ -123,377 +167,30 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           </svg>
         </button>
       </div>
-      {/* <!-- SIDEBAR HEADER --> */}
 
       <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
-        {/* <!-- Sidebar Menu --> */}
         <nav className="mt-5 px-4 py-4 lg:mt-9 lg:px-6">
-          {/* <!-- Menu Group --> */}
           <div>
             <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2 dark:text-white">
               Welcome to AutoAnys
             </h3>
 
             <ul className="mb-6 flex flex-col gap-1.5">
-              <li>
-                <Link
-                  href="/"
-                  className={`gbold group relative flex items-center gap-2.5 rounded-lg  px-4 py-4	text-sm font-medium
-                  font-semibold text-black duration-300 ease-in-out hover:bg-white hover:shadow-2xl dark:text-blue-600 dark:hover:bg-meta-4 ${
-                    pathname === "/" && "bg-white shadow-2xl dark:bg-zinc-200 "
-                  }`}
-                >
-                  <svg
-                    className="fill-current"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 18 18"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
+              {sideBarItem.map((item, index) => (
+                <li>
+                  <Link
+                    href={item.link}
+                    className={`gbold group relative flex items-center gap-2.5 rounded-lg px-4 py-4 text-sm font-medium font-semibold text-black duration-300 ease-in-out hover:bg-white hover:shadow-2xl dark:text-blue-600 dark:hover:bg-meta-4 ${
+                      (pathname === item.link ||
+                        (item.link !== "/" && pathname.includes(item.sn))) &&
+                      "bg-white shadow-2xl dark:bg-zinc-200 "
+                    }`}
                   >
-                    <path
-                      d="M15.7499 2.9812H14.2874V2.36245C14.2874 2.02495 14.0062 1.71558 13.6405 1.71558C13.2749 1.71558 12.9937 1.99683 12.9937 2.36245V2.9812H4.97803V2.36245C4.97803 2.02495 4.69678 1.71558 4.33115 1.71558C3.96553 1.71558 3.68428 1.99683 3.68428 2.36245V2.9812H2.2499C1.29365 2.9812 0.478027 3.7687 0.478027 4.75308V14.5406C0.478027 15.4968 1.26553 16.3125 2.2499 16.3125H15.7499C16.7062 16.3125 17.5218 15.525 17.5218 14.5406V4.72495C17.5218 3.7687 16.7062 2.9812 15.7499 2.9812ZM1.77178 8.21245H4.1624V10.9968H1.77178V8.21245ZM5.42803 8.21245H8.38115V10.9968H5.42803V8.21245ZM8.38115 12.2625V15.0187H5.42803V12.2625H8.38115ZM9.64678 12.2625H12.5999V15.0187H9.64678V12.2625ZM9.64678 10.9968V8.21245H12.5999V10.9968H9.64678ZM13.8374 8.21245H16.228V10.9968H13.8374V8.21245ZM2.2499 4.24683H3.7124V4.83745C3.7124 5.17495 3.99365 5.48433 4.35928 5.48433C4.7249 5.48433 5.00615 5.20308 5.00615 4.83745V4.24683H13.0499V4.83745C13.0499 5.17495 13.3312 5.48433 13.6968 5.48433C14.0624 5.48433 14.3437 5.20308 14.3437 4.83745V4.24683H15.7499C16.0312 4.24683 16.2562 4.47183 16.2562 4.75308V6.94683H1.77178V4.75308C1.77178 4.47183 1.96865 4.24683 2.2499 4.24683ZM1.77178 14.5125V12.2343H4.1624V14.9906H2.2499C1.96865 15.0187 1.77178 14.7937 1.77178 14.5125ZM15.7499 15.0187H13.8374V12.2625H16.228V14.5406C16.2562 14.7937 16.0312 15.0187 15.7499 15.0187Z"
-                      fill=""
-                    />
-                  </svg>
-                  Dashboard
-                </Link>
-              </li>
-
-              {/* <!-- Menu Item Calendar --> */}
-              {/* <li>
-                <Link
-                  href="/calendar"
-                  className={`gbold group relative flex items-center gap-2.5 rounded-lg  px-4 py-4	text-sm
-                  font-medium font-semibold text-black duration-300 ease-in-out hover:bg-white hover:shadow-2xl dark:hover:bg-meta-4 ${
-                    pathname.includes("calendar") &&
-                    "bg-white shadow-2xl dark:bg-meta-4"
-                  }`}
-                >
-                  <svg
-                    className="fill-current"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 18 18"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M15.7499 2.9812H14.2874V2.36245C14.2874 2.02495 14.0062 1.71558 13.6405 1.71558C13.2749 1.71558 12.9937 1.99683 12.9937 2.36245V2.9812H4.97803V2.36245C4.97803 2.02495 4.69678 1.71558 4.33115 1.71558C3.96553 1.71558 3.68428 1.99683 3.68428 2.36245V2.9812H2.2499C1.29365 2.9812 0.478027 3.7687 0.478027 4.75308V14.5406C0.478027 15.4968 1.26553 16.3125 2.2499 16.3125H15.7499C16.7062 16.3125 17.5218 15.525 17.5218 14.5406V4.72495C17.5218 3.7687 16.7062 2.9812 15.7499 2.9812ZM1.77178 8.21245H4.1624V10.9968H1.77178V8.21245ZM5.42803 8.21245H8.38115V10.9968H5.42803V8.21245ZM8.38115 12.2625V15.0187H5.42803V12.2625H8.38115ZM9.64678 12.2625H12.5999V15.0187H9.64678V12.2625ZM9.64678 10.9968V8.21245H12.5999V10.9968H9.64678ZM13.8374 8.21245H16.228V10.9968H13.8374V8.21245ZM2.2499 4.24683H3.7124V4.83745C3.7124 5.17495 3.99365 5.48433 4.35928 5.48433C4.7249 5.48433 5.00615 5.20308 5.00615 4.83745V4.24683H13.0499V4.83745C13.0499 5.17495 13.3312 5.48433 13.6968 5.48433C14.0624 5.48433 14.3437 5.20308 14.3437 4.83745V4.24683H15.7499C16.0312 4.24683 16.2562 4.47183 16.2562 4.75308V6.94683H1.77178V4.75308C1.77178 4.47183 1.96865 4.24683 2.2499 4.24683ZM1.77178 14.5125V12.2343H4.1624V14.9906H2.2499C1.96865 15.0187 1.77178 14.7937 1.77178 14.5125ZM15.7499 15.0187H13.8374V12.2625H16.228V14.5406C16.2562 14.7937 16.0312 15.0187 15.7499 15.0187Z"
-                      fill=""
-                    />
-                  </svg>
-                  Calendar
-                </Link>
-              </li> */}
-              {/* <!-- Menu Item Calendar --> */}
-
-              {/* <!-- Menu Item Profile --> */}
-              {/* <li>
-                <Link
-                  href="/profile"
-                  className={`bold group relative flex items-center gap-2.5 rounded-lg  px-4 py-4	text-sm
-                  font-medium font-semibold text-black duration-300 ease-in-out hover:bg-white hover:shadow-2xl dark:hover:bg-meta-4 ${
-                    pathname.includes("profile") &&
-                    "bg-white shadow-2xl dark:bg-meta-4"
-                  }`}
-                >
-                  <svg
-                    className="fill-current"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 18 18"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M9.0002 7.79065C11.0814 7.79065 12.7689 6.1594 12.7689 4.1344C12.7689 2.1094 11.0814 0.478149 9.0002 0.478149C6.91895 0.478149 5.23145 2.1094 5.23145 4.1344C5.23145 6.1594 6.91895 7.79065 9.0002 7.79065ZM9.0002 1.7719C10.3783 1.7719 11.5033 2.84065 11.5033 4.16252C11.5033 5.4844 10.3783 6.55315 9.0002 6.55315C7.62207 6.55315 6.49707 5.4844 6.49707 4.16252C6.49707 2.84065 7.62207 1.7719 9.0002 1.7719Z"
-                      fill=""
-                    />
-                    <path
-                      d="M10.8283 9.05627H7.17207C4.16269 9.05627 1.71582 11.5313 1.71582 14.5406V16.875C1.71582 17.2125 1.99707 17.5219 2.3627 17.5219C2.72832 17.5219 3.00957 17.2407 3.00957 16.875V14.5406C3.00957 12.2344 4.89394 10.3219 7.22832 10.3219H10.8564C13.1627 10.3219 15.0752 12.2063 15.0752 14.5406V16.875C15.0752 17.2125 15.3564 17.5219 15.7221 17.5219C16.0877 17.5219 16.3689 17.2407 16.3689 16.875V14.5406C16.2846 11.5313 13.8377 9.05627 10.8283 9.05627Z"
-                      fill=""
-                    />
-                  </svg>
-                  Profile
-                </Link>
-              </li> */}
-              {/* <!-- Menu Item Profile --> */}
-
-              {/* <!-- Menu Item Forms --> */}
-
-              {/* <!-- Menu Item Forms --> */}
-
-              {/* <!-- Menu Item Tables --> */}
-              {/* <li>
-                <Link
-                  href="/tables"
-                  className={`bold group relative flex items-center gap-2.5 rounded-lg  px-4 py-4	text-sm
-                  font-medium font-semibold text-black duration-300 ease-in-out hover:bg-white hover:shadow-2xl dark:hover:bg-meta-4 ${
-                    pathname.includes("tables") &&
-                    "bg-white shadow-2xl dark:bg-meta-4"
-                  }`}
-                >
-                  <svg
-                    className="fill-current"
-                    width="18"
-                    height="19"
-                    viewBox="0 0 18 19"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <g clipPath="url(#clip0_130_9756)">
-                      <path
-                        d="M15.7501 0.55835H2.2501C1.29385 0.55835 0.506348 1.34585 0.506348 2.3021V15.8021C0.506348 16.7584 1.29385 17.574 2.27822 17.574H15.7782C16.7345 17.574 17.5501 16.7865 17.5501 15.8021V2.3021C17.522 1.34585 16.7063 0.55835 15.7501 0.55835ZM6.69385 10.599V6.4646H11.3063V10.5709H6.69385V10.599ZM11.3063 11.8646V16.3083H6.69385V11.8646H11.3063ZM1.77197 6.4646H5.45635V10.5709H1.77197V6.4646ZM12.572 6.4646H16.2563V10.5709H12.572V6.4646ZM2.2501 1.82397H15.7501C16.0313 1.82397 16.2563 2.04897 16.2563 2.33022V5.2271H1.77197V2.3021C1.77197 2.02085 1.96885 1.82397 2.2501 1.82397ZM1.77197 15.8021V11.8646H5.45635V16.3083H2.2501C1.96885 16.3083 1.77197 16.0834 1.77197 15.8021ZM15.7501 16.3083H12.572V11.8646H16.2563V15.8021C16.2563 16.0834 16.0313 16.3083 15.7501 16.3083Z"
-                        fill=""
-                      />
-                    </g>
-                    <defs>
-                      <clipPath id="clip0_130_9756">
-                        <rect
-                          width="18"
-                          height="18"
-                          fill="white"
-                          transform="translate(0 0.052124)"
-                        />
-                      </clipPath>
-                    </defs>
-                  </svg>
-                  Tables
-                </Link>
-              </li> */}
-              {/* <!-- Menu Item Tables --> */}
-
-              {/* <!-- Menu Item Settings --> */}
-
-              {/* <!-- Menu Item Settings --> */}
-              <li>
-                <Link
-                  href="/mainflow"
-                  className={`bold group relative flex items-center gap-2.5 rounded-lg  px-4 py-4	text-sm font-medium
-                  font-semibold text-black duration-300 ease-in-out hover:bg-white hover:shadow-2xl dark:text-white dark:hover:bg-meta-4 ${
-                    pathname.includes("mainflow") &&
-                    "bg-white shadow-2xl dark:bg-meta-4"
-                  }`}
-                >
-                  <svg
-                    className="dark:fill-white"
-                    width="18"
-                    height="19"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
-                      d="M8 0C8.53043 0 9.03914 0.210714 9.41421 0.585786C9.78929 0.960859 10 1.46957 10 2V4H14V2C14 1.46957 14.2107 0.960859 14.5858 0.585786C14.9609 0.210714 15.4696 0 16 0H22C22.5304 0 23.0391 0.210714 23.4142 0.585786C23.7893 0.960859 24 1.46957 24 2V8C24 8.53043 23.7893 9.03914 23.4142 9.41421C23.0391 9.78929 22.5304 10 22 10H16C15.4696 10 14.9609 9.78929 14.5858 9.41421C14.2107 9.03914 14 8.53043 14 8V6H10V8C10 8.53043 9.78929 9.03914 9.41421 9.41421C9.03914 9.78929 8.53043 10 8 10H6V14H8C8.53043 14 9.03914 14.2107 9.41421 14.5858C9.78929 14.9609 10 15.4696 10 16V22C10 22.5304 9.78929 23.0391 9.41421 23.4142C9.03914 23.7893 8.53043 24 8 24H2C1.46957 24 0.960859 23.7893 0.585786 23.4142C0.210714 23.0391 0 22.5304 0 22V16C0 15.4696 0.210714 14.9609 0.585786 14.5858C0.960859 14.2107 1.46957 14 2 14H4V10H2C1.46957 10 0.960859 9.78929 0.585786 9.41421C0.210714 9.03914 0 8.53043 0 8V2C0 1.46957 0.210714 0.960859 0.585786 0.585786C0.960859 0.210714 1.46957 0 2 0H8ZM8 16H2V22H8V16ZM19 13C19.552 13 20 13.373 20 13.833V17H23.167C23.627 17 24 17.448 24 18C24 18.552 23.627 19 23.167 19H20V22.167C20 22.627 19.552 23 19 23C18.448 23 18 22.627 18 22.167V19H14.833C14.373 19 14 18.552 14 18C14 17.448 14.373 17 14.833 17H18V13.833C18 13.373 18.448 13 19 13ZM8 2H2V8H8V2ZM22 2H16V8H22V2Z"
-                      fill="#00000"
-                    />
-                  </svg>
-                  Main Flow
-                </Link>
-              </li>
-              {/* <!-- Menu Item Settings --> */}
-              <li>
-                <Link
-                  href="/subflow"
-                  className={`bold group relative flex items-center gap-2.5 rounded-lg  px-4 py-4	text-sm
-                  font-medium font-semibold text-black duration-300 ease-in-out hover:bg-white hover:shadow-2xl dark:text-white dark:hover:bg-meta-4 ${
-                    pathname.includes("subflow") &&
-                    "bg-white shadow-2xl dark:bg-meta-4"
-                  }`}
-                >
-                  <svg
-                    className="dark:fill-white"
-                    width="18"
-                    height="19"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M1 3a2 2 0 012-2h6.5a2 2 0 012 2v6.5a2 2 0 01-2 2H7v4.063C7 16.355 7.644 17 8.438 17H12.5v-2.5a2 2 0 012-2H21a2 2 0 012 2V21a2 2 0 01-2 2h-6.5a2 2 0 01-2-2v-2.5H8.437A2.938 2.938 0 015.5 15.562V11.5H3a2 2 0 01-2-2V3zm2-.5a.5.5 0 00-.5.5v6.5a.5.5 0 00.5.5h6.5a.5.5 0 00.5-.5V3a.5.5 0 00-.5-.5H3zM14.5 14a.5.5 0 00-.5.5V21a.5.5 0 00.5.5H21a.5.5 0 00.5-.5v-6.5a.5.5 0 00-.5-.5h-6.5z"
-                    />
-                  </svg>
-                  Sub Flow
-                </Link>
-              </li>
-              {/* <!-- Menu Item Settings --> */}
-              <li>
-                <Link
-                  href="/customcomponents"
-                  className={`bold group relative flex items-center gap-2.5 rounded-lg  px-4 py-4	text-sm
-                  font-medium font-semibold text-black duration-300 ease-in-out hover:bg-white hover:shadow-2xl dark:hover:bg-meta-4 ${
-                    pathname.includes("components") &&
-                    "bg-white shadow-2xl dark:bg-meta-4"
-                  }`}
-                >
-                  <svg
-                    width="18"
-                    height="19"
-                    viewBox="0 0 15 15"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
-                      d="M4.67129 3.14634C4.47603 3.34161 4.47603 3.65819 4.67129 3.85345L7.14616 6.32833C7.34142 6.52359 7.65801 6.52359 7.85327 6.32833L10.3281 3.85345C10.5234 3.65819 10.5234 3.34161 10.3281 3.14634L7.85327 0.671471C7.65801 0.476209 7.34142 0.476209 7.14616 0.671471L4.67129 3.14634ZM7.49971 5.26766L5.73195 3.4999L7.49971 1.73213L9.26748 3.4999L7.49971 5.26766ZM8.67129 7.14634C8.47603 7.34161 8.47603 7.65819 8.67129 7.85345L11.1462 10.3283C11.3414 10.5236 11.658 10.5236 11.8533 10.3283L14.3281 7.85345C14.5234 7.65819 14.5234 7.34161 14.3281 7.14634L11.8533 4.67147C11.658 4.47621 11.3414 4.47621 11.1462 4.67147L8.67129 7.14634ZM11.4997 9.26766L9.73195 7.4999L11.4997 5.73213L13.2675 7.4999L11.4997 9.26766ZM4.67129 11.8535C4.47603 11.6582 4.47603 11.3416 4.67129 11.1463L7.14616 8.67147C7.34142 8.47621 7.65801 8.47621 7.85327 8.67147L10.3281 11.1463C10.5234 11.3416 10.5234 11.6582 10.3281 11.8535L7.85327 14.3283C7.65801 14.5236 7.34142 14.5236 7.14616 14.3283L4.67129 11.8535ZM5.73195 11.4999L7.49971 13.2677L9.26748 11.4999L7.49971 9.73213L5.73195 11.4999ZM0.671288 7.14649C0.476026 7.34175 0.476026 7.65834 0.671288 7.8536L3.14616 10.3285C3.34142 10.5237 3.65801 10.5237 3.85327 10.3285L6.32814 7.8536C6.5234 7.65834 6.5234 7.34175 6.32814 7.14649L3.85327 4.67162C3.65801 4.47636 3.34142 4.47636 3.14616 4.67162L0.671288 7.14649ZM3.49972 9.26781L1.73195 7.50005L3.49972 5.73228L5.26748 7.50005L3.49972 9.26781Z"
-                      fill="#000000"
-                    />
-                  </svg>
-                  Custom Components
-                </Link>
-              </li>
-              {/* <!-- Menu Item Settings --> */}
-              {/* <!-- Menu Item Settings --> */}
-              <li>
-                <Link
-                  href="/plugins"
-                  className={`bold group relative flex items-center gap-2.5 rounded-lg  px-4 py-4	text-sm
-                  font-medium font-semibold text-black duration-300 ease-in-out hover:bg-white hover:shadow-2xl dark:hover:bg-meta-4 ${
-                    pathname.includes("plugins") &&
-                    "bg-white shadow-2xl dark:bg-meta-4"
-                  }`}
-                >
-                  <svg
-                    className="fill-current"
-                    width="18"
-                    height="19"
-                    viewBox="0 0 18 19"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <g clip-path="url(#clip0_402_1740)">
-                      <path
-                        d="M17.6336 11.5653L12.2393 16.9596L15.3514 20.0717C16.841 21.5613 19.2561 21.5613 20.7457 20.0717C22.2353 18.5821 22.2353 16.167 20.7457 14.6774L17.6336 11.5653Z"
-                        stroke="#1C1C1C"
-                        stroke-width="1.55182"
-                        stroke-linecap="round"
-                      />
-                      <path
-                        d="M6.80931 11.2036L12.2036 5.80927L9.09151 2.69717C7.60192 1.20757 5.18681 1.20757 3.69721 2.69717C2.20762 4.18676 2.20762 6.60188 3.69721 8.09147L6.80931 11.2036Z"
-                        stroke="#1C1C1C"
-                        stroke-width="1.55182"
-                        stroke-linecap="round"
-                      />
-                      <path
-                        d="M13.1909 15.4215L11.2393 13.4699"
-                        stroke="#DF1463"
-                        stroke-width="1.55182"
-                        stroke-linecap="round"
-                      />
-                      <path
-                        d="M16.0954 12.5169L14.1438 10.5653"
-                        stroke="#DF1463"
-                        stroke-width="1.55182"
-                        stroke-linecap="round"
-                      />
-                      <path
-                        d="M20.7456 20.0717L21.9904 21.3165"
-                        stroke="#1C1C1C"
-                        stroke-width="1.55182"
-                        stroke-linecap="round"
-                      />
-                      <path
-                        d="M3.69727 2.69714L2.45243 1.4523"
-                        stroke="#1C1C1C"
-                        stroke-width="1.55182"
-                        stroke-linecap="round"
-                      />
-                      <path
-                        d="M11.4094 17.7894L18.4635 10.7353"
-                        stroke="#1C1C1C"
-                        stroke-width="1.55182"
-                        stroke-linecap="round"
-                      />
-                      <path
-                        d="M13.0334 4.97937L5.97936 12.0335"
-                        stroke="#1C1C1C"
-                        stroke-width="1.55182"
-                        stroke-linecap="round"
-                      />
-                    </g>
-                    <defs>
-                      <clipPath id="clip0_130_9763">
-                        <rect
-                          width="18"
-                          height="18"
-                          fill="white"
-                          transform="translate(0 0.052124)"
-                        />
-                      </clipPath>
-                    </defs>
-                  </svg>
-                  Plugins & Extensions
-                </Link>
-              </li>
-              {/* <!-- Menu Item Settings --> */}
-
-              <li>
-                <Link
-                  href="/logging"
-                  className={`bold group relative flex items-center gap-2.5 rounded-lg  px-4 py-4	text-sm
-                  font-medium font-semibold text-black duration-300 ease-in-out hover:bg-white hover:shadow-2xl dark:hover:bg-meta-4 ${
-                    pathname.includes("logging") &&
-                    "bg-white shadow-2xl dark:bg-meta-4"
-                  }`}
-                >
-                  <svg
-                    className="fill-current"
-                    width="18"
-                    height="19"
-                    viewBox="0 0 48 48"
-                  >
-                    <path d="m40.5,5.5H7.5c-1.1046,0-2,.8954-2,2v33c0,1.1046.8954,2,2,2h33c1.1046,0,2-.8954,2-2V7.5c0-1.1046-.8954-2-2-2Zm-11.5,30H11m26,6.9544v-4.7409h-2.2342c-1.1168,0-2.0158-.8991-2.0158-2.0158v-.5376c0-1.1168.8991-2.0158,2.0158-2.0158h2.2342v-6.6807h-2.4842c-1.1168,0-2.0158-.8991-2.0158-2.0158v-.5376c0-1.1168.8991-2.0158,2.0158-2.0158h2.4842v-6.9307h-2.4842c-1.1168,0-2.0158-.8991-2.0158-2.0158v-.5376c0-1.1168.8991-2.0158,2.0158-2.0158h2.4842v-4.8532m-8,18.9586H11m13-11h-13" />
-                  </svg>
-                  Logging
-                </Link>
-              </li>
-
-              {/* <!-- Menu Item Settings --> */}
-
-              <li>
-                <Link
-                  href="/settings"
-                  className={`bold group relative flex items-center gap-2.5 rounded-lg  px-4 py-4	text-sm
-                  font-medium font-semibold text-black duration-300 ease-in-out hover:bg-white hover:shadow-2xl dark:hover:bg-meta-4 ${
-                    pathname.includes("settings") &&
-                    "bg-white shadow-2xl dark:bg-meta-4"
-                  }`}
-                >
-                  <svg
-                    className="fill-current"
-                    width="18"
-                    height="19"
-                    viewBox="0 0 18 19"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <g clipPath="url(#clip0_130_9763)">
-                      <path
-                        d="M17.0721 7.30835C16.7909 6.99897 16.3971 6.83022 15.9752 6.83022H15.8909C15.7502 6.83022 15.6377 6.74585 15.6096 6.63335C15.5815 6.52085 15.5252 6.43647 15.4971 6.32397C15.4409 6.21147 15.4971 6.09897 15.5815 6.0146L15.6377 5.95835C15.9471 5.6771 16.1159 5.28335 16.1159 4.86147C16.1159 4.4396 15.9752 4.04585 15.6659 3.73647L14.569 2.61147C13.9784 1.99272 12.9659 1.9646 12.3471 2.58335L12.2627 2.6396C12.1784 2.72397 12.0377 2.7521 11.8971 2.69585C11.7846 2.6396 11.6721 2.58335 11.5315 2.55522C11.3909 2.49897 11.3065 2.38647 11.3065 2.27397V2.13335C11.3065 1.26147 10.6034 0.55835 9.73148 0.55835H8.15648C7.7346 0.55835 7.34085 0.7271 7.0596 1.00835C6.75023 1.31772 6.6096 1.71147 6.6096 2.10522V2.21772C6.6096 2.33022 6.52523 2.44272 6.41273 2.49897C6.35648 2.5271 6.32835 2.5271 6.2721 2.55522C6.1596 2.61147 6.01898 2.58335 5.9346 2.49897L5.87835 2.4146C5.5971 2.10522 5.20335 1.93647 4.78148 1.93647C4.3596 1.93647 3.96585 2.0771 3.65648 2.38647L2.53148 3.48335C1.91273 4.07397 1.8846 5.08647 2.50335 5.70522L2.5596 5.7896C2.64398 5.87397 2.6721 6.0146 2.61585 6.09897C2.5596 6.21147 2.53148 6.29585 2.47523 6.40835C2.41898 6.52085 2.3346 6.5771 2.19398 6.5771H2.1096C1.68773 6.5771 1.29398 6.71772 0.984604 7.0271C0.675229 7.30835 0.506479 7.7021 0.506479 8.12397L0.478354 9.69897C0.450229 10.5708 1.15335 11.274 2.02523 11.3021H2.1096C2.25023 11.3021 2.36273 11.3865 2.39085 11.499C2.4471 11.5833 2.50335 11.6677 2.53148 11.7802C2.5596 11.8927 2.53148 12.0052 2.4471 12.0896L2.39085 12.1458C2.08148 12.4271 1.91273 12.8208 1.91273 13.2427C1.91273 13.6646 2.05335 14.0583 2.36273 14.3677L3.4596 15.4927C4.05023 16.1115 5.06273 16.1396 5.68148 15.5208L5.76585 15.4646C5.85023 15.3802 5.99085 15.3521 6.13148 15.4083C6.24398 15.4646 6.35648 15.5208 6.4971 15.549C6.63773 15.6052 6.7221 15.7177 6.7221 15.8302V15.9427C6.7221 16.8146 7.42523 17.5177 8.2971 17.5177H9.8721C10.744 17.5177 11.4471 16.8146 11.4471 15.9427V15.8302C11.4471 15.7177 11.5315 15.6052 11.644 15.549C11.7002 15.5208 11.7284 15.5208 11.7846 15.4927C11.9252 15.4365 12.0377 15.4646 12.1221 15.549L12.1784 15.6333C12.4596 15.9427 12.8534 16.1115 13.2752 16.1115C13.6971 16.1115 14.0909 15.9708 14.4002 15.6615L15.5252 14.5646C16.144 13.974 16.1721 12.9615 15.5534 12.3427L15.4971 12.2583C15.4127 12.174 15.3846 12.0333 15.4409 11.949C15.4971 11.8365 15.5252 11.7521 15.5815 11.6396C15.6377 11.5271 15.7502 11.4708 15.8627 11.4708H15.9471H15.9752C16.819 11.4708 17.5221 10.7958 17.5502 9.92397L17.5784 8.34897C17.5221 8.01147 17.3534 7.5896 17.0721 7.30835ZM16.2284 9.9521C16.2284 10.1208 16.0877 10.2615 15.919 10.2615H15.8346H15.8065C15.1596 10.2615 14.569 10.6552 14.344 11.2177C14.3159 11.3021 14.2596 11.3865 14.2315 11.4708C13.9784 12.0333 14.0909 12.7365 14.5409 13.1865L14.5971 13.2708C14.7096 13.3833 14.7096 13.5802 14.5971 13.6927L13.4721 14.7896C13.3877 14.874 13.3034 14.874 13.2471 14.874C13.1909 14.874 13.1065 14.874 13.0221 14.7896L12.9659 14.7052C12.5159 14.2271 11.8409 14.0865 11.2221 14.3677L11.1096 14.424C10.4909 14.6771 10.0971 15.2396 10.0971 15.8865V15.999C10.0971 16.1677 9.95648 16.3083 9.78773 16.3083H8.21273C8.04398 16.3083 7.90335 16.1677 7.90335 15.999V15.8865C7.90335 15.2396 7.5096 14.649 6.89085 14.424C6.80648 14.3958 6.69398 14.3396 6.6096 14.3115C6.3846 14.199 6.1596 14.1708 5.9346 14.1708C5.54085 14.1708 5.1471 14.3115 4.83773 14.6208L4.78148 14.649C4.66898 14.7615 4.4721 14.7615 4.3596 14.649L3.26273 13.524C3.17835 13.4396 3.17835 13.3552 3.17835 13.299C3.17835 13.2427 3.17835 13.1583 3.26273 13.074L3.31898 13.0177C3.7971 12.5677 3.93773 11.8646 3.6846 11.3021C3.65648 11.2177 3.62835 11.1333 3.5721 11.049C3.3471 10.4583 2.7846 10.0365 2.13773 10.0365H2.05335C1.8846 10.0365 1.74398 9.89585 1.74398 9.7271L1.7721 8.1521C1.7721 8.0396 1.82835 7.98335 1.85648 7.9271C1.8846 7.89897 1.96898 7.84272 2.08148 7.84272H2.16585C2.81273 7.87085 3.40335 7.4771 3.65648 6.88647C3.6846 6.8021 3.74085 6.71772 3.76898 6.63335C4.0221 6.07085 3.9096 5.36772 3.4596 4.91772L3.40335 4.83335C3.29085 4.72085 3.29085 4.52397 3.40335 4.41147L4.52835 3.3146C4.61273 3.23022 4.6971 3.23022 4.75335 3.23022C4.8096 3.23022 4.89398 3.23022 4.97835 3.3146L5.0346 3.39897C5.4846 3.8771 6.1596 4.01772 6.77835 3.7646L6.89085 3.70835C7.5096 3.45522 7.90335 2.89272 7.90335 2.24585V2.13335C7.90335 2.02085 7.9596 1.9646 7.98773 1.90835C8.01585 1.8521 8.10023 1.82397 8.21273 1.82397H9.78773C9.95648 1.82397 10.0971 1.9646 10.0971 2.13335V2.24585C10.0971 2.89272 10.4909 3.48335 11.1096 3.70835C11.194 3.73647 11.3065 3.79272 11.3909 3.82085C11.9815 4.1021 12.6846 3.9896 13.1627 3.5396L13.2471 3.48335C13.3596 3.37085 13.5565 3.37085 13.669 3.48335L14.7659 4.60835C14.8502 4.69272 14.8502 4.7771 14.8502 4.83335C14.8502 4.8896 14.8221 4.97397 14.7659 5.05835L14.7096 5.1146C14.2034 5.53647 14.0627 6.2396 14.2877 6.8021C14.3159 6.88647 14.344 6.97085 14.4002 7.05522C14.6252 7.64585 15.1877 8.06772 15.8346 8.06772H15.919C16.0315 8.06772 16.0877 8.12397 16.144 8.1521C16.2002 8.18022 16.2284 8.2646 16.2284 8.3771V9.9521Z"
-                        fill=""
-                      />
-                      <path
-                        d="M9.00029 5.22705C6.89092 5.22705 5.17529 6.94268 5.17529 9.05205C5.17529 11.1614 6.89092 12.8771 9.00029 12.8771C11.1097 12.8771 12.8253 11.1614 12.8253 9.05205C12.8253 6.94268 11.1097 5.22705 9.00029 5.22705ZM9.00029 11.6114C7.59404 11.6114 6.44092 10.4583 6.44092 9.05205C6.44092 7.6458 7.59404 6.49268 9.00029 6.49268C10.4065 6.49268 11.5597 7.6458 11.5597 9.05205C11.5597 10.4583 10.4065 11.6114 9.00029 11.6114Z"
-                        fill=""
-                      />
-                    </g>
-                    <defs>
-                      <clipPath id="clip0_130_9763">
-                        <rect
-                          width="18"
-                          height="18"
-                          fill="white"
-                          transform="translate(0 0.052124)"
-                        />
-                      </clipPath>
-                    </defs>
-                  </svg>
-                  Settings
-                </Link>
-              </li>
+                    {item.icon}
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
           <div className="fixed bottom-0 m-auto items-center justify-center text-sm text-black">
@@ -502,7 +199,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             </span>
           </div>
         </nav>
-        {/* <!-- Sidebar Menu --> */}
       </div>
     </aside>
   );
