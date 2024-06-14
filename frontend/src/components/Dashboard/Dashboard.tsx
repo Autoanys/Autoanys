@@ -1,8 +1,7 @@
 "use client";
 import React from "react";
-import ChartOne from "../Charts/ChartOne";
-import ChartThree from "../Charts/ChartThree";
-import ChartTwo from "../Charts/ChartTwo";
+import ExecutionTableOne from "../Charts/ExecutionTableOne";
+import ExecutionTableTwo from "../Charts/ExecutionTableTwo";
 import CardDataStats from "../CardDataStats";
 import { useEffect, useState } from "react";
 
@@ -10,10 +9,27 @@ const Dashboard: React.FC = () => {
   const [totalflow, setTotalFlow] = useState([]);
   const [totalstep, setTotalStep] = useState([]);
   const [totalGoodStep, setTotalGoodStep] = useState([]);
-
+  const [chartOneAll, setChartOneAll] = useState([]);
+  const [chartOneSucess, setChartOneSucess] = useState([]);
   const [totalclient, setTotalClient] = useState([]);
   const [totalExecution, setTotalExecution] = useState([]);
   const [totalSuccessful, setTotalSuccessful] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch(
+          process.env.NEXT_PUBLIC_BACKEND_URL + "/dashboard/chartone/",
+        );
+        const data = await res.json();
+        setChartOneAll(data.data.total_logs_per_month);
+        setChartOneSucess(data.data.success_logs_per_month);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,9 +58,7 @@ const Dashboard: React.FC = () => {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <CardDataStats
           title="Total Workflows"
-          total={totalflow ? totalflow : "DAS"}
-          // rate="0.43%"
-          // levelUp
+          total={totalflow ? totalflow : ""}
         >
           <svg
             width="35"
@@ -68,11 +82,7 @@ const Dashboard: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats
-          title="Total Clients"
-          total={totalclient}
-          // rate="4.35%" levelUp
-        >
+        <CardDataStats title="Total Clients" total={totalclient}>
           <svg
             className="fill-primary dark:fill-white"
             width="35"
@@ -93,11 +103,7 @@ const Dashboard: React.FC = () => {
             </g>
           </svg>
         </CardDataStats>
-        <CardDataStats
-          title="Total Execution"
-          total={totalExecution}
-          // rate="2.59%" levelUp
-        >
+        <CardDataStats title="Total Execution" total={totalExecution}>
           <svg
             className="fill-primary dark:fill-white"
             width="35"
@@ -133,7 +139,6 @@ const Dashboard: React.FC = () => {
         <CardDataStats
           title="Total Successful Execution"
           total={totalSuccessful}
-          // rate="0.95%" levelDown
         >
           <svg
             width="26"
@@ -155,14 +160,11 @@ const Dashboard: React.FC = () => {
       </div>
 
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
-        <ChartOne />
-        <ChartTwo />
-        {/* <ChartThree /> */}
-        {/* <MapOne /> */}
-        {/* <div className="col-span-12 xl:col-span-8"> */}
-        {/* <TableOne /> */}
-        {/* </div> */}
-        {/* <ChatCard /> */}
+        <ExecutionTableOne
+          allCount={chartOneAll}
+          allSucessCount={chartOneSucess}
+        />
+        <ExecutionTableTwo />
       </div>
     </>
   );

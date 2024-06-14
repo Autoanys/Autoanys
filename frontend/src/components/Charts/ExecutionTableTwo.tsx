@@ -69,7 +69,7 @@ interface ChartTwoState {
   }[];
 }
 
-const ChartTwo: React.FC = () => {
+const ExecutionTableTwo: React.FC = () => {
   const [state, setState] = useState<ChartTwoState>({
     series: [
       {
@@ -151,4 +151,4 @@ const ChartTwo: React.FC = () => {
   );
 };
 
-export default ChartTwo;
+export default ExecutionTableTwo;

@@ -7,15 +7,7 @@ import asyncio
 from prisma import Prisma
 
 
-# model Logs {
-#   id   String @id @default(cuid())
-#   triggerID String
-#   flowID    String
-#   result String
-#   created_at DateTime @default(now())
-#   type String
-#   steplog StepLogs[]
-# }
+
 
 router = APIRouter()
 

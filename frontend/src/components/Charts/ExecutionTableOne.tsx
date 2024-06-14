@@ -2,6 +2,55 @@ import { ApexOptions } from "apexcharts";
 import React, { useState } from "react";
 import ReactApexChart from "react-apexcharts";
 
+function getDateRangePastYear() {
+  const today = new Date();
+  const lastYearStart = new Date();
+
+  lastYearStart.setFullYear(today.getFullYear() - 1);
+  lastYearStart.setMonth(today.getMonth());
+  lastYearStart.setDate(1);
+
+  const formatDate = (date) => {
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+
+    return `${day}.${month}.${year}`;
+  };
+
+  const todayStr = formatDate(today);
+  const lastYearStartStr = formatDate(lastYearStart);
+
+  return `${lastYearStartStr} - ${todayStr}`;
+}
+
+function getLast12Months() {
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
+  const currentMonthIndex = new Date().getMonth();
+  const last12Months = [];
+
+  for (let i = 0; i < 13; i++) {
+    const monthIndex = (currentMonthIndex - i + 12) % 12;
+    last12Months.unshift(months[monthIndex]);
+  }
+
+  return last12Months;
+}
+
 const options: ApexOptions = {
   legend: {
     show: false,
@@ -48,10 +97,7 @@ const options: ApexOptions = {
     width: [2, 2],
     curve: "straight",
   },
-  // labels: {
-  //   show: false,
-  //   position: "top",
-  // },
+
   grid: {
     xaxis: {
       lines: {
@@ -83,20 +129,7 @@ const options: ApexOptions = {
   },
   xaxis: {
     type: "category",
-    categories: [
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-    ],
+    categories: getLast12Months(),
     axisBorder: {
       show: false,
     },
@@ -122,20 +155,31 @@ interface ChartOneState {
   }[];
 }
 
-const ChartOne: React.FC = () => {
-  const [state, setState] = useState<ChartOneState>({
-    series: [
-      {
-        name: "Execution Triggered",
-        data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, 45],
-      },
+const ExecutionTableOne: React.FC = (tData) => {
+  // const [state, setState] = useState<ChartOneState>({
+  //   series: [
+  //     {
+  //       name: "Execution Triggered",
+  //       data: tData.allCount,
+  //     },
 
-      {
-        name: "Successful Execution",
-        data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39, 51],
-      },
-    ],
-  });
+  //     {
+  //       name: "Successful Execution",
+  //       data: tData.allSucessCount,
+  //     },
+  //   ],
+  // });
+
+  const yearData = [
+    {
+      name: "Execution Triggered",
+      data: tData.allCount,
+    },
+    {
+      name: "Successful Execution",
+      data: tData.allSucessCount,
+    },
+  ];
 
   const handleReset = () => {
     setState((prevState) => ({
@@ -154,7 +198,7 @@ const ChartOne: React.FC = () => {
             </span>
             <div className="w-full">
               <p className="font-semibold text-primary">Total Execution</p>
-              <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p>
+              <p className="text-sm font-medium">{getDateRangePastYear()}</p>
             </div>
           </div>
           <div className="flex min-w-47.5">
@@ -165,21 +209,21 @@ const ChartOne: React.FC = () => {
               <p className="font-semibold text-secondary">
                 Successful Executions
               </p>
-              <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p>
+              <p className="text-sm font-medium">{getDateRangePastYear()}</p>
             </div>
           </div>
         </div>
         <div className="flex w-full max-w-45 justify-end">
           <div className="inline-flex items-center rounded-md bg-whiter p-1.5 dark:bg-meta-4">
             <button className="rounded bg-white px-3 py-1 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark">
-              Day
+              Year
             </button>
-            <button className="rounded px-3 py-1 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark">
+            {/* <button className="rounded px-3 py-1 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark">
               Week
             </button>
             <button className="rounded px-3 py-1 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark">
               Month
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
@@ -188,7 +232,7 @@ const ChartOne: React.FC = () => {
         <div id="chartOne" className="-ml-5">
           <ReactApexChart
             options={options}
-            series={state.series}
+            series={yearData}
             type="area"
             height={350}
             width={"100%"}
@@ -199,4 +243,4 @@ const ChartOne: React.FC = () => {
   );
 };
 
-export default ChartOne;
+export default ExecutionTableOne;
