@@ -69,19 +69,17 @@ interface ChartTwoState {
   }[];
 }
 
-const ExecutionTableTwo: React.FC = () => {
-  const [state, setState] = useState<ChartTwoState>({
-    series: [
-      {
-        name: "Sales",
-        data: [44, 55, 41, 67, 22, 43, 65],
-      },
-      {
-        name: "Revenue",
-        data: [13, 23, 20, 8, 13, 27, 15],
-      },
-    ],
-  });
+const ExecutionTableTwo: React.FC = (tData) => {
+  const weekData = [
+    {
+      name: "Execution",
+      data: tData.allCount,
+    },
+    {
+      name: "Successful",
+      data: tData.allSucessCount,
+    },
+  ];
 
   const handleReset = () => {
     setState((prevState) => ({
@@ -100,18 +98,18 @@ const ExecutionTableTwo: React.FC = () => {
         </div>
         <div>
           <div className="relative z-20 inline-block">
-            <select
+            {/* <select
               name="#"
               id="#"
               className="relative z-20 inline-flex appearance-none bg-transparent py-1 pl-3 pr-8 text-sm font-medium outline-none"
             >
-              <option value="" className="dark:bg-boxdark">
-                This Week
-              </option>
-              <option value="" className="dark:bg-boxdark">
+              <option value="" className="dark:bg-boxdark"> */}
+            This Week
+            {/* </option> */}
+            {/* <option value="" className="dark:bg-boxdark">
                 Last Week
-              </option>
-            </select>
+              </option> */}
+            {/* </select> */}
             <span className="absolute right-3 top-1/2 z-10 -translate-y-1/2">
               <svg
                 width="10"
@@ -140,7 +138,7 @@ const ExecutionTableTwo: React.FC = () => {
         <div id="chartTwo" className="-mb-9 -ml-5">
           <ReactApexChart
             options={options}
-            series={state.series}
+            series={weekData}
             type="bar"
             height={350}
             width={"100%"}

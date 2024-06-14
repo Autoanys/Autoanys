@@ -10,7 +10,9 @@ const Dashboard: React.FC = () => {
   const [totalstep, setTotalStep] = useState([]);
   const [totalGoodStep, setTotalGoodStep] = useState([]);
   const [chartOneAll, setChartOneAll] = useState([]);
+  const [chartTwoAll, setChartTwoAll] = useState([]);
   const [chartOneSucess, setChartOneSucess] = useState([]);
+  const [chartTwoSucess, setChartTwoSucess] = useState([]);
   const [totalclient, setTotalClient] = useState([]);
   const [totalExecution, setTotalExecution] = useState([]);
   const [totalSuccessful, setTotalSuccessful] = useState([]);
@@ -28,7 +30,21 @@ const Dashboard: React.FC = () => {
         console.error("Error fetching data:", error);
       }
     };
+
+    const fetchTwoData = async () => {
+      try {
+        const res = await fetch(
+          process.env.NEXT_PUBLIC_BACKEND_URL + "/dashboard/charttwo/",
+        );
+        const data = await res.json();
+        setChartTwoAll(data.data.total_logs_per_week);
+        setChartTwoSucess(data.data.success_logs_per_week);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
     fetchData();
+    fetchTwoData();
   }, []);
 
   useEffect(() => {
@@ -164,7 +180,10 @@ const Dashboard: React.FC = () => {
           allCount={chartOneAll}
           allSucessCount={chartOneSucess}
         />
-        <ExecutionTableTwo />
+        <ExecutionTableTwo
+          allCount={chartTwoAll}
+          allSucessCount={chartTwoSucess}
+        />
       </div>
     </>
   );
