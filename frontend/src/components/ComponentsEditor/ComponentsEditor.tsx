@@ -2,7 +2,7 @@
 import React, { useState, useRef, useCallback, useEffect, use } from "react";
 import "reactflow/dist/style.css";
 import "./styles.css";
-import { CheckCircleIcon } from "@heroicons/react/outline";
+import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
 import Link from "next/link";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
 import path from "path";
@@ -17,6 +17,7 @@ import comConfig from "./comConfig";
 
 const ComponentsEditor = (editing, componentID) => {
   const [codingValue, setCodingValue] = useState("");
+  const [codeValidate, setCodeValidate] = useState("");
   const [componentInfo, setcCmponentInfo] = useState({
     component_name: "test",
     component_category: "test",
@@ -24,24 +25,29 @@ const ComponentsEditor = (editing, componentID) => {
   });
   const parms = useSearchParams();
 
-  const validateCoding = () => {
+  const validateCoding = async () => {
     try {
-      fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/components/validate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      let res = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_URL + "/components/validate",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            component_coding: codingValue,
+          }),
         },
-        body: JSON.stringify({
-          component_coding: codingValue,
-        }),
-      }).then((response) => {
-        if (response.ok) {
-          console.log("response", response.body);
-          alert(JSON.stringify(response));
-        } else {
-          alert(JSON.stringify(response));
-        }
-      });
+      );
+
+      let data = await res.json();
+      if (data.message.includes("invalid")) {
+        await setCodeValidate("failed");
+        console.log("Failed");
+      } else {
+        await setCodeValidate("success");
+        console.log("Sesc");
+      }
     } catch (error) {
       console.error("Error:", error);
     }
@@ -216,6 +222,21 @@ const ComponentsEditor = (editing, componentID) => {
               {/* <button className="mb-2 rounded border border-blue-500 bg-transparent px-4 py-2 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white">
                 🔣 Variables
               </button> */}
+              {codeValidate === "success" ? (
+                <div className="flex items-center">
+                  <CheckCircleIcon className="h-5 w-5 text-green-500" />
+                  <p className="text-green-500">Code validated successfully</p>
+                </div>
+              ) : codeValidate === "failed" ? (
+                <div className="flex items-center">
+                  <XCircleIcon className="h-5 w-5 text-rose-700" />
+                  <p className="text-rose-700">Code validation failed</p>
+                </div>
+              ) : (
+                <div className="flex items-center">
+                  <p className="text-rose-700">Code not yet validate</p>
+                </div>
+              )}
 
               <button className="mb-2 rounded border border-blue-500 bg-transparent px-4 py-2 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white">
                 🐞 Debug

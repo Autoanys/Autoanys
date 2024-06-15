@@ -136,28 +136,28 @@ const SubflowTable = () => {
         Sub Flow
       </h4>
 
-      <div className="flex flex-col">
-        <div className="grid grid-cols-4 rounded-sm dark:bg-meta-4 sm:grid-cols-4">
-          <div className="xl:bt-5 pl-2.5 pt-5  xl:pb-2.5 xl:pl-2.5">
-            <h5 className=" text-sm font-medium xsm:text-base">
+      <div className="flex flex-col rounded-t-lg border	border-slate-300 text-black">
+        <div className="grid grid-cols-4 rounded-sm bg-indigo-50 uppercase dark:bg-meta-4 sm:grid-cols-4">
+          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+            <h5 className=" text-sm font-medium xsm:text-sm">
               <b>Flow Name</b>
             </h5>
           </div>
 
-          <div className="xl:bt-5 pl-2.5 pt-5  xl:pb-2.5 xl:pl-2.5">
-            <h5 className="text-sm font-medium  xsm:text-base">
+          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+            <h5 className=" text-sm font-medium xsm:text-sm">
               <b>Flow ID</b>
             </h5>
           </div>
 
-          <div className="xl:bt-5 pl-2.5 pt-5  xl:pb-2.5 xl:pl-2.5">
-            <h5 className="text-sm font-medium  xsm:text-base">
+          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+            <h5 className=" text-sm font-medium xsm:text-sm">
               <b>Flow Description</b>
             </h5>
           </div>
 
-          <div className="xl:bt-5 pl-2.5 pt-5  xl:pb-2.5 xl:pl-2.5">
-            <h5 className="text-sm font-medium  xsm:text-base">
+          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+            <h5 className=" text-sm font-medium xsm:text-sm">
               <b>Actions</b>
             </h5>
           </div>
@@ -174,8 +174,8 @@ const SubflowTable = () => {
           >
             <div className="flex items-center gap-3 pl-2.5 ">
               <p
-                className="text-bla ck
-              hidden dark:text-white sm:block"
+                className="hidden
+              text-black dark:text-white sm:block"
               >
                 {subflow.name}
               </p>

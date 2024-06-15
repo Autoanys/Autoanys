@@ -118,6 +118,15 @@ const SubFlowCanva = (editing, flowid) => {
   const [isVariablePopupOpen, setIsVariablePopupOpen] = useState(false);
   const popupRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [exportDropdownOpen, setExportDropdownOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setExportDropdownOpen(!exportDropdownOpen);
+  };
+
+  const exportFlow = () => {
+    console.log("Export Flow Data");
+  };
 
   const [variables, setVariables] = useState([]);
   const [currentStep, setCurrentStep] = useState({
@@ -1184,11 +1193,41 @@ const SubFlowCanva = (editing, flowid) => {
                 )}
               </button>
               <button
-                onClick={exportImage}
+                onClick={toggleDropdown}
                 className="mb-2 rounded border border-blue-500 bg-transparent px-4 py-2 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white"
               >
                 📁 Export
               </button>
+
+              {exportDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+                  <div
+                    className="py-1"
+                    role="menu"
+                    aria-orientation="vertical"
+                    aria-labelledby="options-menu"
+                  >
+                    <button
+                      onClick={() => {
+                        exportImage();
+                        toggleDropdown();
+                      }}
+                      className="text-gray-700 hover:bg-gray-100 hover:text-gray-900 block w-full px-4 py-2 text-left text-sm"
+                    >
+                      Flow Image Diagram
+                    </button>
+                    <button
+                      onClick={() => {
+                        exportImage();
+                        toggleDropdown();
+                      }}
+                      className="text-gray-700 hover:bg-gray-100 hover:text-gray-900 block w-full px-4 py-2 text-left text-sm"
+                    >
+                      Flow Config Data
+                    </button>
+                  </div>
+                </div>
+              )}
             </Panel>
 
             <div
