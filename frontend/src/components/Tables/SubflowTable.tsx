@@ -182,7 +182,7 @@ const SubflowTable = () => {
       <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
         Sub Flow List
       </h4>
-      <div className="absolute inset-0">
+      {/* <div className="absolute inset-0">
         {showNotification.show && (
           <div
             aria-live="assertive"
@@ -238,7 +238,7 @@ const SubflowTable = () => {
             </div>
           </div>
         )}
-      </div>
+      </div> */}
 
       <div className="flex flex-col rounded-t-lg border	border-slate-300 text-black">
         <div className="grid grid-cols-4 rounded-sm bg-indigo-50 uppercase dark:bg-meta-4 sm:grid-cols-4">

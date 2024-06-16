@@ -1120,6 +1120,10 @@ const SubFlowCanva = (editing, flowid) => {
 
             <Controls></Controls>
 
+            <Panel position="bottom-right">
+              Flow ID : {parms.get("flowid") ? parms.get("flowid") : "None"}{" "}
+            </Panel>
+
             <Panel
               className="items-right flex w-full justify-end gap-1 border-b border-slate-300 bg-white p-0 pt-20"
               position="top-right"
@@ -1127,7 +1131,7 @@ const SubFlowCanva = (editing, flowid) => {
               <div className="mr-auto">
                 <button
                   onClick={onSave}
-                  className={`mb-2 ml-4 rounded border border-blue-500 bg-transparent px-4 py-2 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white ${
+                  className={`mb-2 ml-4 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white ${
                     autoSaving ? "cursor-not-allowed" : ""
                   }`}
                 >
@@ -1146,7 +1150,7 @@ const SubFlowCanva = (editing, flowid) => {
 
                 <button
                   onClick={togglePopup}
-                  className={`mb-2 ml-1 rounded border border-blue-500 bg-transparent px-3 py-2 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white ${
+                  className={`mb-2 ml-4 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white ${
                     autoSaving ? "cursor-not-allowed" : ""
                   }`}
                 >
@@ -1157,28 +1161,28 @@ const SubFlowCanva = (editing, flowid) => {
 
               <button
                 onClick={handleAutoLayout}
-                className="mb-2 rounded border border-blue-500 bg-transparent px-4 py-2 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white"
+                className="mb-2 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white"
               >
                 ⏹️ Auto-Layout
               </button>
 
               <button
                 onClick={getFlow}
-                className="mb-2 rounded border border-blue-500 bg-transparent px-4 py-2 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white"
+                className="mb-2 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white"
               >
                 🔣 Variables
               </button>
 
               <button
                 onClick={getFlow}
-                className="mb-2 rounded border border-blue-500 bg-transparent px-4 py-2 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white"
+                className="mb-2 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white"
               >
                 🐞 Debug
               </button>
 
               <button
                 onClick={getFlow}
-                className={`mb-2 rounded border border-blue-500 bg-transparent px-4 py-2 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white ${
+                className={`mb-2 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white ${
                   playing ? "cursor-not-allowed" : ""
                 }`}
               >
@@ -1194,7 +1198,7 @@ const SubFlowCanva = (editing, flowid) => {
               </button>
               <button
                 onClick={toggleDropdown}
-                className="mb-2 rounded border border-blue-500 bg-transparent px-4 py-2 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white"
+                className="mb-2 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white"
               >
                 📁 Export
               </button>
@@ -1212,7 +1216,7 @@ const SubFlowCanva = (editing, flowid) => {
                         exportImage();
                         toggleDropdown();
                       }}
-                      className="text-gray-700 hover:bg-gray-100 hover:text-gray-900 block w-full px-4 py-2 text-left text-sm"
+                      className="text-gray-700 hover:bg-gray-100 hover:text-gray-900 block w-full px-2 py-1 text-left text-sm"
                     >
                       Flow Image Diagram
                     </button>
@@ -1221,7 +1225,7 @@ const SubFlowCanva = (editing, flowid) => {
                         exportImage();
                         toggleDropdown();
                       }}
-                      className="text-gray-700 hover:bg-gray-100 hover:text-gray-900 block w-full px-4 py-2 text-left text-sm"
+                      className="text-gray-700 hover:bg-gray-100 hover:text-gray-900 block w-full px-2 py-1 text-left text-sm"
                     >
                       Flow Config Data
                     </button>
