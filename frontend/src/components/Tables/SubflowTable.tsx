@@ -1,6 +1,15 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import {
+  CheckCircleIcon,
+  ExclamationCircleIcon,
+  InformationCircleIcon,
+  TrashIcon,
+} from "@heroicons/react/outline";
+import { Transition } from "@headlessui/react";
+import { XIcon } from "@heroicons/react/solid";
+import { Fragment } from "react";
 
 const SubflowTable = () => {
   const [subflows, setSubflows] = useState([]);
@@ -9,14 +18,39 @@ const SubflowTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(20);
   const [playing, setPlaying] = useState(false);
-  const [showNotification, setShowNotification] = useState(false);
-
+  const [showNotification, setShowNotification] = useState({
+    show: false,
+    code: 200,
+    message: "",
+  });
   const truncateText = (text, maxLength) => {
     if (text.length <= maxLength) {
       return text;
     }
     return text.substring(0, maxLength) + "...";
   };
+
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+
+    const dateOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+
+    const timeOptions = {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    };
+
+    const formattedDate = date.toLocaleDateString(undefined, dateOptions);
+    const formattedTime = date.toLocaleTimeString(undefined, timeOptions);
+
+    return `${formattedDate}, ${formattedTime}`;
+  }
 
   const getFlow = (flow_id) => {
     return async () => {
@@ -120,6 +154,19 @@ const SubflowTable = () => {
           console.log("Updated allFlow:", updatedAllFlow);
           return updatedAllFlow;
         });
+
+        setShowNotification({
+          show: true,
+          code: 200,
+          message: "Sub flow deleted successfully!",
+        });
+        setTimeout(() => {
+          setShowNotification({
+            show: false,
+            code: 200,
+            message: "Sub flow deleted successfully!",
+          });
+        }, 3000);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -133,8 +180,65 @@ const SubflowTable = () => {
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
-        Sub Flow
+        Sub Flow List
       </h4>
+      <div className="absolute inset-0">
+        {showNotification.show && (
+          <div
+            aria-live="assertive"
+            className="pointer-events-none fixed inset-0 z-999 z-999 mt-30 flex items-end px-4 py-6 sm:items-start sm:p-6"
+          >
+            <div className="flex w-full flex-col items-center space-y-4 sm:items-end">
+              <Transition
+                show={showNotification.show}
+                as={Fragment}
+                enter="transform ease-out duration-300 transition"
+                enterFrom="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+                enterTo="translate-y-0 opacity-100 sm:translate-x-0"
+                leave="transition ease-in duration-100"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <div className="pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+                  <div className="p-4">
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0">
+                        <ExclamationCircleIcon
+                          className="h-6 w-6 text-red"
+                          aria-hidden="true"
+                        />
+                      </div>
+                      <div className="ml-3 w-0 flex-1 pt-0.5">
+                        <p className="text-sm font-medium text-red">
+                          {showNotification.code}
+                        </p>
+                        <p className="text-gray-500 mt-1 text-sm">
+                          {showNotification.message}
+                        </p>
+                      </div>
+                      <div className="ml-4 flex flex-shrink-0">
+                        <button
+                          className="text-gray-400 hover:text-gray-500 inline-flex rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                          onClick={() => {
+                            setShowNotification({
+                              show: false,
+                              code: 200,
+                              message: "",
+                            });
+                          }}
+                        >
+                          <span className="sr-only">Close</span>
+                          <XIcon className="h-5 w-5" aria-hidden="true" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Transition>
+            </div>
+          </div>
+        )}
+      </div>
 
       <div className="flex flex-col rounded-t-lg border	border-slate-300 text-black">
         <div className="grid grid-cols-4 rounded-sm bg-indigo-50 uppercase dark:bg-meta-4 sm:grid-cols-4">
@@ -146,19 +250,19 @@ const SubflowTable = () => {
 
           <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
             <h5 className=" text-sm font-medium xsm:text-sm">
-              <b>Flow ID</b>
-            </h5>
-          </div>
-
-          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
-            <h5 className=" text-sm font-medium xsm:text-sm">
               <b>Flow Description</b>
             </h5>
           </div>
 
           <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
             <h5 className=" text-sm font-medium xsm:text-sm">
-              <b>Actions</b>
+              <b>Last Update</b>
+            </h5>
+          </div>
+
+          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+            <h5 className=" text-sm font-medium xsm:text-sm">
+              <b>Actions (V/E/P/D)</b>
             </h5>
           </div>
         </div>
@@ -184,7 +288,7 @@ const SubflowTable = () => {
             <div className="flex items-center gap-3 pl-2.5 ">
               <p className="hidden text-black dark:text-white sm:block">
                 {/* {subflow.id} */}
-                {truncateText(subflow.id, 15)}
+                {truncateText(subflow.description, 30)}
               </p>
             </div>
 
@@ -193,14 +297,14 @@ const SubflowTable = () => {
                 className="hidden text-black dark:text-white sm:block"
                 title={subflow.description}
               >
-                {truncateText(subflow.description, 30)}
+                {formatDate(subflow.updated_at)}
               </p>
             </div>
-            <div className="flex items-center gap-4 pl-2.5 ">
+            <div className="flex items-center gap-1 pl-2.5 ">
               <p className="hidden text-black dark:text-white sm:block">
-                <div className="flex gap-4">
+                <div className="flex gap-2">
                   <button
-                    className="font-sans bg-gray-900 shadow-gray-900/10 hover:shadow-gray-900/20 relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle text-xs font-medium uppercase text-white shadow-md transition-all hover:shadow-lg focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                    className="font-sans bg-gray-900 shadow-gray-900/10 hover:shadow-gray-900/20 relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle text-xs font-medium uppercase text-white  transition-all hover:shadow-lg focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                     type="button"
                   >
                     <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform">
@@ -225,13 +329,13 @@ const SubflowTable = () => {
                     }}
                   >
                     <button
-                      className="font-sans from-gray-900 to-gray-800 shadow-gray-900/10 hover:shadow-gray-900/20 relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg bg-gradient-to-tr text-center align-middle text-xs font-medium uppercase text-white shadow-md transition-all hover:shadow-lg active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                      className="font-sans from-gray-900 to-gray-800 shadow-gray-900/10 hover:shadow-gray-900/20 relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg bg-gradient-to-tr text-center align-middle text-xs font-medium uppercase text-white transition-all hover:shadow-lg active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                       type="button"
                     >
                       <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform">
                         <svg
-                          width="24"
-                          height="24"
+                          width="20"
+                          height="20"
                           viewBox="0 0 24 24"
                           fill="none"
                         >
@@ -247,14 +351,14 @@ const SubflowTable = () => {
                   </Link>
 
                   <button
-                    className="font-sans from-gray-900 to-gray-800 shadow-gray-900/10 hover:shadow-gray-900/20 relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg bg-gradient-to-tr text-center align-middle text-xs font-medium uppercase text-white shadow-md transition-all hover:shadow-lg active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                    className="font-sans from-gray-900 to-gray-800 shadow-gray-900/10 hover:shadow-gray-900/20 relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg bg-gradient-to-tr text-center align-middle text-xs font-medium uppercase text-white  transition-all hover:shadow-lg active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                     type="button"
                     onClick={getFlow(subflow.id)}
                   >
                     <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform">
                       <svg
-                        width="24"
-                        height="24"
+                        width="20"
+                        height="20"
                         viewBox="0 0 16 16"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="#000000"
@@ -272,14 +376,14 @@ const SubflowTable = () => {
               </p>
 
               <button
-                className="font-sans from-gray-900 to-gray-800 shadow-gray-900/10 hover:shadow-gray-900/20 relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg bg-gradient-to-tr text-center align-middle text-xs font-medium uppercase text-white shadow-md transition-all hover:shadow-lg active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                className="font-sans from-gray-900 to-gray-800 shadow-gray-900/10 hover:shadow-gray-900/20 relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg bg-gradient-to-tr text-center align-middle text-xs font-medium uppercase text-white  transition-all hover:shadow-lg active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                 type="button"
                 onClick={deleteFlow(subflow.id)}
               >
                 <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform">
                   <svg
-                    width="24"
-                    height="24"
+                    width="20"
+                    height="20"
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"

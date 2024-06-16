@@ -5,6 +5,7 @@ from pathlib import Path
 import time
 import asyncio
 from prisma import Prisma
+import datetime
 
 router = APIRouter()
 
@@ -51,7 +52,8 @@ async def edit_subflow(flow_json: dict, flow_id : str):
         data={
             "name": name,
             "description": description,
-            "flowjson": flow
+            "flowjson": flow,
+            "updated_at": datetime.datetime.now() 
         }
     ),
     await prisma.disconnect()
