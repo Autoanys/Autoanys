@@ -1120,8 +1120,12 @@ const SubFlowCanva = (editing, flowid) => {
 
             <Controls></Controls>
 
-            <Panel position="bottom-right">
-              Flow ID : {parms.get("flowid") ? parms.get("flowid") : "None"}{" "}
+            <Panel position="bottom-right" className="inline">
+              <p className="font-semibold">
+                {parms.get("flowid")
+                  ? " Flow ID : " + parms.get("flowid")
+                  : "None"}{" "}
+              </p>
             </Panel>
 
             <Panel

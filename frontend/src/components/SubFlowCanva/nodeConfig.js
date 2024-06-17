@@ -90,7 +90,7 @@ const nodeConfigInit = {
   },
   readCSV: {
     label: "Read CSV",
-    category: "CSV",
+    category: "Excel / CSV",
     // api: "/csv/read",
     api: "/upload/read",
     method: "POST",
