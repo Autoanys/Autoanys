@@ -1,5 +1,5 @@
 import React from "react";
-import { getBezierPath, EdgeText, MarkerType } from "reactflow";
+import { getBezierPath } from "reactflow";
 import "reactflow/dist/style.css";
 
 const CustomEdge = ({
@@ -13,12 +13,6 @@ const CustomEdge = ({
   selected = false,
   style = { strokeWidth: 2, stroke: "#FF0072" },
   data,
-  markerEnd = {
-    type: MarkerType.ArrowClosed,
-    width: 20,
-    height: 20,
-    color: "#FF0072",
-  },
 }) => {
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
@@ -39,20 +33,35 @@ const CustomEdge = ({
 
   return (
     <>
+      <svg>
+        <defs>
+          <marker
+            id="downArrow"
+            markerWidth="10"
+            markerHeight="10"
+            refX="5"
+            refY="2"
+            orient="-180deg"
+            markerUnits="strokeWidth"
+          >
+            <polygon points="5,0 10,10 0,10" fill="#FF0072" />
+          </marker>
+        </defs>
+      </svg>
+
       <path
         id={id}
         style={style}
         className="react-flow__edge-path"
         d={edgePath}
-        markerEnd={markerEnd}
+        markerEnd="url(#downArrow)"
       />
-      {/* <EdgeText x={labelX} y={labelY} label={data.label} /> */}
 
       <foreignObject
         width={100}
         height={40}
         x={labelX - 20}
-        y={labelY - 20}
+        y={labelY - 30}
         className="edgebutton-foreignobject"
         requiredExtensions="http://www.w3.org/1999/xhtml"
       >
@@ -63,10 +72,6 @@ const CustomEdge = ({
           >
             ×
           </button>
-
-          {/* <button className="edgebutton" onClick={handleRemove}>
-            ×
-          </button> */}
         </div>
       </foreignObject>
     </>

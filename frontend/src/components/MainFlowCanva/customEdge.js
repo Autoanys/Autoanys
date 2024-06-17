@@ -11,13 +11,13 @@ const CustomEdge = ({
   sourcePosition,
   targetPosition,
   selected = false,
-  style = { strokeWidth: 2, stroke: "#FF0072" },
+  // style = { strokeWidth: 2, stroke: "#FF0072" },
   data,
   markerEnd = {
     type: MarkerType.ArrowClosed,
     width: 20,
     height: 20,
-    color: "#FF0072",
+    // color: "#FF0072",
   },
 }) => {
   const [edgePath, labelX, labelY] = getBezierPath({
