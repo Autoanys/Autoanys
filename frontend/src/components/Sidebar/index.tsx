@@ -120,7 +120,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     <aside
       ref={sidebar}
       className={`w-58 absolute left-0 top-0 z-9999 flex h-screen flex-col overflow-y-hidden bg-slate-50 duration-300 
-      ease-linear dark:bg-slate-900 lg:static lg:translate-x-0 ${
+      ease-linear dark:bg-[#1E1E2F] lg:static lg:translate-x-0 ${
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       }`}
     >
@@ -180,10 +180,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 <li>
                   <Link
                     href={item.link}
-                    className={`gbold group relative flex items-center gap-2.5 rounded-lg px-4 py-4 text-sm font-medium font-semibold text-black duration-300 ease-in-out hover:bg-white hover:shadow-2xl dark:text-blue-600 dark:hover:bg-meta-4 ${
+                    className={`gbold group relative flex items-center gap-2.5 rounded-lg px-4 py-4 text-sm font-medium font-semibold text-black duration-300 ease-in-out hover:bg-white hover:shadow-2xl dark:text-[#FFFFFF] dark:hover:bg-meta-4 ${
                       (pathname === item.link ||
                         (item.link !== "/" && pathname.includes(item.sn))) &&
-                      "bg-white shadow-2xl dark:bg-zinc-200 "
+                      "bg-white shadow-2xl dark:bg-[#2C2C3E] dark:bg-zinc-200 "
                     }`}
                   >
                     {item.icon}

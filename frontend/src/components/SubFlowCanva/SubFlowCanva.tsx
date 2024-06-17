@@ -10,6 +10,7 @@ import ReactFlow, {
   Background,
   useReactFlow,
   useOnSelectionChange,
+  BackgroundVariant,
   Panel,
 } from "reactflow";
 import { getRectOfNodes, getTransformForBounds } from "reactflow";
@@ -675,24 +676,6 @@ const SubFlowCanva = (editing, flowid) => {
 
   const cateConfig = { cate: ["Browser", "General"] };
 
-  // const groupNodesByCategory = (nodes, categories) => {
-  //   const groupedNodes = {};
-  //   categories.forEach((category) => {
-  //     groupedNodes[category] = [];
-  //   });
-
-  //   Object.keys(nodes).forEach((key) => {
-  //     const node = nodes[key];
-  //     if (groupedNodes[node.category]) {
-  //       groupedNodes[node.category].push(node);
-  //     }
-  //   });
-
-  //   return groupedNodes;
-  // };
-
-  // const groupedNodes = groupNodesByCategory(nodeConfig, cateConfig.cate);
-
   const groupByCategory = (nodes) => {
     return nodes.reduce((acc, key) => {
       const category = nodeConfig[key].category || "Uncategorized";
@@ -722,11 +705,15 @@ const SubFlowCanva = (editing, flowid) => {
     <div key={category}>
       <div
         // className="flex cursor-pointer items-center justify-between border-b border-slate-400 px-4 py-2 hover:bg-slate-100"
-        className={`flex cursor-pointer items-center justify-between border-b border-slate-400 px-4 py-2 hover:bg-slate-50 
-        ${collapsedSections[category] ? "" : "bg-slate-50"}`}
+        className={`mt-4 flex cursor-pointer items-center justify-between border-b border-slate-400 px-4 py-2 hover:bg-slate-50 
+        ${collapsedSections[category] ? "" : "bg-slate-50  dark:bg-[#F5F5F5]"}`}
         onClick={() => toggleSection(category)}
       >
-        <span className="text-sm font-medium	 text-black">{category}</span>
+        <span
+          className={`text-sm font-medium	${collapsedSections[category] ? "" : "bg-slate-50  text-black dark:bg-[#F5F5F5]"}`}
+        >
+          {category}
+        </span>
         <span>{collapsedSections[category] ? "⮞" : "⮟"}</span>
       </div>
       {!collapsedSections[category] && (
@@ -734,11 +721,11 @@ const SubFlowCanva = (editing, flowid) => {
           {groupedNodes[category].map((key) => (
             <div
               key={key}
-              className="start mt-2 border border-slate-400"
+              className="start mt-2 border border-slate-400 dark:border-white"
               onDragStart={(event) => onDragStart(event, key)}
               draggable
             >
-              <div className="content flex py-2">
+              <div className="content flex py-2 dark:text-[#F5F5F5] ">
                 <img className="ml-2 h-5 w-5" src={nodeConfig[key].icon} />
                 <p className="pl-2 text-sm">{nodeConfig[key].label}</p>
               </div>
@@ -760,10 +747,23 @@ const SubFlowCanva = (editing, flowid) => {
           {" "}
           Node Label : {nodes.find((n) => n.id == node_id)?.data.label}
         </p>
-        <p className="pb-4  font-medium">
+        <p className="font-medium">
           {" "}
           Node Type : {nodes.find((n) => n.id == node_id)?.type}
         </p>
+        <p className=" font-medium">
+          {" "}
+          Connected :{" "}
+          {edges.find((e) => e.source == node_id)?.target.length > 0
+            ? "True"
+            : "False"}
+        </p>
+        {edges.find((e) => e.source == node_id)?.target.length > 0 && (
+          <p className="pb-4  font-medium">
+            {" "}
+            Connected to : {edges.find((e) => e.source == node_id)?.target}
+          </p>
+        )}
 
         <p>
           {nodes?.find((n) => n.id == node_id)?.data.inputs?.length > 0 &&
@@ -1116,7 +1116,12 @@ const SubFlowCanva = (editing, flowid) => {
             edgeTypes={edgeTypes}
             proOptions={proOptions}
           >
-            <Background />
+            <Background
+              id="2"
+              gap={35}
+              color="#ccc"
+              variant={BackgroundVariant.Lines}
+            />
 
             <Controls></Controls>
 
@@ -1129,13 +1134,13 @@ const SubFlowCanva = (editing, flowid) => {
             </Panel>
 
             <Panel
-              className="items-right flex w-full justify-end gap-1 border-b border-slate-300 bg-white p-0 pt-20"
+              className="items-right flex w-full justify-end gap-1 border-b border-slate-300 bg-white p-0 pt-20 dark:bg-[#1A1A29]"
               position="top-right"
             >
               <div className="mr-auto">
                 <button
                   onClick={onSave}
-                  className={`mb-2 ml-4 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white ${
+                  className={`mb-2 ml-4 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white dark:border-slate-400 dark:text-white	 ${
                     autoSaving ? "cursor-not-allowed" : ""
                   }`}
                 >
@@ -1154,7 +1159,7 @@ const SubFlowCanva = (editing, flowid) => {
 
                 <button
                   onClick={togglePopup}
-                  className={`mb-2 ml-4 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white ${
+                  className={`mb-2 ml-4 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white dark:border-slate-400 dark:text-white ${
                     autoSaving ? "cursor-not-allowed" : ""
                   }`}
                 >
@@ -1165,28 +1170,28 @@ const SubFlowCanva = (editing, flowid) => {
 
               <button
                 onClick={handleAutoLayout}
-                className="mb-2 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white"
+                className="mb-2 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white dark:border-slate-400 dark:text-white"
               >
                 ⏹️ Auto-Layout
               </button>
 
               <button
                 onClick={getFlow}
-                className="mb-2 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white"
+                className="mb-2 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white dark:border-slate-400 dark:text-white"
               >
                 🔣 Variables
               </button>
 
               <button
                 onClick={getFlow}
-                className="mb-2 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white"
+                className="mb-2 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white dark:border-slate-400 dark:text-white"
               >
                 🐞 Debug
               </button>
 
               <button
                 onClick={getFlow}
-                className={`mb-2 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white ${
+                className={`mb-2 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500  hover:text-white dark:border-slate-400 dark:text-white ${
                   playing ? "cursor-not-allowed" : ""
                 }`}
               >
@@ -1202,7 +1207,7 @@ const SubFlowCanva = (editing, flowid) => {
               </button>
               <button
                 onClick={toggleDropdown}
-                className="mb-2 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white"
+                className="mb-2 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white dark:border-slate-400 dark:text-white"
               >
                 📁 Export
               </button>

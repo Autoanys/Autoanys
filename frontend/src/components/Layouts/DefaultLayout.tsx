@@ -20,14 +20,14 @@ export default function DefaultLayout({
         {/* <!-- ===== Sidebar End ===== --> */}
 
         {/* <!-- ===== Content Area Start ===== --> */}
-        <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden bg-white dark:bg-[#222222]">
+        <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden bg-white dark:bg-[#1E1E2F]">
           {/* <!-- ===== Header Start ===== --> */}
           <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
           {/* <!-- ===== Header End ===== --> */}
 
           {/* <!-- ===== Main Content Start ===== --> */}
           <main>
-            <div className="mx-auto max-w-screen-2xl bg-white p-4 dark:bg-zinc-800 md:p-6 2xl:p-10">
+            <div className="mx-auto max-w-screen-2xl bg-white p-4 dark:bg-[#1E1E2F] md:p-6 2xl:p-10">
               {children}
             </div>
           </main>

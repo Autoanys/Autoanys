@@ -241,7 +241,7 @@ const SubflowTable = () => {
       </div> */}
 
       <div className="flex flex-col rounded-t-lg border	border-slate-300 text-black">
-        <div className="grid grid-cols-4 rounded-sm bg-indigo-50 uppercase dark:bg-meta-4 sm:grid-cols-4">
+        <div className="grid grid-cols-4 rounded-sm bg-indigo-50 uppercase dark:bg-white sm:grid-cols-4">
           <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
             <h5 className=" text-sm font-medium xsm:text-sm">
               <b>Flow Name</b>
@@ -313,11 +313,9 @@ const SubflowTable = () => {
                         height="18"
                         viewBox="0 0 1024 1024"
                         xmlns="http://www.w3.org/2000/svg"
+                        className="dark:fill-current"
                       >
-                        <path
-                          fill="#000000"
-                          d="M512 160c320 0 512 352 512 352S832 864 512 864 0 512 0 512s192-352 512-352zm0 64c-225.28 0-384.128 208.064-436.8 288 52.608 79.872 211.456 288 436.8 288 225.28 0 384.128-208.064 436.8-288-52.608-79.872-211.456-288-436.8-288zm0 64a224 224 0 1 1 0 448 224 224 0 0 1 0-448zm0 64a160.192 160.192 0 0 0-160 160c0 88.192 71.744 160 160 160s160-71.808 160-160-71.744-160-160-160z"
-                        />
+                        <path d="M512 160c320 0 512 352 512 352S832 864 512 864 0 512 0 512s192-352 512-352zm0 64c-225.28 0-384.128 208.064-436.8 288 52.608 79.872 211.456 288 436.8 288 225.28 0 384.128-208.064 436.8-288-52.608-79.872-211.456-288-436.8-288zm0 64a224 224 0 1 1 0 448 224 224 0 0 1 0-448zm0 64a160.192 160.192 0 0 0-160 160c0 88.192 71.744 160 160 160s160-71.808 160-160-71.744-160-160-160z" />
                       </svg>
                     </span>
                   </button>
@@ -337,13 +335,12 @@ const SubflowTable = () => {
                           width="20"
                           height="20"
                           viewBox="0 0 24 24"
-                          fill="none"
+                          className="dark:fill-current"
                         >
                           <path
                             fill-rule="evenodd"
                             clip-rule="evenodd"
                             d="M8.56078 20.2501L20.5608 8.25011L15.7501 3.43945L3.75012 15.4395V20.2501H8.56078ZM15.7501 5.56077L18.4395 8.25011L16.5001 10.1895L13.8108 7.50013L15.7501 5.56077ZM12.7501 8.56079L15.4395 11.2501L7.93946 18.7501H5.25012L5.25012 16.0608L12.7501 8.56079Z"
-                            fill="#080341"
                           />
                         </svg>
                       </span>
@@ -361,14 +358,10 @@ const SubflowTable = () => {
                         height="20"
                         viewBox="0 0 16 16"
                         xmlns="http://www.w3.org/2000/svg"
-                        fill="#000000"
+                        className="dark:fill-current"
                       >
                         <path d="M2.78 2L2 2.41v12l.78.42 9-6V8l-9-6zM3 13.48V3.35l7.6 5.07L3 13.48z" />
-                        <path
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
-                          d="M6 14.683l8.78-5.853V8L6 2.147V3.35l7.6 5.07L6 13.48v1.203z"
-                        />
+                        <path d="M6 14.683l8.78-5.853V8L6 2.147V3.35l7.6 5.07L6 13.48v1.203z" />
                       </svg>
                     </span>
                   </button>
@@ -386,11 +379,12 @@ const SubflowTable = () => {
                     height="20"
                     viewBox="0 0 24 24"
                     fill="none"
+                    className="dark:fill-red"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
                       d="M17.0038 17.9792L18.7155 8.56456C18.8322 7.9227 18.8906 7.60178 18.7282 7.51633C18.5659 7.43088 18.3344 7.66067 17.8714 8.12025L16.985 9L12 10L6.99621 9L6.13263 8.13478C5.66847 7.66974 5.43639 7.43722 5.27345 7.5225C5.1105 7.60778 5.16927 7.931 5.28681 8.57744L6.99621 17.9792C6.99868 17.9927 7.00522 18.0052 7.01497 18.015C9.76813 20.7681 14.2319 20.7681 16.985 18.015C16.9948 18.0052 17.0013 17.9927 17.0038 17.9792Z"
-                      fill="#2A4157"
+                      className="fill-current"
                       fill-opacity="0.24"
                     />
                     <ellipse

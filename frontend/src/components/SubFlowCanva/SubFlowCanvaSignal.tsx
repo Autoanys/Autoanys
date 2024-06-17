@@ -631,7 +631,6 @@ const SubFlowCanva = (editing, flowid) => {
   const nodeDivs = Object.keys(groupedNodes).map((category) => (
     <div key={category}>
       <div
-        // className="flex cursor-pointer items-center justify-between border-b border-slate-400 px-4 py-2 hover:bg-slate-100"
         className={`flex cursor-pointer items-center justify-between border-b border-slate-400 px-4 py-2 hover:bg-slate-50 
         ${collapsedSections[category] ? "" : "bg-slate-50"}`}
         onClick={() => toggleSection(category)}
@@ -644,11 +643,11 @@ const SubFlowCanva = (editing, flowid) => {
           {groupedNodes[category].map((key) => (
             <div
               key={key}
-              className="start mt-2 border border-slate-400"
+              className="start mt-2 border border-slate-400 "
               onDragStart={(event) => onDragStart(event, key)}
               draggable
             >
-              <div className="content flex py-2">
+              <div className="content flex py-2 dark:bg-white">
                 <img className="ml-2 h-5 w-5" src={nodeConfig[key].icon} />
                 <p className="pl-2 text-sm">{nodeConfig[key].label}</p>
               </div>
