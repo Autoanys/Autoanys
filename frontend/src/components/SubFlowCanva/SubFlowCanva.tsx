@@ -138,6 +138,7 @@ const SubFlowCanva = (editing, flowid) => {
   const [currentResult, setCurrentResult] = useState([]);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [popupImage, setPopupImage] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     setVariables(variableConfig);
@@ -152,6 +153,10 @@ const SubFlowCanva = (editing, flowid) => {
       ...prev,
       [category]: !prev[category],
     }));
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value.toLowerCase());
   };
 
   const parms = useSearchParams();
@@ -701,7 +706,21 @@ const SubFlowCanva = (editing, flowid) => {
     initialCollapsedState,
   );
 
-  const nodeDivs = Object.keys(groupedNodes).map((category) => (
+  const filteredNodes = Object.keys(groupedNodes).reduce((acc, category) => {
+    const filteredItems = groupedNodes[category].filter(
+      (key) =>
+        nodeConfig[key].label.toLowerCase().includes(searchTerm) ||
+        category.toLowerCase().includes(searchTerm),
+    );
+
+    if (filteredItems.length > 0) {
+      acc[category] = filteredItems;
+    }
+
+    return acc;
+  }, {});
+
+  const nodeDivs = Object.keys(filteredNodes).map((category) => (
     <div key={category}>
       <div
         // className="flex cursor-pointer items-center justify-between border-b border-slate-400 px-4 py-2 hover:bg-slate-100"
@@ -1075,10 +1094,11 @@ const SubFlowCanva = (editing, flowid) => {
                   </div>
 
                   <input
-                    className="text-gray-700 peer h-full w-full pr-2 text-sm outline-none"
+                    className=" peer h-full w-full pr-2 text-sm outline-none"
                     type="text"
                     id="search"
                     placeholder="Search flow blocks"
+                    onChange={handleSearchChange}
                   />
                 </div>
               </div>
@@ -1116,12 +1136,7 @@ const SubFlowCanva = (editing, flowid) => {
             edgeTypes={edgeTypes}
             proOptions={proOptions}
           >
-            <Background
-              id="2"
-              gap={35}
-              color="#ccc"
-              variant={BackgroundVariant.Lines}
-            />
+            <Background id="2" color="#ccc" variant={BackgroundVariant.Lines} />
 
             <Controls></Controls>
 

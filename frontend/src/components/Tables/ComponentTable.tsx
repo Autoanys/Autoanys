@@ -144,29 +144,32 @@ const ComponentTable = () => {
         Custom Components
       </h4>
 
-      <div className="flex flex-col">
-        <div className="grid grid-cols-4 rounded-sm dark:bg-meta-4 sm:grid-cols-4">
-          <div className="xl:bt-5 pl-2.5 pt-5  xl:pb-2.5 xl:pl-2.5">
-            <h5 className=" text-sm font-medium xsm:text-base">
+      <div className="flex flex-col rounded-t-lg border	border-slate-300 text-black">
+        <div className="grid grid-cols-4 rounded-sm bg-indigo-50 uppercase dark:bg-white sm:grid-cols-4">
+          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+            <h5 className=" text-sm font-medium xsm:text-sm">
               <b>Component Name</b>
             </h5>
           </div>
 
-          <div className="xl:bt-5 pl-2.5 pt-5  xl:pb-2.5 xl:pl-2.5">
-            <h5 className="text-sm font-medium  xsm:text-base">
+          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+            {" "}
+            <h5 className=" text-sm font-medium xsm:text-sm">
               <b>Component ID</b>
             </h5>
           </div>
 
-          <div className="xl:bt-5 pl-2.5 pt-5  xl:pb-2.5 xl:pl-2.5">
-            <h5 className="text-sm font-medium  xsm:text-base">
+          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+            {" "}
+            <h5 className=" text-sm font-medium xsm:text-sm">
               <b>Component Description</b>
             </h5>
           </div>
 
-          <div className="xl:bt-5 pl-2.5 pt-5  xl:pb-2.5 xl:pl-2.5">
-            <h5 className="text-sm font-medium  xsm:text-base">
-              <b>Actions</b>
+          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+            {" "}
+            <h5 className=" text-sm font-medium xsm:text-sm">
+              <b>Actions (V/E/P/D)</b>
             </h5>
           </div>
         </div>
