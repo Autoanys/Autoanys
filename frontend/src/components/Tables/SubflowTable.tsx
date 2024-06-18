@@ -269,7 +269,7 @@ const SubflowTable = () => {
 
         {currentSubflows.map((subflow, index) => (
           <div
-            className={`grid grid-cols-4 sm:grid-cols-4 ${
+            className={`grid grid-cols-4 hover:bg-orange-50 sm:grid-cols-4 ${
               index === subflows.length - 1
                 ? ""
                 : "border-b border-stroke dark:border-strokedark"

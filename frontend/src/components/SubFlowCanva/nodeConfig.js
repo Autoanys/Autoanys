@@ -128,6 +128,25 @@ const nodeConfigInit = {
       },
     ],
   },
+  ifCondition: {
+    label: "IF Else Condition",
+    category: "General",
+    api: "null",
+    method: "POST",
+    description: "If condition",
+    doc: "",
+    icon: "/images/nodes/if_icon.png",
+    inputs: [
+      {
+        type: "text",
+        label: "Condition",
+        id: "text",
+        placeholder: "Submit Condition",
+        required: true,
+        value: "",
+      },
+    ],
+  },
 };
 
 export default nodeConfigInit;

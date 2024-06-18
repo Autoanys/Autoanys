@@ -1,8 +1,9 @@
 "use client";
-import React, { useState, ReactNode } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import Flowbar from "@/components/FlowBar";
+import { useHotkeys } from "react-hotkeys-hook";
 
 export default function DefaultLayout({
   children,
@@ -10,6 +11,37 @@ export default function DefaultLayout({
   children: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isPromptVisible, setIsPromptVisible] = useState(false);
+  const inputRef = useRef(null);
+
+  useHotkeys("ctrl+k, cmd+k", (event) => {
+    event.preventDefault();
+    inputRef.current.focus();
+    setIsPromptVisible(true);
+  });
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (inputRef.current && !inputRef.current.contains(event.target)) {
+        setIsPromptVisible(false);
+      }
+    };
+
+    const handleEsc = (event) => {
+      if (event.key === "Escape") {
+        setIsPromptVisible(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEsc);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEsc);
+    };
+  }, []);
+
   return (
     <>
       {/* <!-- ===== Page Wrapper Start ===== --> */}
@@ -23,6 +55,24 @@ export default function DefaultLayout({
         <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden bg-white dark:bg-[#1E1E2F]">
           {/* <!-- ===== Header Start ===== --> */}
           <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+          {/* <div className="relative">
+            <input
+              type="text"
+              placeholder="Type to search..."
+              className="w-full bg-white p-2 pl-12 pr-4 font-medium focus:outline-none xl:w-125"
+              ref={inputRef}
+              onFocus={() => setIsPromptVisible(true)}
+            />
+            <div className="text-gray-500 absolute right-4 top-1/2 -translate-y-1/2 transform">
+              {navigator.platform.includes("Mac") ? "⌘+K" : "Ctrl+K"}
+            </div>
+            {isPromptVisible && (
+              <div className="border-gray-300 absolute left-0 top-full z-10 w-full border bg-white p-4 shadow-lg">
+                <p className="text-gray-700">Search Prompt...</p>
+              </div>
+            )}
+          </div> */}
+
           {/* <!-- ===== Header End ===== --> */}
 
           {/* <!-- ===== Main Content Start ===== --> */}

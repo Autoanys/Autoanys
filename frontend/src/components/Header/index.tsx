@@ -1,9 +1,8 @@
 import Link from "next/link";
 import DarkModeSwitcher from "./DarkModeSwitcher";
-import DropdownMessage from "./DropdownMessage";
-import DropdownNotification from "./DropdownNotification";
-import DropdownUser from "./DropdownUser";
+
 import Image from "next/image";
+import { useHotkeys } from "react-hotkeys-hook";
 
 const Header = (props: {
   sidebarOpen: string | boolean | undefined;
@@ -13,7 +12,6 @@ const Header = (props: {
     <header className="sticky top-0 z-999 flex w-full bg-slate-50	 drop-shadow-1 dark:bg-[#1A1A29] dark:drop-shadow-none">
       <div className="flex flex-grow items-center justify-between px-4 py-4 shadow-2 md:px-6 2xl:px-11">
         <div className="flex items-center gap-2 sm:gap-4 lg:hidden">
-          {/* <!-- Hamburger Toggle BTN --> */}
           <button
             aria-controls="sidebar"
             onClick={(e) => {
@@ -54,14 +52,12 @@ const Header = (props: {
               </span>
             </span>
           </button>
-          {/* <!-- Hamburger Toggle BTN --> */}
 
           <Link className="block flex-shrink-0 lg:hidden" href="/">
             <Image
               width={32}
               height={32}
               src={"/images/logo/logo-icon.svg"}
-              //src={"/images/logo/newLogo.png"}
               alt="Logo"
             />
           </Link>
@@ -117,25 +113,12 @@ const Header = (props: {
               />
             </a>
 
-            {/* <!-- Dark Mode Toggler --> */}
             <DarkModeSwitcher />
-            {/* <!-- Dark Mode Toggler --> */}
 
             <div className="cursor-pointer rounded-lg bg-green-600 px-2 py-1 text-white">
               Community
             </div>
-
-            {/* <!-- Notification Menu Area --> */}
-            {/* <DropdownNotification /> */}
-            {/* <!-- Notification Menu Area --> */}
-
-            {/* <!-- Chat Notification Area --> */}
-            {/* <DropdownMessage /> */}
-            {/* <!-- Chat Notification Area --> */}
           </ul>
-          {/* <!-- User Area --> */}
-          {/* <DropdownUser /> */}
-          {/* <!-- User Area --> */}
         </div>
       </div>
     </header>

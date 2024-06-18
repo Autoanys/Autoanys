@@ -183,7 +183,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     className={`gbold group relative flex items-center gap-2.5 rounded-lg px-4 py-4 text-sm font-medium font-semibold text-black duration-300 ease-in-out hover:bg-white hover:shadow-2xl dark:text-[#FFFFFF] dark:hover:bg-meta-4 ${
                       (pathname === item.link ||
                         (item.link !== "/" && pathname.includes(item.sn))) &&
-                      "bg-white shadow-2xl dark:bg-[#2C2C3E] dark:bg-zinc-200 "
+                      "bg-white shadow-2xl dark:bg-[#2C2C3E]  "
                     }`}
                   >
                     {item.icon}

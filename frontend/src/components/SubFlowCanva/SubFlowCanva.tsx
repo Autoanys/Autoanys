@@ -26,7 +26,7 @@ import "reactflow/dist/style.css";
 import "./styles.css"; // Import the CSS file
 import { startNode, endNode } from "./InitNodes";
 import { usePathname } from "next/navigation";
-import { CustomNode } from "./CustomNodes";
+import { CustomNode, IfElseNode } from "./CustomNodes";
 import { WaitSecondNode } from "./GeneralNodes";
 import GenericNode from "./GenericNode";
 import nodeConfigInit from "./nodeConfig";
@@ -254,7 +254,7 @@ const SubFlowCanva = (editing, flowid) => {
   const nodeTypes = useMemo(() => ({ ...nodeTypesInit }), []);
 
   Object.keys(nodeConfig).forEach((key) => {
-    nodeTypes[key] = CustomNode;
+    nodeTypes[key] = "ifCondition" ? IfElseNode : CustomNode;
   });
 
   useEffect(() => {
@@ -1382,7 +1382,6 @@ const SubFlowCanva = (editing, flowid) => {
                 <div className="slider-content">
                   {currentResult[currentIndex]?.type === "text" && (
                     <div>
-                      <button class>OK</button>
                       <p>{currentResult[currentIndex].value}</p>
                     </div>
                   )}

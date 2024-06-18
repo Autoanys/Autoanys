@@ -81,14 +81,14 @@ async def all_subflow():
     await prisma.connect()
 
     flow_data = await prisma.subflow.find_many(order={
-        "updated_at": "desc"
+        "updated_at": "asc"
     })
 
     await prisma.disconnect()
     return {"message": f"All subflow rendered", "data" : flow_data}
 
 @router.get("/subflow/flowid/{flow_id}")
-async def all_subflow(flow_id : str):
+async def specific_subflow(flow_id : str):
     prisma = Prisma()
     await prisma.connect()
 
