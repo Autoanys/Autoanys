@@ -12,7 +12,7 @@ import ReactFlow, {
   useOnSelectionChange,
   Panel,
 } from "reactflow";
-import { getRectOfNodes, getTransformForBounds } from "reactflow";
+import { getNodesBounds, getTransformForBounds } from "reactflow";
 import { Dropzone, FileMosaic } from "@files-ui/react";
 import { saveSubFlow } from "@/lib/saveSubFlow";
 import "reactflow/dist/style.css";
@@ -633,7 +633,7 @@ const MainFlowCanva = (editing, flowid) => {
 
   const { getNodes } = useReactFlow();
   const exportImage = () => {
-    const nodesBounds = getRectOfNodes(getNodes());
+    const nodesBounds = getNodesBounds(getNodes());
     const transform = getTransformForBounds(
       nodesBounds,
       imageWidth,
@@ -730,7 +730,7 @@ const MainFlowCanva = (editing, flowid) => {
     </div>
   ));
 
-  const rectOfNodes = getRectOfNodes(nodes);
+  const rectOfNodes = getNodesBounds(nodes);
 
   const editForm = (node_id) => {
     const node = JSON.stringify(nodes.find((n) => n.id == node_id));

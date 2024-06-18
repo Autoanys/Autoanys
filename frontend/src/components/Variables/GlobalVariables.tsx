@@ -31,6 +31,9 @@ const builtInVariables = [
 const GlobalVariables: React.FC = () => {
   return (
     <div className="mb-4 ">
+      <p className="text-gray-800 text-md mb-2 font-semibold">
+        Built-in Variables :
+      </p>
       {builtInVariables.map((variable) => (
         <span
           title={variable.description}

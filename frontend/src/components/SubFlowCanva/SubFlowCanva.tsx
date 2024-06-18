@@ -1,5 +1,11 @@
 "use client";
-import React, { useState, useRef, useCallback, useEffect, use } from "react";
+import React, {
+  useState,
+  useRef,
+  useCallback,
+  useEffect,
+  useMemo,
+} from "react";
 import ReactFlow, {
   addEdge,
   applyEdgeChanges,
@@ -13,14 +19,14 @@ import ReactFlow, {
   BackgroundVariant,
   Panel,
 } from "reactflow";
-import { getRectOfNodes, getTransformForBounds } from "reactflow";
+import { getNodesBounds, getTransformForBounds } from "reactflow";
 import { Dropzone, FileMosaic } from "@files-ui/react";
 import { saveSubFlow } from "@/lib/saveSubFlow";
 import "reactflow/dist/style.css";
 import "./styles.css"; // Import the CSS file
 import { startNode, endNode } from "./InitNodes";
 import { usePathname } from "next/navigation";
-import { InputNode, DefaultNode, OutputNode, CustomNode } from "./CustomNodes";
+import { CustomNode } from "./CustomNodes";
 import { WaitSecondNode } from "./GeneralNodes";
 import GenericNode from "./GenericNode";
 import nodeConfigInit from "./nodeConfig";
@@ -123,13 +129,28 @@ const SubFlowCanva = (editing, flowid) => {
   const variablePopupRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [exportDropdownOpen, setExportDropdownOpen] = useState(false);
-  const [customVariables, setCustomVariables] = useState([]);
+  const [customVariables, setCustomVariables] = useState([{ id: 1, key: "" }]);
 
-  const handleCustomVariableChange = (newValue: string) => {
-    setCustomVariables((prevState) => ({
-      ...prevState,
-      key: newValue,
-    }));
+  const handleCustomVariableChange = (id: number, newValue: string) => {
+    setCustomVariables((prevVariables) =>
+      prevVariables.map((variable) =>
+        variable.id === id ? { ...variable, key: newValue } : variable,
+      ),
+    );
+  };
+
+  const handleAddVariable = () => {
+    const newId =
+      customVariables.length > 0
+        ? Math.max(...customVariables.map((v) => v.id)) + 1
+        : 1;
+    setCustomVariables([...customVariables, { id: newId, key: "" }]);
+  };
+
+  const handleDeleteVariable = (id: number) => {
+    setCustomVariables(
+      customVariables.filter((variable) => variable.id !== id),
+    );
   };
 
   const toggleDropdown = () => {
@@ -230,7 +251,8 @@ const SubFlowCanva = (editing, flowid) => {
     end: endNode,
   };
 
-  const nodeTypes = { ...nodeTypesInit };
+  const nodeTypes = useMemo(() => ({ ...nodeTypesInit }), []);
+
   Object.keys(nodeConfig).forEach((key) => {
     nodeTypes[key] = CustomNode;
   });
@@ -688,7 +710,7 @@ const SubFlowCanva = (editing, flowid) => {
 
   const { getNodes } = useReactFlow();
   const exportImage = () => {
-    const nodesBounds = getRectOfNodes(getNodes());
+    const nodesBounds = getNodesBounds(getNodes());
     const transform = getTransformForBounds(
       nodesBounds,
       imageWidth,
@@ -789,7 +811,7 @@ const SubFlowCanva = (editing, flowid) => {
     console.log(e.target.id);
   };
 
-  const rectOfNodes = getRectOfNodes(nodes);
+  const rectOfNodes = getNodesBounds(nodes);
 
   const editForm = (node_id) => {
     const node = JSON.stringify(nodes.find((n) => n.id == node_id));
@@ -1510,40 +1532,32 @@ const SubFlowCanva = (editing, flowid) => {
               </div>
 
               <GlobalVariables />
-              <CustomVariables
-                customVariables={customVariables}
-                onChangeValue={handleCustomVariableChange}
-              />
 
-              <div className="mb-4">
-                <label
-                  className="text-gray-700 mb-2 block text-sm font-bold"
-                  htmlFor="flow_description"
-                >
-                  Flow Description :
-                </label>
-                <textarea
-                  className="text-gray-900 focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight shadow focus:outline-none"
-                  id="flow_description"
-                  placeholder="Flow Description"
-                  defaultValue={flowDescription}
-                  rows="5"
-                ></textarea>
-              </div>
+              {customVariables.map((variable) => (
+                <CustomVariables
+                  key={variable.id}
+                  customVariables={variable}
+                  onChangeValue={(newValue) =>
+                    handleCustomVariableChange(variable.id, newValue)
+                  }
+                  onDelete={() => handleDeleteVariable(variable.id)}
+                />
+              ))}
+
+              <button
+                className="mb-3 mt-1 w-full rounded bg-indigo-500 px-4 py-2 font-semibold text-white hover:bg-indigo-600"
+                onClick={handleAddVariable}
+              >
+                Add More Variables
+              </button>
 
               <div className="flex items-center justify-between">
                 <button
-                  className="focus:shadow-outline rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700 focus:outline-none"
-                  type="submit"
-                >
-                  Save
-                </button>
-                <button
-                  className="bg-red-500 hover:bg-red-700 focus:shadow-outline rounded px-4 py-2 font-bold text-white focus:outline-none"
-                  onClick={togglePopup}
+                  className="hover:bg-red-300 focus:shadow-outline rounded bg-rose-500 px-4 py-2 font-bold text-white focus:outline-none"
+                  onClick={toggleVariablePopup}
                   type="button"
                 >
-                  Close
+                  Save & Close
                 </button>
               </div>
             </form>

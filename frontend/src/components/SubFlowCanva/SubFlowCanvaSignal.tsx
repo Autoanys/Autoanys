@@ -12,14 +12,14 @@ import ReactFlow, {
   useOnSelectionChange,
   Panel,
 } from "reactflow";
-import { getRectOfNodes, getTransformForBounds } from "reactflow";
+import { getNodesBounds, getTransformForBounds } from "reactflow";
 import { Dropzone, FileMosaic } from "@files-ui/react";
 import { saveSubFlow } from "@/lib/saveSubFlow";
 import "reactflow/dist/style.css";
 import "./styles.css"; // Import the CSS file
 import { startNode, endNode } from "./InitNodes";
 import { usePathname } from "next/navigation";
-import { InputNode, DefaultNode, OutputNode, CustomNode } from "./CustomNodes";
+import { CustomNode } from "./CustomNodes";
 import { WaitSecondNode } from "./GeneralNodes";
 import GenericNode from "./GenericNode";
 import nodeConfigInit from "./nodeConfig";
@@ -124,6 +124,26 @@ const showNotification = signal({
   message: "",
 });
 
+const nodeConfig = addOnChangeToNodeConfig(nodeConfigInit, handleNodeChange);
+
+const nodeTypesInit = {
+  start: startNode,
+  end: endNode,
+};
+
+const nodeTypes = { ...nodeTypesInit };
+Object.keys(nodeConfig).forEach((key) => {
+  nodeTypes[key] = CustomNode;
+});
+
+const handleNodeChange = (id, newValue) => {
+  nodes.value = nodes.value.map((node) =>
+    node.id === id
+      ? { ...node, data: { ...node.data, value: newValue } }
+      : node,
+  );
+};
+
 const SubFlowCanva = (editing, flowid) => {
   const popupRef = useRef(null);
 
@@ -147,16 +167,6 @@ const SubFlowCanva = (editing, flowid) => {
   const updateFiles = (incommingFiles) => {
     files.value = incommingFiles;
   };
-
-  const handleNodeChange = (id, newValue) => {
-    nodes.value = nodes.value.map((node) =>
-      node.id === id
-        ? { ...node, data: { ...node.data, value: newValue } }
-        : node,
-    );
-  };
-
-  const nodeConfig = addOnChangeToNodeConfig(nodeConfigInit, handleNodeChange);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -185,16 +195,6 @@ const SubFlowCanva = (editing, flowid) => {
       return node;
     });
   };
-
-  const nodeTypesInit = {
-    start: startNode,
-    end: endNode,
-  };
-
-  const nodeTypes = { ...nodeTypesInit };
-  Object.keys(nodeConfig).forEach((key) => {
-    nodeTypes[key] = CustomNode;
-  });
 
   useEffect(() => {
     if (editing && flowid) {
@@ -580,7 +580,7 @@ const SubFlowCanva = (editing, flowid) => {
 
   const { getNodes } = useReactFlow();
   const exportImage = () => {
-    const nodesBounds = getRectOfNodes(getNodes());
+    const nodesBounds = getNodesBounds(getNodes());
     const transform = getTransformForBounds(
       nodesBounds,
       imageWidth,
@@ -658,7 +658,7 @@ const SubFlowCanva = (editing, flowid) => {
     </div>
   ));
 
-  const rectOfNodes = getRectOfNodes(nodes.value);
+  const rectOfNodes = getNodesBounds(nodes.value);
 
   const editForm = (node_id) => {
     const node = JSON.stringify(nodes.value.find((n) => n.id == node_id));
