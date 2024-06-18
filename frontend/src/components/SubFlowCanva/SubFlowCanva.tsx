@@ -55,6 +55,8 @@ import {
   signal,
 } from "@preact/signals";
 import crypto from "crypto";
+import GlobalVariables from "../Variables/GlobalVariables";
+import CustomVariables from "../Variables/CustomVariables";
 
 const proOptions = { hideAttribution: true };
 const addOnChangeToNodeConfig = (config, handleChange) => {
@@ -118,8 +120,17 @@ const SubFlowCanva = (editing, flowid) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isVariablePopupOpen, setIsVariablePopupOpen] = useState(false);
   const popupRef = useRef(null);
+  const variablePopupRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [exportDropdownOpen, setExportDropdownOpen] = useState(false);
+  const [customVariables, setCustomVariables] = useState([]);
+
+  const handleCustomVariableChange = (newValue: string) => {
+    setCustomVariables((prevState) => ({
+      ...prevState,
+      key: newValue,
+    }));
+  };
 
   const toggleDropdown = () => {
     setExportDropdownOpen(!exportDropdownOpen);
@@ -146,6 +157,10 @@ const SubFlowCanva = (editing, flowid) => {
 
   const togglePopup = () => {
     setIsPopupOpen(!isPopupOpen);
+  };
+
+  const toggleVariablePopup = () => {
+    setIsVariablePopupOpen(!isVariablePopupOpen);
   };
 
   const toggleSection = (category) => {
@@ -181,9 +196,15 @@ const SubFlowCanva = (editing, flowid) => {
       if (popupRef.current && !popupRef.current.contains(event.target)) {
         setIsPopupOpen(false);
       }
+      if (
+        variablePopupRef.current &&
+        !variablePopupRef.current.contains(event.target)
+      ) {
+        setIsVariablePopupOpen(false);
+      }
     };
 
-    if (isPopupOpen) {
+    if (isPopupOpen || isVariablePopupOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     } else {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -192,7 +213,7 @@ const SubFlowCanva = (editing, flowid) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isPopupOpen]);
+  }, [isPopupOpen, isVariablePopupOpen]);
 
   const addOnChangeHandler = (nodes) => {
     return nodes.map((node) => {
@@ -334,6 +355,15 @@ const SubFlowCanva = (editing, flowid) => {
     }
     return true;
   }, [nodes]);
+
+  const customVariablesOnChange = (id, value) => {
+    console.log("Custom Variables On Change", id, value);
+    setCustomVariables((prev) => {
+      return prev.map((variable) =>
+        variable.id === id ? { ...variable, value } : variable,
+      );
+    });
+  };
 
   useEffect(() => {
     setPlayingPreviewSideBar(false);
@@ -755,6 +785,10 @@ const SubFlowCanva = (editing, flowid) => {
     </div>
   ));
 
+  const chooseInputMethod = (e) => {
+    console.log(e.target.id);
+  };
+
   const rectOfNodes = getRectOfNodes(nodes);
 
   const editForm = (node_id) => {
@@ -792,6 +826,24 @@ const SubFlowCanva = (editing, flowid) => {
                 return (
                   <div>
                     <span className="font-medium">{input.label}</span>
+                    {/* <span className="ml-2">
+                      <button
+                        id={`${node_id}-${input.label}-static`}
+                        className="rounded-l-lg border border-black pl-1 pr-1"
+                        onClick={(e) => chooseInputMethod(e)}
+                      >
+                        Static{" "}
+                      </button>
+                      <button
+                        id={`${node_id}-${input.label}-variable`}
+                        className="rounded-r-lg border border-black pl-1 pr-1
+
+"
+                        onClick={(e) => chooseInputMethod(e)}
+                      >
+                        Variable{" "}
+                      </button>
+                    </span> */}
                     {input.type === "select" ? (
                       <select
                         id={`${node_id}-${input.label}`}
@@ -1136,7 +1188,7 @@ const SubFlowCanva = (editing, flowid) => {
             edgeTypes={edgeTypes}
             proOptions={proOptions}
           >
-            <Background id="2" color="#ccc" variant={BackgroundVariant.Lines} />
+            <Background id="2" color="#ccc" />
 
             <Controls></Controls>
 
@@ -1191,7 +1243,7 @@ const SubFlowCanva = (editing, flowid) => {
               </button>
 
               <button
-                onClick={getFlow}
+                onClick={toggleVariablePopup}
                 className="mb-2 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white dark:border-slate-400 dark:text-white"
               >
                 🔣 Variables
@@ -1307,7 +1359,10 @@ const SubFlowCanva = (editing, flowid) => {
               <div className="slider">
                 <div className="slider-content">
                   {currentResult[currentIndex]?.type === "text" && (
-                    <p>{currentResult[currentIndex].value}</p>
+                    <div>
+                      <button class>OK</button>
+                      <p>{currentResult[currentIndex].value}</p>
+                    </div>
                   )}
                   {currentResult[currentIndex]?.type === "image" && (
                     <img
@@ -1374,12 +1429,14 @@ const SubFlowCanva = (editing, flowid) => {
             <h2 className="mb-4 text-xl font-semibold">Workflow Setting</h2>
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label
-                  className="text-gray-700 mb-2 block text-sm font-bold"
-                  htmlFor="website-url"
-                >
-                  Node ID : {parms}
-                </label>
+                {parms.get("flowid") && (
+                  <label
+                    className="text-gray-700 mb-2 block text-sm font-bold"
+                    htmlFor="website-url"
+                  >
+                    Node ID : {parms}
+                  </label>
+                )}
               </div>
               <div className="mb-4">
                 <label
@@ -1439,31 +1496,24 @@ const SubFlowCanva = (editing, flowid) => {
             ref={variablePopupRef}
             className="w-2/5 rounded bg-white p-6 shadow-lg"
           >
-            <h2 className="mb-4 text-xl font-semibold">Workflow Setting</h2>
+            <h2 className="mb-4 text-xl font-semibold">Variable Setting</h2>
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label
-                  className="text-gray-700 mb-2 block text-sm font-bold"
-                  htmlFor="website-url"
-                >
-                  Node ID : {parms}
-                </label>
+                {parms.get("flowid") && (
+                  <label
+                    className="text-gray-700 mb-2 block text-sm font-bold"
+                    htmlFor="website-url"
+                  >
+                    Node ID : {parms}
+                  </label>
+                )}
               </div>
-              <div className="mb-4">
-                <label
-                  className="text-gray-700 mb-2 block text-sm font-bold"
-                  htmlFor="website-parm"
-                >
-                  Flow Name :
-                </label>
-                <input
-                  className="text-gray-900 focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight shadow focus:outline-none"
-                  id="flow_name"
-                  type="text"
-                  placeholder="Flow name"
-                  defaultValue={flowKeys}
-                />
-              </div>
+
+              <GlobalVariables />
+              <CustomVariables
+                customVariables={customVariables}
+                onChangeValue={handleCustomVariableChange}
+              />
 
               <div className="mb-4">
                 <label
