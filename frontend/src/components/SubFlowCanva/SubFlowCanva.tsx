@@ -254,7 +254,7 @@ const SubFlowCanva = (editing, flowid) => {
   const nodeTypes = useMemo(() => ({ ...nodeTypesInit }), []);
 
   Object.keys(nodeConfig).forEach((key) => {
-    nodeTypes[key] = "ifCondition" ? IfElseNode : CustomNode;
+    nodeTypes[key] = CustomNode;
   });
 
   useEffect(() => {
