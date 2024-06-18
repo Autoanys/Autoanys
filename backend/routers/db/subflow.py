@@ -57,7 +57,7 @@ async def edit_subflow(flow_json: dict, flow_id : str):
         }
     ),
     await prisma.disconnect()
-    return {"message": f"Slept for OK seconds"}
+    return {"message": f"Subflow {flow_id} updated successfully", "data" : flow_data.id}
 
 @router.get("/subflow/delete/{flow_id}")
 async def delete_subflow(flow_id : str):
@@ -71,7 +71,7 @@ async def delete_subflow(flow_id : str):
         }
     ),
     await prisma.disconnect()
-    return {"message": f"Slept for OK seconds"}
+    return {"message": f"Subflow {flow_id} deleted successfully"}
 
 
 
@@ -80,10 +80,12 @@ async def all_subflow():
     prisma = Prisma()
     await prisma.connect()
 
-    flow_data = await prisma.subflow.find_many()
+    flow_data = await prisma.subflow.find_many(order={
+        "updated_at": "desc"
+    })
 
     await prisma.disconnect()
-    return {"message": f"Slept for OK seconds", "data" : flow_data}
+    return {"message": f"All subflow rendered", "data" : flow_data}
 
 @router.get("/subflow/flowid/{flow_id}")
 async def all_subflow(flow_id : str):
@@ -93,5 +95,5 @@ async def all_subflow(flow_id : str):
     flow_data = await prisma.subflow.find_unique( where = {"id": flow_id})
 
     await prisma.disconnect()
-    return {"message": f"Slept for OK seconds", "data" : flow_data}
+    return {"message": f"Subflow {flow_id} rendered", "data" : flow_data}
 
