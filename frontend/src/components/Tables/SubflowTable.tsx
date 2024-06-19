@@ -10,6 +10,7 @@ import {
 import { Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/solid";
 import { Fragment } from "react";
+import crypto from "crypto";
 
 const SubflowTable = () => {
   const [subflows, setSubflows] = useState([]);
@@ -52,61 +53,130 @@ const SubflowTable = () => {
     return `${formattedDate}, ${formattedTime}`;
   }
 
-  const getFlow = (flow_id) => {
-    return async () => {
-      try {
-        let post_data = await fetch(
-          process.env.NEXT_PUBLIC_BACKEND_URL + "/subflow/flowid/" + flow_id,
+  const triggerID = crypto.randomBytes(8).toString("hex");
+  let type = "Playground";
+  let result = "Success";
+
+  const getFlow = async (flow_id) => {
+    let logData = {
+      trigger_id: triggerID,
+      flow_id: flow_id,
+      type: type,
+      result: result,
+    };
+
+    try {
+      let post_data = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_URL + "/subflow/flowid/" + flow_id,
+        {
+          method: "GET",
+        },
+      );
+
+      post_data = await post_data.json();
+
+      const res = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_URL + "/flow/v2",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: post_data.data.flowjson,
+        },
+      );
+
+      const logRes = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_URL + "/logs/write/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(logData),
+        },
+      );
+
+      console.log("TGhis is post_data", post_data);
+      console.log(res.status);
+      if (res.status === 450) {
+        console.log("IN");
+        setShowNotification({
+          show: true,
+          code: 450,
+          message: "Failed analyzing the flow",
+        });
+        setTimeout(() => {
+          setShowNotification({
+            show: false,
+            code: 450,
+            message: "Failed analyzing the flow",
+          });
+        }, 3000);
+
+        fetch(
+          process.env.NEXT_PUBLIC_BACKEND_URL + "/logs/failed/" + triggerID,
           {
             method: "GET",
           },
         );
+      } else {
+        const data = await res.json();
 
-        console.log("Check return post_data", await post_data.json());
-        // get the data and flowjson within the post_data json
-        let flowdata = await post_data.json();
+        console.log("from api", data);
+        let tmp_id;
+        for (let i = 0, l = data.steps.length; i < l; i++) {
+          setPlaying(true);
 
-        //console.log(post_data, "post_data");
-        const res = await fetch(
-          process.env.NEXT_PUBLIC_BACKEND_URL + "/flow/",
-          {
-            method: "POST",
+          if (
+            data.steps[i]["method"] === "POST" &&
+            data.steps[i].api.includes("upload")
+          ) {
+            const formData = new FormData();
+            formData.append("csv_file", data.steps[i].post_data.csv_file);
+            await fetch(data.steps[i].api, {
+              method: data.steps[i].method,
+              body: formData,
+            });
+          }
+          // if (data.steps[i]["method"] === "POST") {
+          let curRes = await fetch(data.steps[i].api, {
+            method: data.steps[i].method,
             headers: {
               "Content-Type": "application/json",
             },
-            body: post_data.flowjson,
-          },
-        );
-        console.log(res.status);
-        if (res.status === 450) {
-          console.log("IN");
-          setShowNotification(true);
-          setTimeout(() => {
-            setShowNotification(false);
-          }, 3000);
-        } else {
-          const data = await res.json();
+            body:
+              data.steps[i].method === "POST"
+                ? JSON.stringify(data.steps[i].post_data)
+                : null,
+          });
 
-          console.log("from api", data);
-          let tmp_id;
-          for (let i = 0, l = data.steps.length; i < l; i++) {
-            setPlaying(true);
-            console.log("i wor", i + 1);
-            console.log("datastep", data.steps[i]);
+          let resData = await curRes.json();
 
-            await fetch(data.steps[i], {
-              method: "GET",
-            });
+          let stepLog = await fetch(
+            process.env.NEXT_PUBLIC_BACKEND_URL + "/logs/step/",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                log_id: triggerID,
+                api: data.steps[i].api,
+                step: i + 1,
+                result: JSON.stringify(resData),
+              }),
+            },
+          );
 
-            if (i === data.steps.length - 1) {
-              setPlaying(false);
-            }
+          if (i === data.steps.length - 1) {
+            setPlaying(false);
           }
         }
-      } catch (err) {
-        console.log(err);
       }
-    };
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
@@ -259,7 +329,7 @@ const SubflowTable = () => {
       </div> */}
 
       <div className="flex flex-col rounded-t-lg border	border-slate-300 text-black">
-        <div className="grid grid-cols-4 rounded-sm bg-indigo-50 uppercase dark:bg-white sm:grid-cols-4">
+        <div className="grid grid-cols-4 rounded-t-lg bg-indigo-50 uppercase dark:bg-white sm:grid-cols-4">
           <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
             <h5 className=" text-sm font-medium xsm:text-sm">
               <b>Flow Name</b>
@@ -287,7 +357,7 @@ const SubflowTable = () => {
 
         {currentSubflows.map((subflow, index) => (
           <div
-            className={`grid grid-cols-4 hover:bg-orange-50 sm:grid-cols-4 ${
+            className={`grid grid-cols-4 hover:bg-orange-50 dark:hover:bg-black sm:grid-cols-4 ${
               index === subflows.length - 1
                 ? ""
                 : "border-b border-stroke dark:border-strokedark"
@@ -366,22 +436,31 @@ const SubflowTable = () => {
                   </Link>
 
                   <button
+                    id={subflow.id + "_play"}
                     className="font-sans from-gray-900 to-gray-800 shadow-gray-900/10 hover:shadow-gray-900/20 relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg bg-gradient-to-tr text-center align-middle text-xs font-medium uppercase text-white  transition-all hover:shadow-lg active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                     type="button"
-                    onClick={getFlow(subflow.id)}
+                    onClick={() => getFlow(subflow.id)}
                   >
-                    <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 16 16"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="dark:fill-current"
-                      >
-                        <path d="M2.78 2L2 2.41v12l.78.42 9-6V8l-9-6zM3 13.48V3.35l7.6 5.07L3 13.48z" />
-                        <path d="M6 14.683l8.78-5.853V8L6 2.147V3.35l7.6 5.07L6 13.48v1.203z" />
-                      </svg>
-                    </span>
+                    {playing ? (
+                      <img
+                        src={"/images/general/loading.gif"}
+                        alt="Loading"
+                        className="mx-auto h-6 w-6 animate-spin"
+                      />
+                    ) : (
+                      <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform">
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 16 16"
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="dark:fill-current"
+                        >
+                          <path d="M2.78 2L2 2.41v12l.78.42 9-6V8l-9-6zM3 13.48V3.35l7.6 5.07L3 13.48z" />
+                          <path d="M6 14.683l8.78-5.853V8L6 2.147V3.35l7.6 5.07L6 13.48v1.203z" />
+                        </svg>
+                      </span>
+                    )}
                   </button>
                 </div>
               </p>
