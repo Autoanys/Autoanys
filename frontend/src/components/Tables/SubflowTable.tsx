@@ -257,13 +257,44 @@ const SubflowTable = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentSubflows = subflows.slice(startIndex, endIndex);
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // Handle the selected file (e.g., read its content)
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const content = e.target.result;
+        // Process the JSON content here
+        console.log(content);
+      };
+      reader.readAsText(file);
+    }
+  };
 
+  const handleButtonClick = () => {
+    document.getElementById("fileInput").click();
+  };
   return (
     // border border-stroke shadow-default
     <div className="rounded-sm  bg-white px-5 pb-2.5 pt-6  dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
-      <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
-        Sub Flow List
-      </h4>
+      <div className="flex justify-between gap-x-4">
+        <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
+          Sub Flow List
+        </h4>
+        <button
+          className="group relative flex items-center gap-2.5 rounded-lg px-4 py-4 text-sm font-medium font-semibold text-black duration-300 ease-in-out dark:text-white dark:hover:bg-meta-4"
+          onClick={handleButtonClick}
+        >
+          📥 Import a Flow
+        </button>
+        <input
+          type="file"
+          id="fileInput"
+          accept=".json"
+          style={{ display: "none" }}
+          onChange={handleFileChange}
+        />
+      </div>
 
       <input
         type="text"
