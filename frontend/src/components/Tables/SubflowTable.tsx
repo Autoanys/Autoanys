@@ -11,8 +11,11 @@ import { Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/solid";
 import { Fragment } from "react";
 import crypto from "crypto";
+import { usePathname } from "next/navigation";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 
 const SubflowTable = () => {
+  const router = useRouter();
   const [subflows, setSubflows] = useState([]);
   const [allFlow, setAllFlow] = useState([]);
   const [deleted, setDeleted] = useState(false);
@@ -52,6 +55,14 @@ const SubflowTable = () => {
 
     return `${formattedDate}, ${formattedTime}`;
   }
+
+  const doubleClickItemSubflow = async (flow_id) => {
+    console.log("Double clicked on subflow with id:", flow_id);
+    await router.push({
+      pathname: "/subflowedit",
+      query: { flowid: flow_id },
+    });
+  };
 
   const triggerID = crypto.randomBytes(8).toString("hex");
   let type = "Playground";
@@ -357,6 +368,9 @@ const SubflowTable = () => {
 
         {currentSubflows.map((subflow, index) => (
           <div
+            onDoubleClick={() =>
+              router.push("/subflowedit?flowid=" + subflow.id)
+            }
             className={`grid grid-cols-4 hover:bg-orange-50 dark:hover:bg-black sm:grid-cols-4 ${
               index === subflows.length - 1
                 ? ""
