@@ -2,6 +2,8 @@
 frontend/node_modules
 #Backend folder  all png inside storage folder
 backend/storage/*.png
+backend/storage/*.json
+
 #All bat files in all folders
 **/*.bat
 #All files that end with db
