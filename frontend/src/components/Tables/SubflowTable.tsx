@@ -340,14 +340,14 @@ const SubflowTable = () => {
       </div> */}
 
       <div className="flex flex-col rounded-t-lg border	border-slate-300 text-black">
-        <div className="grid grid-cols-4 rounded-t-lg bg-indigo-50 uppercase dark:bg-white sm:grid-cols-4">
+        <div className="grid grid-cols-5 divide-x divide-slate-300 rounded-t-lg bg-indigo-50 uppercase dark:bg-white sm:grid-cols-5">
           <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
             <h5 className=" text-sm font-medium xsm:text-sm">
               <b>Flow Name</b>
             </h5>
           </div>
 
-          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+          <div className="xl:bt-5 col-span-2 pb-2 pl-2.5  pt-3 xl:pb-2.5 xl:pl-2.5">
             <h5 className=" text-sm font-medium xsm:text-sm">
               <b>Flow Description</b>
             </h5>
@@ -371,7 +371,7 @@ const SubflowTable = () => {
             onDoubleClick={() =>
               router.push("/subflowedit?flowid=" + subflow.id)
             }
-            className={`grid grid-cols-4 hover:bg-orange-50 dark:hover:bg-black sm:grid-cols-4 ${
+            className={`grid grid-cols-5 divide-x divide-slate-300 hover:bg-orange-50  dark:hover:bg-black sm:grid-cols-5 ${
               index === subflows.length - 1
                 ? ""
                 : "border-b border-stroke dark:border-strokedark"
@@ -387,7 +387,7 @@ const SubflowTable = () => {
               </p>
             </div>
 
-            <div className="flex items-center gap-3 pl-2.5 ">
+            <div className="col-span-2 flex items-center gap-3 pl-2.5">
               <p className="hidden text-black dark:text-white sm:block">
                 {/* {subflow.id} */}
                 {truncateText(subflow.description, 30)}

@@ -3,9 +3,11 @@ from PIL import Image
 #from Screenshot import Screenshot_clipping
 from pathlib import Path
 import time
-import asyncio
 from prisma import Prisma
 import datetime
+from fastapi.responses import FileResponse
+import json
+from general.header import *
 
 router = APIRouter()
 
@@ -97,3 +99,17 @@ async def specific_subflow(flow_id : str):
     await prisma.disconnect()
     return {"message": f"Subflow {flow_id} rendered", "data" : flow_data}
 
+@router.post("/subflow/exportconfig")
+async def export_config(flow_json: dict):
+    print(flow_json)
+    jsonFileName = get_random_string(12)+".json"
+    with open("storage/" + jsonFileName, 'w') as jsonFile:
+        json.dump(flow_json, jsonFile)
+    
+    return {"message": "Exported successfully", "filename": jsonFileName}
+
+    #return FileResponse("storage/" + jsonFileName, media_type='application/octet-stream', filename=jsonFileName)
+
+@router.get("/subflow/exportconfig/download/{jsonFileName}")
+async def download_config(jsonFileName: str):
+    return FileResponse("storage/" + jsonFileName, media_type='application/octet-stream', filename=jsonFileName)

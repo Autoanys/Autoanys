@@ -729,6 +729,59 @@ const SubFlowCanva = (editing, flowid) => {
   const imageHeight = 768;
 
   const { getNodes } = useReactFlow();
+  const exportConfig = async () => {
+    try {
+      // Step 1: Post the configuration and get the filename
+      const res = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_URL + "/subflow/exportconfig/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            nodes: nodes,
+            edges: edges,
+            variables: customVariables,
+          }),
+        },
+      );
+
+      const data = await res.json();
+
+      // Step 2: Fetch the file blob using the filename
+      const download = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_URL +
+          "/subflow/exportconfig/download/" +
+          data.filename,
+        {
+          method: "GET",
+        },
+      );
+
+      if (!download.ok) {
+        throw new Error("Failed to download file");
+      }
+
+      const blob = await download.blob();
+
+      // Step 3: Create a URL for the blob
+      const url = URL.createObjectURL(blob);
+
+      // Step 4: Create an anchor element and trigger a download
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = data.filename; // You can also set a default filename if needed
+      document.body.appendChild(a);
+      a.click();
+
+      // Step 5: Cleanup
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error exporting config:", error);
+    }
+  };
   const exportImage = () => {
     const nodesBounds = getNodesBounds(getNodes());
     const transform = getTransformForBounds(
@@ -1349,7 +1402,7 @@ const SubFlowCanva = (editing, flowid) => {
                     </button>
                     <button
                       onClick={() => {
-                        exportImage();
+                        exportConfig();
                         toggleDropdown();
                       }}
                       className="text-gray-700 hover:bg-gray-100 hover:text-gray-900 block w-full px-2 py-1 text-left text-sm"
@@ -1392,13 +1445,9 @@ const SubFlowCanva = (editing, flowid) => {
                 <label className="text-md mt-4 font-semibold">
                   Save result as :
                 </label>
-                <select
-                  className="h-10 w-full rounded-lg border border-slate-200 px-3 py-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-sky-500"
-                  value={selectedNodes}
-                  onChange={(e) => null}
-                >
+                <select className="h-10 w-full rounded-lg border border-slate-200 px-3 py-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-sky-500">
                   <option value="none">None</option>
-                  <option value="variable">Variable</option>
+                  <option value="variable">to Variable</option>
                 </select>
                 {/* The input will have a drop down suggestion list from CustomVariables state when typing or onclick*/}
                 <label className="mt-4 text-sm font-semibold">
