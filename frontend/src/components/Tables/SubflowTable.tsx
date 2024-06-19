@@ -178,10 +178,28 @@ const SubflowTable = () => {
   const currentSubflows = subflows.slice(startIndex, endIndex);
 
   return (
-    <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+    // border border-stroke shadow-default
+    <div className="rounded-sm  bg-white px-5 pb-2.5 pt-6  dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
         Sub Flow List
       </h4>
+
+      <input
+        type="text"
+        placeholder=" 🔍 Search subflow by name or description"
+        className="mb-6 h-10 w-full rounded-md border border-stroke px-3 dark:border-strokedark dark:bg-boxdark"
+        onChange={(e) => {
+          const searchValue = e.target.value.toLowerCase();
+          const filteredSubflows = allFlow.filter((subflow) => {
+            return (
+              subflow.name.toLowerCase().includes(searchValue) ||
+              subflow.description.toLowerCase().includes(searchValue)
+            );
+          });
+          setSubflows(filteredSubflows);
+        }}
+      />
+
       {/* <div className="absolute inset-0">
         {showNotification.show && (
           <div

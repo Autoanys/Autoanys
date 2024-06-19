@@ -195,7 +195,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           </div>
           <div className="fixed bottom-0 m-auto items-center justify-center text-sm text-black">
             <span className="ml-10 pb-12 font-medium">
-              © 2023-2024 AutoAnys
+              © 2023-2024 ⚙️ AutoAnys
             </span>
           </div>
         </nav>

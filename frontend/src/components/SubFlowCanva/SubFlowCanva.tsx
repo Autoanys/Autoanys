@@ -279,6 +279,8 @@ const SubFlowCanva = (editing, flowid) => {
               setNodes(updatedNodes);
               setEdges(flowData.edges || []);
               setViewport({ x, y, zoom });
+              const parsedVariables = JSON.parse(flowData.variables);
+              setCustomVariables(parsedVariables);
             }
           } catch (error) {
             console.error("Error fetching data:", error);
@@ -409,7 +411,11 @@ const SubFlowCanva = (editing, flowid) => {
   // Flow V2
   const getFlow = async () => {
     try {
-      let post_data = JSON.stringify({ nodes, edges }, null, 2);
+      let post_data = JSON.stringify(
+        { nodes, edges, variables: customVariables },
+        null,
+        2,
+      );
 
       const res = await fetch(
         process.env.NEXT_PUBLIC_BACKEND_URL + "/flow/v2",
@@ -567,6 +573,13 @@ const SubFlowCanva = (editing, flowid) => {
     setIsPopupOpen(false);
   };
 
+  const handleVariableSubmit = (event) => {
+    console.log("EVENT", event);
+    event.preventDefault();
+    setCustomVariables(event.target.custom_variables.value);
+    setIsVariablePopupOpen(false);
+  };
+
   const autoLayoutNodes = (nodes) => {
     const GAP = 50; // Define the gap between each node
     let startNode = nodes.find((node) => node.type == "start");
@@ -632,6 +645,13 @@ const SubFlowCanva = (editing, flowid) => {
 
     if (rfInstance && parms.get("flowid")) {
       const flow = rfInstance.toObject();
+      const variablesObject = {
+        variables: JSON.stringify(customVariables),
+      };
+
+      console.log("This is variablesObject", customVariables, variablesObject);
+      const mergedFlow = { ...flow, ...variablesObject };
+      const flowJson = String(JSON.stringify(mergedFlow));
       console.log("This is Flow", flow);
       const res = await fetch(
         process.env.NEXT_PUBLIC_BACKEND_URL +
@@ -645,7 +665,7 @@ const SubFlowCanva = (editing, flowid) => {
           body: JSON.stringify({
             name: flowKeys,
             description: flowDescription,
-            flowjson: String(JSON.stringify(flow)),
+            flowjson: flowJson,
           }),
         },
       );
@@ -1210,7 +1230,7 @@ const SubFlowCanva = (editing, flowid) => {
             edgeTypes={edgeTypes}
             proOptions={proOptions}
           >
-            <Background id="2" color="#ccc" />
+            <Background id="2" color="#333" />
 
             <Controls></Controls>
 
@@ -1518,7 +1538,7 @@ const SubFlowCanva = (editing, flowid) => {
             className="w-2/5 rounded bg-white p-6 shadow-lg"
           >
             <h2 className="mb-4 text-xl font-semibold">Variable Setting</h2>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleVariableSubmit}>
               <div className="mb-4">
                 {parms.get("flowid") && (
                   <label

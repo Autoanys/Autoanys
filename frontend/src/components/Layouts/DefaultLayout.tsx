@@ -12,12 +12,14 @@ export default function DefaultLayout({
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isPromptVisible, setIsPromptVisible] = useState(false);
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useHotkeys("ctrl+k, cmd+k", (event) => {
     event.preventDefault();
-    inputRef.current.focus();
-    setIsPromptVisible(true);
+    if (inputRef.current) {
+      inputRef.current.focus();
+      setIsPromptVisible(true);
+    }
   });
 
   useEffect(() => {
@@ -27,7 +29,7 @@ export default function DefaultLayout({
       }
     };
 
-    const handleEsc = (event) => {
+    const handleEsc = (event: React.KeyboardEvent<HTMLInputElement>) => {
       if (event.key === "Escape") {
         setIsPromptVisible(false);
       }
