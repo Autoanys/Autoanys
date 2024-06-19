@@ -1248,8 +1248,17 @@ const SubFlowCanva = (editing, flowid) => {
             >
               <div className="mr-auto">
                 <button
+                  onClick={() => router.push("/subflow")}
+                  className={`mb-2 ml-4 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white dark:border-slate-400 dark:text-white ${
+                    autoSaving ? "cursor-not-allowed" : ""
+                  }`}
+                >
+                  ↩️ Back
+                </button>
+
+                <button
                   onClick={onSave}
-                  className={`mb-2 ml-4 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white dark:border-slate-400 dark:text-white	 ${
+                  className={`mb-2 ml-2 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white dark:border-slate-400 dark:text-white	 ${
                     autoSaving ? "cursor-not-allowed" : ""
                   }`}
                 >
@@ -1268,7 +1277,7 @@ const SubFlowCanva = (editing, flowid) => {
 
                 <button
                   onClick={togglePopup}
-                  className={`mb-2 ml-4 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white dark:border-slate-400 dark:text-white ${
+                  className={`mb-2 ml-2 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white dark:border-slate-400 dark:text-white ${
                     autoSaving ? "cursor-not-allowed" : ""
                   }`}
                 >

@@ -408,6 +408,7 @@ const SubflowTable = () => {
                   <button
                     className="font-sans bg-gray-900 shadow-gray-900/10 hover:shadow-gray-900/20 relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle text-xs font-medium uppercase text-white  transition-all hover:shadow-lg focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                     type="button"
+                    title="View Subflow"
                   >
                     <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform">
                       <svg
@@ -429,6 +430,7 @@ const SubflowTable = () => {
                     }}
                   >
                     <button
+                      title="Edit Subflow"
                       className="font-sans from-gray-900 to-gray-800 shadow-gray-900/10 hover:shadow-gray-900/20 relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg bg-gradient-to-tr text-center align-middle text-xs font-medium uppercase text-white transition-all hover:shadow-lg active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                       type="button"
                     >
@@ -451,6 +453,7 @@ const SubflowTable = () => {
 
                   <button
                     id={subflow.id + "_play"}
+                    title="Play Subflow"
                     className="font-sans from-gray-900 to-gray-800 shadow-gray-900/10 hover:shadow-gray-900/20 relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg bg-gradient-to-tr text-center align-middle text-xs font-medium uppercase text-white  transition-all hover:shadow-lg active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                     type="button"
                     onClick={() => getFlow(subflow.id)}
@@ -482,6 +485,7 @@ const SubflowTable = () => {
               <button
                 className="font-sans from-gray-900 to-gray-800 shadow-gray-900/10 hover:shadow-gray-900/20 relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg bg-gradient-to-tr text-center align-middle text-xs font-medium uppercase text-white  transition-all hover:shadow-lg active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                 type="button"
+                title="Delete Subflow"
                 onClick={deleteFlow(subflow.id)}
               >
                 <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform">

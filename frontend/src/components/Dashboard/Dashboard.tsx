@@ -74,7 +74,20 @@ const Dashboard: React.FC = () => {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <CardDataStats
           title="Total Workflows"
-          total={totalflow ? totalflow : ""}
+          // total={totalflow ? totalflow : ""}
+          total={
+            totalflow.length < 1 ? (
+              <div>
+                <img
+                  src={"/images/general/loading.gif"}
+                  alt="Saving"
+                  className=" h-6 w-6 animate-spin"
+                />
+              </div>
+            ) : (
+              totalflow
+            )
+          } // total={totalflow}
         >
           <svg
             width="35"
@@ -119,7 +132,22 @@ const Dashboard: React.FC = () => {
             </g>
           </svg>
         </CardDataStats>
-        <CardDataStats title="Total Execution" total={totalExecution}>
+        <CardDataStats
+          title="Total Execution"
+          total={
+            totalExecution.length < 1 ? (
+              <div>
+                <img
+                  src={"/images/general/loading.gif"}
+                  alt="Saving"
+                  className=" h-6 w-6 animate-spin"
+                />
+              </div>
+            ) : (
+              totalExecution
+            )
+          }
+        >
           <svg
             className="fill-primary dark:fill-white"
             width="35"
@@ -154,7 +182,19 @@ const Dashboard: React.FC = () => {
         </CardDataStats>
         <CardDataStats
           title="Total Successful Execution"
-          total={totalSuccessful}
+          total={
+            totalSuccessful.length < 1 ? (
+              <div>
+                <img
+                  src={"/images/general/loading.gif"}
+                  alt="Saving"
+                  className=" h-6 w-6 animate-spin"
+                />
+              </div>
+            ) : (
+              totalSuccessful
+            )
+          }
         >
           <svg
             width="26"
