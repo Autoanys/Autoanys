@@ -837,7 +837,7 @@ const SubFlowCanva = (editing, flowid) => {
     const node = JSON.stringify(nodes.find((n) => n.id == node_id));
 
     return (
-      <div>
+      <div className="">
         <p className=" pt-4 font-medium">
           {" "}
           Node Label : {nodes.find((n) => n.id == node_id)?.data.label}
@@ -1387,6 +1387,29 @@ const SubFlowCanva = (editing, flowid) => {
               <p className="text-md ">{selectedNodes}</p>
               <hr></hr>
               {editForm(selectedNodes)}
+              <div>
+                {/* A title Save result as , A select box default as none, if select box is selected then a input box will appear to enter the name of the variable */}
+                <label className="text-md mt-4 font-semibold">
+                  Save result as :
+                </label>
+                <select
+                  className="h-10 w-full rounded-lg border border-slate-200 px-3 py-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-sky-500"
+                  value={selectedNodes}
+                  onChange={(e) => null}
+                >
+                  <option value="none">None</option>
+                  <option value="variable">Variable</option>
+                </select>
+                {/* The input will have a drop down suggestion list from CustomVariables state when typing or onclick*/}
+                <label className="mt-4 text-sm font-semibold">
+                  Variables :
+                </label>
+                <input
+                  className="h-10 w-full rounded-lg border border-slate-200 px-3 py-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-sky-500"
+                  type="text"
+                  placeholder="Variable name"
+                />
+              </div>
             </div>
 
             <div
