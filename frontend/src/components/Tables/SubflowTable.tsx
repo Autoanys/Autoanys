@@ -329,6 +329,8 @@ const SubflowTable = () => {
         label: "🗑️ Delete",
         onClick: () => {
           handleDeleteClick(subflow);
+          menuContainer.remove();
+          currentMenu = null;
         },
       },
       {

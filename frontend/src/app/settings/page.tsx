@@ -4,6 +4,7 @@ import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 // import SelectGroupOne from "@/components/SelectGroup/SelectGroupOne";
 import SelectLanguage from "@/components/SelectGroup/SelectLanguage";
+import SelectAuthorization from "@/components/SelectGroup/SelectAuthorization";
 
 import { env } from "process";
 
@@ -44,6 +45,7 @@ const Settings = () => {
                   </div>
 
                   <SelectLanguage />
+                  <SelectAuthorization />
                 </div>
               </form>
             </div>
