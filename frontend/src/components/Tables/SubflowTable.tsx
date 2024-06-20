@@ -258,15 +258,32 @@ const SubflowTable = () => {
   const endIndex = startIndex + itemsPerPage;
   const currentSubflows = subflows.slice(startIndex, endIndex);
   const handleFileChange = (event) => {
+    setDeleted(true);
     const file = event.target.files[0];
     if (file) {
-      // Handle the selected file (e.g., read its content)
       const reader = new FileReader();
       reader.onload = (e) => {
         const content = e.target.result;
-        // Process the JSON content here
-        console.log(content);
+
+        console.log("this is content", content);
+        const data = JSON.parse(content);
+        console.log("this is parsed data", data);
+        let res = fetch(
+          process.env.NEXT_PUBLIC_BACKEND_URL + "/subflow/write/",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: "Imported Flow ",
+              description: "This is imported flow on " + String(new Date()),
+              flowjson: String(JSON.stringify(data)),
+            }),
+          },
+        );
       };
+
       reader.readAsText(file);
     }
   };
@@ -414,14 +431,14 @@ const SubflowTable = () => {
                 className="hidden
               text-black dark:text-white sm:block"
               >
-                {subflow.name}
+                {truncateText(subflow.name, 20)}
               </p>
             </div>
 
             <div className="col-span-2 flex items-center gap-3 pl-2.5">
               <p className="hidden text-black dark:text-white sm:block">
                 {/* {subflow.id} */}
-                {truncateText(subflow.description, 30)}
+                {truncateText(subflow.description, 55)}
               </p>
             </div>
 

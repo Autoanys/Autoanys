@@ -580,24 +580,30 @@ const SubFlowCanva = (editing, flowid) => {
     setIsVariablePopupOpen(false);
   };
 
-  const autoLayoutNodes = (nodes) => {
+  const autoLayoutNodes = (nodes, edges) => {
     const GAP = 50; // Define the gap between each node
-    let startNode = nodes.find((node) => node.type == "start");
 
+    const startNode = nodes.find((node) => node.type === "start");
     if (!startNode) {
       console.error("Start node not found");
       return nodes;
     }
 
+    // Topological sort
+    const sortedNodes = topologicalSort(nodes, edges);
+    if (!sortedNodes) {
+      console.error("Topological sort failed");
+      return nodes;
+    }
+
+    // Layout nodes
+    const startXCenter = startNode.position.x + startNode.width / 2; // Center x position of the start node
     let currentY = startNode.position.y + startNode.height + GAP;
-    let updatedNodes = nodes.map((node) => {
+    const updatedNodes = sortedNodes.map((node, index) => {
       if (node.id !== startNode.id) {
-        let updatedNode = {
-          ...node,
-          position: { ...node.position, y: currentY },
-        };
+        const nodeCenterX = startXCenter - node.width / 2;
+        node.position = { ...node.position, x: nodeCenterX, y: currentY };
         currentY += node.height + GAP;
-        return updatedNode;
       }
       return node;
     });
@@ -605,8 +611,51 @@ const SubFlowCanva = (editing, flowid) => {
     return updatedNodes;
   };
 
+  const topologicalSort = (nodes, edges) => {
+    const nodeMap = new Map();
+    nodes.forEach((node) => nodeMap.set(node.id, node));
+
+    const inDegree = new Map();
+    nodes.forEach((node) => inDegree.set(node.id, 0));
+
+    edges.forEach((edge) => {
+      const target = edge.target;
+      inDegree.set(target, inDegree.get(target) + 1);
+    });
+
+    const queue = [];
+    nodes.forEach((node) => {
+      if (inDegree.get(node.id) === 0) {
+        queue.push(node);
+      }
+    });
+
+    const sorted = [];
+    while (queue.length > 0) {
+      const node = queue.shift();
+      sorted.push(node);
+
+      edges.forEach((edge) => {
+        if (edge.source === node.id) {
+          const targetNode = nodeMap.get(edge.target);
+          inDegree.set(targetNode.id, inDegree.get(targetNode.id) - 1);
+          if (inDegree.get(targetNode.id) === 0) {
+            queue.push(targetNode);
+          }
+        }
+      });
+    }
+
+    if (sorted.length !== nodes.length) {
+      console.error("There is a cycle in the graph");
+      return null;
+    }
+
+    return sorted;
+  };
+
   const handleAutoLayout = () => {
-    const newNodes = autoLayoutNodes(nodes);
+    const newNodes = autoLayoutNodes(nodes, edges);
     setNodes(newNodes);
   };
 
@@ -1440,8 +1489,7 @@ const SubFlowCanva = (editing, flowid) => {
               <p className="text-md ">{selectedNodes}</p>
               <hr></hr>
               {editForm(selectedNodes)}
-              <div>
-                {/* A title Save result as , A select box default as none, if select box is selected then a input box will appear to enter the name of the variable */}
+              {/* <div>
                 <label className="text-md mt-4 font-semibold">
                   Save result as :
                 </label>
@@ -1449,7 +1497,6 @@ const SubFlowCanva = (editing, flowid) => {
                   <option value="none">None</option>
                   <option value="variable">to Variable</option>
                 </select>
-                {/* The input will have a drop down suggestion list from CustomVariables state when typing or onclick*/}
                 <label className="mt-4 text-sm font-semibold">
                   Variables :
                 </label>
@@ -1458,7 +1505,7 @@ const SubFlowCanva = (editing, flowid) => {
                   type="text"
                   placeholder="Variable name"
                 />
-              </div>
+              </div> */}
             </div>
 
             <div
