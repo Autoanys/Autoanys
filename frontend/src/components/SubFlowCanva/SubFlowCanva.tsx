@@ -920,6 +920,15 @@ const SubFlowCanva = (editing, flowid) => {
     initialCollapsedState,
   );
 
+  const collapseAll = () => {
+    setCollapsedSections((prev) =>
+      Object.keys(prev).reduce((acc, key) => {
+        acc[key] = true;
+        return acc;
+      }, {}),
+    );
+  };
+
   const filteredNodes = Object.keys(groupedNodes).reduce((acc, category) => {
     const filteredItems = groupedNodes[category].filter(
       (key) =>
@@ -1351,7 +1360,7 @@ const SubFlowCanva = (editing, flowid) => {
                 </a>{" "}
                 make sure you have enabled for more plugins.
               </span>
-              {/* {JSON.stringify(nodes)} */}
+              {/* <button onClick={collapseAll}>Collapse All</button> */}
             </div>
 
             {nodeDivs}

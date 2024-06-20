@@ -24,13 +24,16 @@ interface SidebarProps {
   setSidebarOpen: (arg: boolean) => void;
 }
 
-const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
+const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const pathname = usePathname();
 
-  const trigger = useRef<any>(null);
-  const sidebar = useRef<any>(null);
+  const trigger = useRef(null);
+  const sidebar = useRef(null);
 
-  let storedSidebarExpanded = "true";
+  const storedSidebarExpanded = localStorage.getItem("sidebar-expanded");
+  const [sidebarExpanded, setSidebarExpanded] = useState(
+    storedSidebarExpanded === null ? true : storedSidebarExpanded === "true",
+  );
 
   const sideBarItem = [
     {
@@ -77,13 +80,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     },
   ];
 
-  const [sidebarExpanded, setSidebarExpanded] = useState(
-    storedSidebarExpanded === null ? false : storedSidebarExpanded === "true",
-  );
-
   // close on click outside
   useEffect(() => {
-    const clickHandler = ({ target }: MouseEvent) => {
+    const clickHandler = ({ target }) => {
       if (!sidebar.current || !trigger.current) return;
       if (
         !sidebarOpen ||
@@ -99,7 +98,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
   // close if the esc key is pressed
   useEffect(() => {
-    const keyHandler = ({ key }: KeyboardEvent) => {
+    const keyHandler = ({ key }) => {
       if (!sidebarOpen || key !== "Escape") return;
       setSidebarOpen(false);
     };
@@ -110,41 +109,50 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   useEffect(() => {
     localStorage.setItem("sidebar-expanded", sidebarExpanded.toString());
     if (sidebarExpanded) {
-      document.querySelector("body")?.classList.add("sidebar-expanded");
+      document.querySelector("body").classList.add("sidebar-expanded");
     } else {
-      document.querySelector("body")?.classList.remove("sidebar-expanded");
+      document.querySelector("body").classList.remove("sidebar-expanded");
     }
   }, [sidebarExpanded]);
 
   return (
     <aside
       ref={sidebar}
-      className={`w-58 absolute left-0 top-0 z-9999 flex h-screen flex-col overflow-y-hidden bg-slate-50 duration-300 
-      ease-linear dark:bg-[#1E1E2F] lg:static lg:translate-x-0 ${
+      className={`fixed left-0 top-0 z-40 h-screen flex-col overflow-y-hidden bg-slate-50 duration-300 ease-linear dark:bg-slate-900  ${
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
-      }`}
+      } lg:static lg:translate-x-0 ${sidebarExpanded ? "w-64" : "w-25"}`}
     >
-      <div className="flex items-center justify-between gap-2 bg-slate-50 px-6 py-4 pb-4.5 shadow-1 drop-shadow-1 dark:bg-slate-900 dark:drop-shadow  ">
+      <div
+        className={`flex items-center justify-between gap-2 bg-slate-50 px-6 py-4 shadow-1 drop-shadow-1 dark:bg-slate-900 dark:drop-shadow 
+        ${sidebarExpanded ? " pb-7" : " pb-8"}`}
+      >
         <Link href="/">
           <Image
             className="dark:hidden"
-            width={245}
-            height={32}
-            src={"/images/logo/newLogo.png"}
+            width={sidebarExpanded ? 245 : 50}
+            height={50}
+            src={
+              sidebarExpanded
+                ? "/images/logo/newLogo.png"
+                : "/images/logo/logo-icon.svg"
+            }
             alt="Logo"
             priority
           />
 
           <Image
             className="hidden dark:block"
-            width={245}
-            height={32}
-            src={"/images/logo/logo-dark.png"}
+            width={sidebarExpanded ? 245 : 50}
+            height={50}
+            src={
+              sidebarExpanded
+                ? "/images/logo/logo-dark.png"
+                : "/images/logo/logo-icon.svg"
+            }
             alt="Logo"
             priority
           />
         </Link>
-
         <button
           ref={trigger}
           onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -166,28 +174,70 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             />
           </svg>
         </button>
+        <button
+          onClick={() => setSidebarExpanded(!sidebarExpanded)}
+          className="hidden lg:block"
+        >
+          {sidebarExpanded ? (
+            <svg
+              className="fill-current"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M19 12H5M12 19L5 12L12 5"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          ) : (
+            <svg
+              className="fill-current"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M5 12H19M12 5L19 12L12 19"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          )}
+        </button>
       </div>
 
       <div className="no-scrollbar flex h-full flex-col overflow-y-auto duration-300 ease-linear">
         <nav className="mt-5 px-4 py-4 lg:mt-9 lg:px-6">
           <div>
-            <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2 dark:text-white">
-              Welcome to AutoAnys
-            </h3>
+            {sidebarExpanded && (
+              <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2 dark:text-white">
+                Welcome to AutoAnys
+              </h3>
+            )}
 
             <ul className="mb-6 flex flex-col gap-1.5">
               {sideBarItem.map((item, index) => (
-                <li>
+                <li key={index}>
                   <Link
                     href={item.link}
                     className={`gbold group relative flex items-center gap-2.5 rounded-lg px-4 py-4 text-sm font-medium font-semibold text-black duration-300 ease-in-out hover:bg-white hover:shadow-2xl dark:text-[#FFFFFF] dark:hover:bg-meta-4 ${
                       (pathname === item.link ||
                         (item.link !== "/" && pathname.includes(item.sn))) &&
-                      "bg-white shadow-2xl dark:bg-[#2C2C3E]  "
+                      "bg-white shadow-2xl dark:bg-[#2C2C3E]"
                     }`}
                   >
                     {item.icon}
-                    {item.name}
+                    {sidebarExpanded && item.name}
                   </Link>
                 </li>
               ))}
