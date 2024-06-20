@@ -109,6 +109,7 @@ const SubFlowCanva = (editing, flowid) => {
     code: 200,
     message: "",
   });
+  const [loading, setLoading] = useState(false);
   const [needConfirmation, setNeedConfirmation] = useState(true);
   const [selectedNodes, setSelectedNodes] = useState([]);
   const [selectedEdges, setSelectedEdges] = useState([]);
@@ -270,6 +271,7 @@ const SubFlowCanva = (editing, flowid) => {
   useEffect(() => {
     if (editing && flowid) {
       if (parms.get("flowid")) {
+        setLoading(true);
         const fetchData = async () => {
           try {
             const res = await fetch(
@@ -297,7 +299,7 @@ const SubFlowCanva = (editing, flowid) => {
           }
         };
 
-        fetchData();
+        fetchData().then(() => setLoading(false));
       }
     }
   }, []);
@@ -950,9 +952,10 @@ const SubFlowCanva = (editing, flowid) => {
       {!collapsedSections[category] && (
         <div className="ml-2 mr-2">
           {groupedNodes[category].map((key) => (
+            // add cursor-grabbing when onDragStart
             <div
               key={key}
-              className="start mt-2 border border-slate-400 dark:border-white"
+              className="start mt-2 cursor-grab border border-slate-400 dark:border-white"
               onDragStart={(event) => onDragStart(event, key)}
               draggable
             >
@@ -1005,6 +1008,7 @@ const SubFlowCanva = (editing, flowid) => {
             nodes
               .find((n) => n.id == node_id)
               ?.data.inputs.map((input) => {
+                const options = input.options || [];
                 return (
                   <div>
                     <span className="font-medium">{input.label}</span>
@@ -1028,8 +1032,8 @@ const SubFlowCanva = (editing, flowid) => {
                     </span> */}
                     {input.type === "select" ? (
                       <select
-                        id={`${node_id}-${input.label}`}
-                        key={`${node_id}-${input.label}`}
+                        id={`${node_id}-${input.id}`}
+                        key={`${node_id}-${input.id}`}
                         className="h-10 w-full rounded-lg border border-slate-200 px-3 py-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-sky-500"
                         value={input.value}
                         onChange={(e) =>
@@ -1430,7 +1434,7 @@ const SubFlowCanva = (editing, flowid) => {
                 onClick={handleAutoLayout}
                 className="mb-2 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white dark:border-slate-400 dark:text-white"
               >
-                ⏹️ Auto-Layout {String(needConfirmation)}
+                ⏹️ Auto-Layout
               </button>
 
               <button
@@ -1667,6 +1671,18 @@ const SubFlowCanva = (editing, flowid) => {
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {loading && (
+        <div className="bg-gray-900 fixed inset-0 flex items-center justify-center bg-opacity-50">
+          <p className="hidden text-black dark:text-white sm:block">
+            <img
+              src={"/images/general/loading.gif"}
+              alt="Loading"
+              className="mx-auto h-10 w-10 animate-spin"
+            />
+          </p>
         </div>
       )}
 

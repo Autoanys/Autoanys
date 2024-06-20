@@ -27,6 +27,8 @@ const SubflowTable = () => {
     code: 200,
     message: "",
   });
+  const [loading, setLoading] = useState(false);
+  const [trLoading, setTrLoading] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [subflowToDelete, setSubflowToDelete] = useState(null);
 
@@ -539,14 +541,15 @@ const SubflowTable = () => {
         {currentSubflows.map((subflow, index) => (
           <div
             title={decodeURI(
-              "Double Click - Edit Subflow%0ARight Click for more options",
+              "Double Click - Edit Subflow%0ARight Click - For more options",
             )}
             onContextMenu={(e) => {
               tableRowContextMenu(e, subflow);
             }}
-            onDoubleClick={() =>
-              router.push("/subflowedit?flowid=" + subflow.id)
-            }
+            onDoubleClick={() => {
+              setTrLoading(true);
+              router.push("/subflowedit?flowid=" + subflow.id);
+            }}
             className={`grid cursor-alias grid-cols-5 divide-x divide-slate-300  hover:bg-orange-50	 dark:hover:bg-black sm:grid-cols-5 ${
               index === subflows.length - 1
                 ? ""
@@ -697,6 +700,19 @@ const SubflowTable = () => {
                 </span>
               </button>
             </div>
+
+            {trLoading && (
+              <div className="bg-gray-900 fixed inset-0 flex items-center justify-center bg-opacity-50">
+                <p className="hidden text-black dark:text-white sm:block">
+                  <img
+                    src={"/images/general/loading.gif"}
+                    alt="Loading"
+                    className="mx-auto h-10 w-10 animate-spin"
+                  />
+                </p>
+              </div>
+            )}
+
             {showConfirm && (
               <div className="bg-gray-900 fixed inset-0 flex items-center justify-center bg-opacity-50">
                 <div className="divide-y divide-slate-300 rounded-lg bg-white p-4 shadow-lg">

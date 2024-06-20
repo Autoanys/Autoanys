@@ -147,6 +147,42 @@ const nodeConfigInit = {
       },
     ],
   },
+  askPromt: {
+    label: "Input Prompt",
+    category: "General",
+    api: "null",
+    method: "function",
+    description: "Ask for Input",
+    doc: "",
+    icon: "/images/nodes/input_icon.png",
+    inputs: [
+      {
+        type: "select",
+        label: "Find By",
+        id: "find_by",
+        placeholder: "Choose input method",
+        required: true,
+        value: ["Ask for User Prompt", "Static Value"],
+      },
+      {
+        type: "text",
+        label: "Value",
+        hidden: [{ find_by: { "Static Value": false } }],
+        id: "value",
+        placeholder: "Enter variable name",
+        required: true,
+        value: "",
+      },
+      {
+        type: "text",
+        label: "Save prompt to",
+        id: "value",
+        placeholder: "Enter variable name",
+        required: true,
+        value: "",
+      },
+    ],
+  },
 };
 
 export default nodeConfigInit;
