@@ -344,7 +344,8 @@ const SubflowTable = () => {
     ];
 
     const menuContainer = document.createElement("div");
-    menuContainer.className = "absolute z-50 bg-white dark:bg-boxdark";
+    menuContainer.className =
+      "absolute z-50 bg-white dark:bg-boxdark dark:text-white";
     menuContainer.style.top = e.clientY + "px";
     menuContainer.style.left = e.clientX + "px";
     menuContainer.style.border = "1px solid #ccc";
@@ -537,13 +538,16 @@ const SubflowTable = () => {
 
         {currentSubflows.map((subflow, index) => (
           <div
+            title={decodeURI(
+              "Double Click - Edit Subflow%0ARight Click for more options",
+            )}
             onContextMenu={(e) => {
               tableRowContextMenu(e, subflow);
             }}
             onDoubleClick={() =>
               router.push("/subflowedit?flowid=" + subflow.id)
             }
-            className={`grid grid-cols-5 divide-x divide-slate-300 hover:bg-orange-50  dark:hover:bg-black sm:grid-cols-5 ${
+            className={`grid cursor-alias grid-cols-5 divide-x divide-slate-300  hover:bg-orange-50	 dark:hover:bg-black sm:grid-cols-5 ${
               index === subflows.length - 1
                 ? ""
                 : "border-b border-stroke dark:border-strokedark"

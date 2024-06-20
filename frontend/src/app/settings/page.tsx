@@ -35,11 +35,11 @@ const Settings = () => {
                         Backend Endpoint (.env){" "}
                         <span className="text-meta-1">*</span>
                       </label>
-                      <div className="cursor-no-drop">
+                      <div className="cursor-not-allowed">
                         <input
                           type="text"
                           value={env.NEXT_PUBLIC_BACKEND_URL}
-                          className="w-full	 cursor-no-drop rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary "
+                          className="ursor-not-allowed	 w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary "
                           disabled
                         />
                       </div>
