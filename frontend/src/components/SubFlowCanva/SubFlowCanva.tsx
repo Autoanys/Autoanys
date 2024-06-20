@@ -5,6 +5,7 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  use,
 } from "react";
 import ReactFlow, {
   addEdge,
@@ -93,12 +94,13 @@ const initialNodes = [
   },
 ];
 
-const flowKeys = signal("gdsarated-flow");
+const flowKeys = signal("new-sub-flow");
 
 const edgeTypes = { custom: CustomEdge };
 
 const SubFlowCanva = (editing, flowid) => {
   const [previewButton, setPreviewButton] = useState(false);
+  const [confirmAdding, setConfirmAdding] = useState(false);
   const pathname = usePathname();
   const [nodes, setNodes] = useState(initialNodes);
   const [edges, setEdges] = useState([]);
@@ -107,6 +109,7 @@ const SubFlowCanva = (editing, flowid) => {
     code: 200,
     message: "",
   });
+  const [needConfirmation, setNeedConfirmation] = useState(true);
   const [selectedNodes, setSelectedNodes] = useState([]);
   const [selectedEdges, setSelectedEdges] = useState([]);
   const [flowbar, setFlowbar] = useState(false);
@@ -127,6 +130,7 @@ const SubFlowCanva = (editing, flowid) => {
   const [isVariablePopupOpen, setIsVariablePopupOpen] = useState(false);
   const popupRef = useRef(null);
   const variablePopupRef = useRef(null);
+  const confirmPopup = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [exportDropdownOpen, setExportDropdownOpen] = useState(false);
   const [customVariables, setCustomVariables] = useState([{ id: 1, key: "" }]);
@@ -223,9 +227,15 @@ const SubFlowCanva = (editing, flowid) => {
       ) {
         setIsVariablePopupOpen(false);
       }
+      if (
+        confirmPopup.current &&
+        !confirmPopup.current.contains(event.target)
+      ) {
+        setConfirmAdding(false);
+      }
     };
 
-    if (isPopupOpen || isVariablePopupOpen) {
+    if (isPopupOpen || isVariablePopupOpen || confirmAdding) {
       document.addEventListener("mousedown", handleClickOutside);
     } else {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -234,7 +244,7 @@ const SubFlowCanva = (editing, flowid) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isPopupOpen, isVariablePopupOpen]);
+  }, [isPopupOpen, isVariablePopupOpen, confirmAdding]);
 
   const addOnChangeHandler = (nodes) => {
     return nodes.map((node) => {
@@ -723,6 +733,16 @@ const SubFlowCanva = (editing, flowid) => {
       await router.push("/subflow", { scroll: false });
     }
     if (rfInstance && !parms.get("flowid")) {
+      // if (
+      //   (needConfirmation === true && flowKeys === "new-sub-flow") ||
+      //   (needConfirmation === true && flowDescription === "")
+      // ) {
+      //   setConfirmAdding(true);
+      //   console.log("Setting need confirmation to true");
+      //   console.log(needConfirmation);
+      // } else {
+      console.log("SASDSADASDDASD");
+
       const flow = rfInstance.toObject();
       console.log("This is Flow", flow);
       const res = await fetch(
@@ -743,10 +763,28 @@ const SubFlowCanva = (editing, flowid) => {
       console.log(res, "res.data");
       const data = await res.json();
       console.log(data, "data");
-      await router.push("/subflowedit?flowid=" + data.data, { scroll: false });
+      await router.push("/subflowedit?flowid=" + data.data, {
+        scroll: false,
+      });
       setAutoSaving(false);
     }
+    // }
   }, [rfInstance, flowKeys, flowDescription]);
+
+  const confirmAddingSubflow = async () => {
+    // console.log("Setting need confirmation to false");
+    // await setNeedConfirmation(false);
+    // console.log("Setting confirm adding to false");
+    setConfirmAdding(false);
+    await setNeedConfirmation(false);
+    // console.log("Calling onSave");
+    onSave;
+    // await onSave();
+  };
+
+  const cancelConfirm = () => {
+    setConfirmAdding(false);
+  };
 
   const today = new Date();
   const time = today.getHours() + "_" + today.getMinutes();
@@ -1392,7 +1430,7 @@ const SubFlowCanva = (editing, flowid) => {
                 onClick={handleAutoLayout}
                 className="mb-2 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white dark:border-slate-400 dark:text-white"
               >
-                ⏹️ Auto-Layout
+                ⏹️ Auto-Layout {String(needConfirmation)}
               </button>
 
               <button
@@ -1589,6 +1627,46 @@ const SubFlowCanva = (editing, flowid) => {
       {previewButton && (
         <div className="preViewButton hover:border-transparent hover:bg-blue-500 hover:text-white">
           <button>Preview</button>
+        </div>
+      )}
+
+      {confirmAdding && (
+        <div className="bg-gray-900 fixed inset-0 flex items-center justify-center bg-opacity-50">
+          <div
+            ref={confirmPopup}
+            className="divide-y divide-slate-300 rounded-lg bg-white p-4 shadow-lg"
+          >
+            <h2 className=" pb-4 pt-2 text-lg font-semibold">
+              ⚠️ Adding subflow without Name or Description
+            </h2>
+            {/* <hr /> */}
+            <div className="pb-2 pt-2">
+              <p> You have selected to save a subflow.</p>
+              <p>
+                Are you sure you want to save the subflow without adding a
+                custom name or description?{" "}
+              </p>
+              <p className="font-semibold">
+                P.S : You can always edit the subflow later to add a custom name
+              </p>
+            </div>
+            {/* <hr /> */}
+
+            <div className="mt-4 flex justify-end pt-4">
+              <button
+                className="mr-2 rounded-lg bg-slate-100 px-4 py-1"
+                onClick={cancelConfirm}
+              >
+                Cancel
+              </button>
+              <button
+                className="rounded-lg bg-green-500 px-4 py-1 text-white"
+                onClick={confirmAddingSubflow}
+              >
+                Confirmed
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

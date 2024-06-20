@@ -30,17 +30,19 @@ const Settings = () => {
               <form action="#">
                 <div className="p-6.5">
                   <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                    <div className="w-full xl:w-1/2">
+                    <div className="w-full xl:w-1/2 ">
                       <label className="mb-3 block text-sm font-medium text-black dark:text-white">
                         Backend Endpoint (.env){" "}
                         <span className="text-meta-1">*</span>
                       </label>
-                      <input
-                        type="text"
-                        value={env.NEXT_PUBLIC_BACKEND_URL}
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary "
-                        disabled
-                      />
+                      <div className="cursor-no-drop">
+                        <input
+                          type="text"
+                          value={env.NEXT_PUBLIC_BACKEND_URL}
+                          className="w-full	 cursor-no-drop rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary "
+                          disabled
+                        />
+                      </div>
                     </div>
                   </div>
 
