@@ -304,6 +304,75 @@ const SubflowTable = () => {
     }
   };
 
+  let currentMenu = null;
+
+  const tableRowContextMenu = (e, subflow) => {
+    e.preventDefault();
+    console.log("Right clicked on subflow with id:", subflow.id);
+
+    // Remove the previous menu if it exists
+    if (currentMenu) {
+      currentMenu.remove();
+      currentMenu = null;
+    }
+
+    const menu = [
+      {
+        label: "✏️ Edit",
+        onClick: () => {
+          router.push("/subflowedit?flowid=" + subflow.id);
+          menuContainer.remove();
+          currentMenu = null;
+        },
+      },
+      {
+        label: "🗑️ Delete",
+        onClick: () => {
+          handleDeleteClick(subflow);
+        },
+      },
+      {
+        label: "▶️ Play ",
+        onClick: () => {
+          getFlow(subflow.id);
+          menuContainer.remove();
+          currentMenu = null;
+        },
+      },
+    ];
+
+    const menuContainer = document.createElement("div");
+    menuContainer.className = "absolute z-50 bg-white dark:bg-boxdark";
+    menuContainer.style.top = e.clientY + "px";
+    menuContainer.style.left = e.clientX + "px";
+    menuContainer.style.border = "1px solid #ccc";
+    menuContainer.style.borderRadius = "5px";
+    menuContainer.style.padding = "5px";
+    menuContainer.style.boxShadow = "0 2px 5px rgba(0,0,0,0.1)";
+    menuContainer.style.zIndex = "9999";
+
+    menu.forEach((item) => {
+      const menuItem = document.createElement("div");
+      menuItem.className = "p-2 hover:bg-gray-100 cursor-pointer";
+      menuItem.innerHTML = item.label;
+      menuItem.onclick = item.onClick;
+      menuContainer.appendChild(menuItem);
+    });
+
+    document.body.appendChild(menuContainer);
+    currentMenu = menuContainer;
+
+    const handleClickOutside = (event) => {
+      if (!menuContainer.contains(event.target)) {
+        menuContainer.remove();
+        currentMenu = null;
+        document.removeEventListener("click", handleClickOutside);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+  };
+
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentSubflows = subflows.slice(startIndex, endIndex);
@@ -466,6 +535,9 @@ const SubflowTable = () => {
 
         {currentSubflows.map((subflow, index) => (
           <div
+            onContextMenu={(e) => {
+              tableRowContextMenu(e, subflow);
+            }}
             onDoubleClick={() =>
               router.push("/subflowedit?flowid=" + subflow.id)
             }
