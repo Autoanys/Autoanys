@@ -27,6 +27,14 @@ const SubflowTable = () => {
     code: 200,
     message: "",
   });
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [subflowToDelete, setSubflowToDelete] = useState(null);
+
+  const handleDeleteClick = (subflow) => {
+    setSubflowToDelete(subflow);
+    setShowConfirm(true);
+  };
+
   const truncateText = (text, maxLength) => {
     if (text.length <= maxLength) {
       return text;
@@ -251,6 +259,48 @@ const SubflowTable = () => {
       }
     } catch (error) {
       console.error("Error fetching data:", error);
+    }
+  };
+
+  const confirmDelete = async () => {
+    setDeleted(true);
+    if (subflowToDelete) {
+      setShowConfirm(false);
+      setDeleted(true);
+      try {
+        const res = await fetch(
+          process.env.NEXT_PUBLIC_BACKEND_URL +
+            "/subflow/delete/" +
+            subflowToDelete.id,
+          {
+            method: "GET",
+          },
+        );
+        const data = await res.json();
+        if (data && data.data) {
+          setSubflows((prevSubflows) =>
+            prevSubflows.filter((subflow) => subflow.id !== subflowToDelete.id),
+          );
+          setAllFlow((prevAllFlow) =>
+            prevAllFlow.filter((subflow) => subflow.id !== subflowToDelete.id),
+          );
+
+          setShowNotification({
+            show: true,
+            code: 200,
+            message: "Sub flow deleted successfully!",
+          });
+          setTimeout(() => {
+            setShowNotification({
+              show: false,
+              code: 200,
+              message: "Sub flow deleted successfully!",
+            });
+          }, 3000);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     }
   };
 
@@ -534,7 +584,7 @@ const SubflowTable = () => {
                 className="font-sans from-gray-900 to-gray-800 shadow-gray-900/10 hover:shadow-gray-900/20 relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg bg-gradient-to-tr text-center align-middle text-xs font-medium uppercase text-white  transition-all hover:shadow-lg active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                 type="button"
                 title="Delete Subflow"
-                onClick={deleteFlow(subflow.id)}
+                onClick={() => handleDeleteClick(subflow)}
               >
                 <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform">
                   <svg
@@ -569,8 +619,46 @@ const SubflowTable = () => {
                 </span>
               </button>
             </div>
+            {showConfirm && (
+              <div className="bg-gray-900 fixed inset-0 flex items-center justify-center bg-opacity-50">
+                <div className="divide-y divide-slate-300 rounded-lg bg-white p-4 shadow-lg">
+                  <h2 className=" pb-4 pt-2 text-lg font-semibold">
+                    ⚠️ Deleting a subflow
+                  </h2>
+                  {/* <hr /> */}
+                  <div className="pb-2 pt-2">
+                    <p> You have selected to delete a subflow.</p>
+                    <p>
+                      Are you sure you want to delete the subflow "
+                      {subflowToDelete.name}" with ID {subflowToDelete.id}?
+                    </p>
+                    <p>
+                      {" "}
+                      Work flow Description -{" "}
+                      {subflowToDelete.description.length < 1
+                        ? "No description"
+                        : subflowToDelete.description}
+                    </p>
+                  </div>
+                  {/* <hr /> */}
 
-            {/* Render other columns here */}
+                  <div className="mt-4 flex justify-end pt-4">
+                    <button
+                      className="mr-2 rounded-lg bg-slate-100 px-4 py-1"
+                      onClick={() => setShowConfirm(false)}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      className="rounded-lg bg-rose-500 px-4 py-1 text-white"
+                      onClick={confirmDelete}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
