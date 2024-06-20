@@ -17,6 +17,12 @@ Welcome to the **AutoAnys**, a scalable and flexible platform designed to automa
 
 ---
 
+## 👀 What you see is what you get
+
+<p align="center"> <img src="https://raw.githubusercontent.com/autoanys/autoanys/main/demo_1.gif" alt="Project Logo" width="500"> </p>
+
+---
+
 ## 🚀 Roadmap
 
 Our ambitious roadmap includes:

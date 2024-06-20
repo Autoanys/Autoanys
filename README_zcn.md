@@ -17,6 +17,12 @@
 
 ---
 
+## 👀 看到什么就是什么
+
+<p align="center"> <img src="https://raw.githubusercontent.com/autoanys/autoanys/main/demo_1.gif" alt="Project Logo" width="550"> </p>
+
+---
+
 ## 🚀 规划蓝图
 
 我们的规划包括：
