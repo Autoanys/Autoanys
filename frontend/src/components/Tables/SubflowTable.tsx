@@ -492,7 +492,7 @@ const SubflowTable = () => {
               setTrLoading(true);
               router.push("/subflowedit?flowid=" + subflow.id);
             }}
-            className={`grid cursor-alias grid-cols-5 divide-x divide-slate-300  hover:bg-orange-50	 dark:hover:bg-black sm:grid-cols-5 ${
+            className={`grid  cursor-alias grid-cols-5  divide-x divide-slate-300 hover:bg-orange-50	 dark:hover:bg-black sm:grid-cols-5 ${
               index === subflows.length - 1
                 ? ""
                 : "border-b border-stroke dark:border-strokedark"

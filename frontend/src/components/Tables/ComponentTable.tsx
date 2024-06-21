@@ -7,10 +7,11 @@ import {
   useSignalEffect,
   signal,
 } from "@preact/signals";
+import { useRouter } from "next/navigation";
 
 const ComponentTable = () => {
-  const [subflows, setSubflows] = useState([]);
-  const [allFlow, setAllFlow] = useState([]);
+  const [components, setComponents] = useState([]);
+  const [allComponents, setAllComponents] = useState([]);
   const [deleted, setDeleted] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(20);
@@ -83,6 +84,79 @@ const ComponentTable = () => {
     };
   };
 
+  let currentMenu = null;
+  const router = useRouter();
+
+  const tableRowContextMenu = (e, comp) => {
+    e.preventDefault();
+    console.log("Right clicked on component with id:", comp.id);
+
+    // Remove the previous menu if it exists
+    if (currentMenu) {
+      currentMenu.remove();
+      currentMenu = null;
+    }
+
+    const menu = [
+      {
+        label: "✏️ Edit",
+        onClick: () => {
+          router.push("/componentedit?componentid=" + comp.id);
+          menuContainer.remove();
+          currentMenu = null;
+        },
+      },
+      {
+        label: "🗑️ Delete",
+        onClick: () => {
+          // handleDeleteClick(comp);
+          menuContainer.remove();
+          currentMenu = null;
+        },
+      },
+      {
+        label: "▶️ Play ",
+        onClick: () => {
+          getFlow(comp.id);
+          menuContainer.remove();
+          currentMenu = null;
+        },
+      },
+    ];
+
+    const menuContainer = document.createElement("div");
+    menuContainer.className =
+      "absolute z-50 bg-white dark:bg-boxdark dark:text-white";
+    menuContainer.style.top = e.clientY + "px";
+    menuContainer.style.left = e.clientX + "px";
+    menuContainer.style.border = "1px solid #ccc";
+    menuContainer.style.borderRadius = "5px";
+    menuContainer.style.padding = "5px";
+    menuContainer.style.boxShadow = "0 2px 5px rgba(0,0,0,0.1)";
+    menuContainer.style.zIndex = "9999";
+
+    menu.forEach((item) => {
+      const menuItem = document.createElement("div");
+      menuItem.className = "p-2 hover:bg-gray-100 cursor-pointer";
+      menuItem.innerHTML = item.label;
+      menuItem.onclick = item.onClick;
+      menuContainer.appendChild(menuItem);
+    });
+
+    document.body.appendChild(menuContainer);
+    currentMenu = menuContainer;
+
+    const handleClickOutside = (event) => {
+      if (!menuContainer.contains(event.target)) {
+        menuContainer.remove();
+        currentMenu = null;
+        document.removeEventListener("click", handleClickOutside);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -91,8 +165,8 @@ const ComponentTable = () => {
         );
         const data = await res.json();
         if (data && data.data) {
-          setSubflows(data.data);
-          setAllFlow(data.data); // Ensure allFlow is set initially
+          setComponents(data.data);
+          setAllComponents(data.data);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -100,7 +174,7 @@ const ComponentTable = () => {
     };
     fetchData();
     setDeleted(false);
-  }, [deleted]); // Removed allFlow dependency
+  }, [deleted]);
 
   const deleteFlow = (id) => async () => {
     setDeleted(true);
@@ -113,15 +187,15 @@ const ComponentTable = () => {
       );
       const data = await res.json();
       if (data && data.data) {
-        console.log("Before update:", subflows);
-        setSubflows((prevSubflows) => {
+        console.log("Before update:", components);
+        setComponents((prevSubflows) => {
           const updatedSubflows = prevSubflows.filter(
             (subflow) => subflow.id !== id,
           );
           console.log("Updated subflows:", updatedSubflows);
           return updatedSubflows;
         });
-        setAllFlow((prevAllFlow) => {
+        setAllComponents((prevAllFlow) => {
           const updatedAllFlow = prevAllFlow.filter(
             (subflow) => subflow.id !== id,
           );
@@ -136,16 +210,32 @@ const ComponentTable = () => {
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentSubflows = subflows.slice(startIndex, endIndex);
+  const currentComponent = components.slice(startIndex, endIndex);
 
   return (
-    <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+    <div className="rounded-sm  bg-white px-5 pb-2.5 pt-6  dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
-        Custom Components
+        Custom Components List
       </h4>
 
+      <input
+        type="text"
+        placeholder=" 🔍 Search Component by component name or component description"
+        className="mb-6 h-10 w-full rounded-md border border-stroke px-3 dark:border-strokedark dark:bg-boxdark"
+        onChange={(e) => {
+          const searchValue = e.target.value.toLowerCase();
+          setComponents(
+            allComponents.filter(
+              (comp) =>
+                comp.name.toLowerCase().includes(searchValue) ||
+                comp.description.toLowerCase().includes(searchValue),
+            ),
+          );
+        }}
+      />
+
       <div className="flex flex-col rounded-t-lg border	border-slate-300 text-black">
-        <div className="grid grid-cols-4 rounded-sm bg-indigo-50 uppercase dark:bg-white sm:grid-cols-4">
+        <div className="grid grid-cols-4 divide-x divide-slate-300 rounded-t-lg bg-indigo-50 uppercase dark:bg-white sm:grid-cols-4">
           <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
             <h5 className=" text-sm font-medium xsm:text-sm">
               <b>Component Name</b>
@@ -174,37 +264,40 @@ const ComponentTable = () => {
           </div>
         </div>
 
-        {currentSubflows.map((subflow, index) => (
+        {currentComponent.map((comp, index) => (
           <div
-            className={`grid grid-cols-4 sm:grid-cols-4 ${
-              index === subflows.length - 1
+            onContextMenu={(e) => {
+              tableRowContextMenu(e, comp);
+            }}
+            className={`grid cursor-alias grid-cols-4 divide-x divide-slate-300 hover:bg-orange-50	 dark:hover:bg-black sm:grid-cols-4 ${
+              index === components.length - 1
                 ? ""
                 : "border-b border-stroke dark:border-strokedark"
             }`}
-            key={subflow.id}
+            key={comp.id}
           >
             <div className="flex items-center gap-3 pl-2.5 ">
               <p
                 className="text-bla ck
               hidden dark:text-white sm:block"
               >
-                {subflow.name}
+                {comp.name}
               </p>
             </div>
 
             <div className="flex items-center gap-3 pl-2.5 ">
               <p className="hidden text-black dark:text-white sm:block">
                 {/* {subflow.id} */}
-                {truncateText(subflow.id, 15)}
+                {truncateText(comp.id, 15)}
               </p>
             </div>
 
             <div className="flex items-center gap-3 pl-2.5 ">
               <p
                 className="hidden text-black dark:text-white sm:block"
-                title={subflow.description}
+                title={comp.description}
               >
-                {truncateText(subflow.description, 30)}
+                {truncateText(comp.description, 30)}
               </p>
             </div>
             <div className="flex items-center gap-4 pl-2.5 ">
@@ -232,7 +325,7 @@ const ComponentTable = () => {
                   <Link
                     href={{
                       pathname: "/componentedit",
-                      query: { componentid: subflow.id },
+                      query: { componentid: comp.id },
                     }}
                   >
                     <button
@@ -260,7 +353,7 @@ const ComponentTable = () => {
                   <button
                     className="font-sans from-gray-900 to-gray-800 shadow-gray-900/10 hover:shadow-gray-900/20 relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg bg-gradient-to-tr text-center align-middle text-xs font-medium uppercase text-white shadow-md transition-all hover:shadow-lg active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                     type="button"
-                    onClick={getFlow(subflow.id)}
+                    onClick={getFlow(comp.id)}
                   >
                     <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform">
                       <svg
@@ -285,7 +378,7 @@ const ComponentTable = () => {
               <button
                 className="font-sans from-gray-900 to-gray-800 shadow-gray-900/10 hover:shadow-gray-900/20 relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg bg-gradient-to-tr text-center align-middle text-xs font-medium uppercase text-white shadow-md transition-all hover:shadow-lg active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                 type="button"
-                onClick={deleteFlow(subflow.id)}
+                onClick={deleteFlow(comp.id)}
               >
                 <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform">
                   <svg
@@ -356,21 +449,22 @@ const ComponentTable = () => {
               Previous
             </button>
             <span className="mx-2">
-              Page {currentPage} of {Math.ceil(subflows.length / itemsPerPage)}
+              Page {currentPage} of{" "}
+              {Math.ceil(components.length / itemsPerPage)}
             </span>
             <button
               onClick={() =>
                 setCurrentPage((prev) =>
-                  prev < Math.ceil(subflows.length / itemsPerPage)
+                  prev < Math.ceil(components.length / itemsPerPage)
                     ? prev + 1
                     : prev,
                 )
               }
               disabled={
-                currentPage === Math.ceil(subflows.length / itemsPerPage)
+                currentPage === Math.ceil(components.length / itemsPerPage)
               }
               className={
-                currentPage === Math.ceil(subflows.length / itemsPerPage)
+                currentPage === Math.ceil(components.length / itemsPerPage)
                   ? "cursor-not-allowed"
                   : "text-blue-700	"
               }

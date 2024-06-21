@@ -16,6 +16,11 @@ const MainflowTable = () => {
   const [itemsPerPage, setItemsPerPage] = useState(20);
   const [playing, setPlaying] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
+  const [isActive, setIsActive] = useState(false);
+
+  const handleToggle = () => {
+    setIsActive(!isActive);
+  };
 
   const truncateText = (text, maxLength) => {
     if (text.length <= maxLength) {
@@ -139,33 +144,58 @@ const MainflowTable = () => {
   const currentSubflows = subflows.slice(startIndex, endIndex);
 
   return (
-    <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
-      <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
-        Main Flows
-      </h4>
+    // border border-stroke shadow-default
+    <div className="rounded-sm  bg-white px-5 pb-2.5 pt-6  dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+      <div className="flex justify-between gap-x-4">
+        <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
+          Main Flows List
+        </h4>
+        <button className="group relative flex items-center gap-2.5 rounded-lg px-4 py-4 text-sm font-medium font-semibold text-black duration-300 ease-in-out dark:text-white dark:hover:bg-meta-4">
+          📥 Import a Main Flow
+        </button>
+        <input
+          type="file"
+          id="fileInput"
+          accept=".json"
+          style={{ display: "none" }}
+        />
+      </div>
 
-      <div className="flex flex-col">
-        <div className="grid grid-cols-4 rounded-sm dark:bg-meta-4 sm:grid-cols-4">
-          <div className="xl:bt-5 pl-2.5 pt-5  xl:pb-2.5 xl:pl-2.5">
-            <h5 className=" text-sm font-medium xsm:text-base">
-              <b>Main Flow Name</b>
+      <input
+        type="text"
+        placeholder=" 🔍 Search Main flow by name or description"
+        className="mb-6 h-10 w-full rounded-md border border-stroke px-3 dark:border-strokedark dark:bg-boxdark"
+      />
+
+      <div className="flex flex-col rounded-t-lg border	border-slate-300 text-black">
+        <div className="grid grid-cols-7 divide-x divide-slate-300 rounded-t-lg bg-indigo-50 uppercase dark:bg-white sm:grid-cols-7">
+          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+            <h5 className=" text-sm font-medium xsm:text-sm">
+              <b> Flow Name</b>
             </h5>
           </div>
-
-          <div className="xl:bt-5 pl-2.5 pt-5  xl:pb-2.5 xl:pl-2.5">
-            <h5 className="text-sm font-medium  xsm:text-base">
-              <b>Main Flow ID</b>
+          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+            <h5 className=" text-sm font-medium xsm:text-sm">
+              <b> Flow ID</b>
             </h5>
           </div>
-
-          <div className="xl:bt-5 pl-2.5 pt-5  xl:pb-2.5 xl:pl-2.5">
-            <h5 className="text-sm font-medium  xsm:text-base">
-              <b>Flow Description</b>
+          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+            <h5 className=" text-sm font-medium xsm:text-sm">
+              <b> Description</b>
             </h5>
           </div>
-
-          <div className="xl:bt-5 pl-2.5 pt-5  xl:pb-2.5 xl:pl-2.5">
-            <h5 className="text-sm font-medium  xsm:text-base">
+          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+            <h5 className=" text-sm font-medium xsm:text-sm">
+              <b>Active</b>
+            </h5>
+          </div>
+          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+            <h5 className=" text-sm font-medium xsm:text-sm">
+              <b>Schedule</b>
+            </h5>
+          </div>
+          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+            <h5 className=" text-sm font-medium xsm:text-sm">
               <b>Actions</b>
             </h5>
           </div>
@@ -173,7 +203,7 @@ const MainflowTable = () => {
 
         {currentSubflows.map((subflow, index) => (
           <div
-            className={`grid grid-cols-4 sm:grid-cols-4 ${
+            className={`grid cursor-alias grid-cols-7 divide-x  divide-slate-300 hover:bg-orange-50 sm:grid-cols-7 ${
               index === subflows.length - 1
                 ? ""
                 : "border-b border-stroke dark:border-strokedark"
@@ -192,7 +222,7 @@ const MainflowTable = () => {
             <div className="flex items-center gap-3 pl-2.5 ">
               <p className="hidden text-black dark:text-white sm:block">
                 {/* {subflow.id} */}
-                {truncateText(subflow.id, 15)}
+                {truncateText(subflow.id, 10)}
               </p>
             </div>
 
@@ -204,6 +234,40 @@ const MainflowTable = () => {
                 {truncateText(subflow.description, 30)}
               </p>
             </div>
+            <div className="flex  items-center gap-1 pl-2.5 pt-2">
+              <div
+                className="flex cursor-pointer items-center"
+                onClick={handleToggle}
+              >
+                <div className="relative">
+                  <input
+                    type="checkbox"
+                    checked={isActive}
+                    onChange={handleToggle}
+                    className="sr-only"
+                  />
+                  <div
+                    className={`block border border-slate-200 ${isActive ? "bg-green-500" : "bg-slate-500"} h-5 w-12 rounded-full`}
+                  ></div>
+                  <div
+                    className={`dot  absolute top-1 h-5 w-5 rounded-full transition ${isActive ? "translate-x-6" : "translate-x-0"}`}
+                  ></div>
+                </div>
+              </div>
+              <span className="text-gray-700 text-xs dark:text-white">
+                {isActive ? "Actived" : "Disabled"}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-3 pl-2.5 ">
+              <p
+                className="hidden text-black dark:text-white sm:block"
+                title={subflow.description}
+              >
+                {truncateText(subflow.description, 30)}
+              </p>
+            </div>
+
             <div className="flex items-center gap-4 pl-2.5 ">
               <p className="hidden text-black dark:text-white sm:block">
                 <div className="flex gap-4">
