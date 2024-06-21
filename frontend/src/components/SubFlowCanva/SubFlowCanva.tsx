@@ -135,6 +135,9 @@ const SubFlowCanva = (editing, flowid) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [exportDropdownOpen, setExportDropdownOpen] = useState(false);
   const [customVariables, setCustomVariables] = useState([{ id: 1, key: "" }]);
+  const [debugData, setDebugData] = useState([]);
+  const [debugStep, setDebugStep] = useState(0);
+  const [debugging, setDebugging] = useState(false);
 
   const handleCustomVariableChange = (id: number, newValue: string) => {
     setCustomVariables((prevVariables) =>
@@ -421,159 +424,229 @@ const SubFlowCanva = (editing, flowid) => {
   };
 
   // Flow V2
-  const getFlow = async () => {
-    try {
-      let post_data = JSON.stringify(
-        { nodes, edges, variables: customVariables },
-        null,
-        2,
-      );
-
-      const res = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_URL + "/flow/v2",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: post_data,
-        },
-      );
-
-      const logRes = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_URL + "/logs/write/",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(logData),
-        },
-      );
-
-      console.log("TGhis is post_data", post_data);
-      console.log(res.status);
-      const inputReq = await checkRequiredInputs();
-      console.log(inputReq);
-      if (res.status === 450) {
-        console.log("IN");
-        setShowNotification({
-          show: true,
-          code: 450,
-          message: "Failed analyzing the flow",
-        });
-        setTimeout(() => {
-          setShowNotification({
-            show: false,
-            code: 450,
-            message: "Failed analyzing the flow",
-          });
-        }, 3000);
-
-        fetch(
-          process.env.NEXT_PUBLIC_BACKEND_URL + "/logs/failed/" + triggerID,
-          {
-            method: "GET",
-          },
+  const getFlow = async (debug) => {
+    if (!debug) {
+      try {
+        let post_data = JSON.stringify(
+          { nodes, edges, variables: customVariables },
+          null,
+          2,
         );
-      }
-      if (!inputReq) {
-        console.log("IN ma?");
-        setShowNotification({
-          show: true,
-          code: 402,
-          message: "Required inputs are missing",
-        });
-        setTimeout(() => {
-          setShowNotification({
-            show: false,
-            code: 402,
-            message: "Required inputs are missing",
-          });
-        }, 3000);
 
-        return;
-      } else {
-        const data = await res.json();
-
-        console.log("from api", data);
-        let tmp_id;
-        for (let i = 0, l = data.steps.length; i < l; i++) {
-          setPlaying(true);
-          setPlayingPreviewSideBar(true);
-          setCurrentStep({
-            total: data.steps.length,
-            step: i + 1,
-            result: { type: "text", value: "text" },
-          });
-
-          setCurrentIndex(i);
-          // setCurrentStep((curStep) => ({
-          //   ...curStep,
-          //   total: data.steps.length,
-          //   step: i + 1,
-          // }));
-          if (
-            data.steps[i]["method"] === "POST" &&
-            data.steps[i].api.includes("upload")
-          ) {
-            const formData = new FormData();
-            formData.append("csv_file", data.steps[i].post_data.csv_file);
-            await fetch(data.steps[i].api, {
-              method: data.steps[i].method,
-              body: formData,
-            });
-          }
-          // if (data.steps[i]["method"] === "POST") {
-          let curRes = await fetch(data.steps[i].api, {
-            method: data.steps[i].method,
+        const res = await fetch(
+          process.env.NEXT_PUBLIC_BACKEND_URL + "/flow/v2",
+          {
+            method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
-            body:
-              data.steps[i].method === "POST"
-                ? JSON.stringify(data.steps[i].post_data)
-                : null,
+            body: post_data,
+          },
+        );
+
+        const logRes = await fetch(
+          process.env.NEXT_PUBLIC_BACKEND_URL + "/logs/write/",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(logData),
+          },
+        );
+
+        const inputReq = await checkRequiredInputs();
+        if (res.status === 450) {
+          console.log("IN");
+          setShowNotification({
+            show: true,
+            code: 450,
+            message: "Failed analyzing the flow",
           });
+          setTimeout(() => {
+            setShowNotification({
+              show: false,
+              code: 450,
+              message: "Failed analyzing the flow",
+            });
+          }, 3000);
 
-          let resData = await curRes.json();
-
-          let stepLog = await fetch(
-            process.env.NEXT_PUBLIC_BACKEND_URL + "/logs/step/",
+          fetch(
+            process.env.NEXT_PUBLIC_BACKEND_URL + "/logs/failed/" + triggerID,
             {
-              method: "POST",
+              method: "GET",
+            },
+          );
+        }
+        if (!inputReq) {
+          console.log("IN ma?");
+          setShowNotification({
+            show: true,
+            code: 402,
+            message: "Required inputs are missing",
+          });
+          setTimeout(() => {
+            setShowNotification({
+              show: false,
+              code: 402,
+              message: "Required inputs are missing",
+            });
+          }, 3000);
+
+          return;
+        } else {
+          const data = await res.json();
+
+          console.log("from api", data);
+          let tmp_id;
+          for (let i = 0, l = data.steps.length; i < l; i++) {
+            setPlaying(true);
+            setPlayingPreviewSideBar(true);
+            setCurrentStep({
+              total: data.steps.length,
+              step: i + 1,
+              result: { type: "text", value: "text" },
+            });
+
+            setCurrentIndex(i);
+            if (
+              data.steps[i]["method"] === "POST" &&
+              data.steps[i].api.includes("upload")
+            ) {
+              const formData = new FormData();
+              formData.append("csv_file", data.steps[i].post_data.csv_file);
+              await fetch(data.steps[i].api, {
+                method: data.steps[i].method,
+                body: formData,
+              });
+            }
+            let curRes = await fetch(data.steps[i].api, {
+              method: data.steps[i].method,
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({
-                log_id: triggerID,
-                api: data.steps[i].api,
-                step: i + 1,
-                result: JSON.stringify(resData),
-              }),
-            },
-          );
+              body:
+                data.steps[i].method === "POST"
+                  ? JSON.stringify(data.steps[i].post_data)
+                  : null,
+            });
 
-          if (resData.preview) {
-            console.log("Preview data", resData.preview);
-            setCurrentResult((currentResult) => [
-              ...currentResult,
-              { type: "image", value: resData.preview },
-            ]);
-          } else {
-            setCurrentResult((currentResult) => [
-              ...currentResult,
-              { type: "text", value: resData.message },
-            ]);
-          }
+            let resData = await curRes.json();
 
-          if (i === data.steps.length - 1) {
-            setPlaying(false);
+            let stepLog = await fetch(
+              process.env.NEXT_PUBLIC_BACKEND_URL + "/logs/step/",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  log_id: triggerID,
+                  api: data.steps[i].api,
+                  step: i + 1,
+                  result: JSON.stringify(resData),
+                }),
+              },
+            );
+
+            if (resData.preview) {
+              console.log("Preview data", resData.preview);
+              setCurrentResult((currentResult) => [
+                ...currentResult,
+                { type: "image", value: resData.preview },
+              ]);
+            } else {
+              setCurrentResult((currentResult) => [
+                ...currentResult,
+                { type: "text", value: resData.message },
+              ]);
+            }
+
+            if (i === data.steps.length - 1) {
+              setPlaying(false);
+            }
           }
         }
+      } catch (err) {
+        console.log(err);
       }
-    } catch (err) {
-      console.log(err);
+    } else {
+      try {
+        let post_data = JSON.stringify(
+          { nodes, edges, variables: customVariables },
+          null,
+          2,
+        );
+
+        const res = await fetch(
+          process.env.NEXT_PUBLIC_BACKEND_URL + "/flow/v2",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: post_data,
+          },
+        );
+
+        const logRes = await fetch(
+          process.env.NEXT_PUBLIC_BACKEND_URL + "/logs/write/",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(logData),
+          },
+        );
+
+        const inputReq = await checkRequiredInputs();
+        if (res.status === 450) {
+          console.log("IN");
+          setShowNotification({
+            show: true,
+            code: 450,
+            message: "Failed analyzing the flow",
+          });
+          setTimeout(() => {
+            setShowNotification({
+              show: false,
+              code: 450,
+              message: "Failed analyzing the flow",
+            });
+          }, 3000);
+
+          fetch(
+            process.env.NEXT_PUBLIC_BACKEND_URL + "/logs/failed/" + triggerID,
+            {
+              method: "GET",
+            },
+          );
+        }
+        if (!inputReq) {
+          console.log("IN ma?");
+          setShowNotification({
+            show: true,
+            code: 402,
+            message: "Required inputs are missing",
+          });
+          setTimeout(() => {
+            setShowNotification({
+              show: false,
+              code: 402,
+              message: "Required inputs are missing",
+            });
+          }, 3000);
+
+          return;
+        } else {
+          const data = await res.json();
+          setDebugging(true);
+          alert("Debugging");
+        }
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
@@ -1454,14 +1527,14 @@ const SubFlowCanva = (editing, flowid) => {
               </button>
 
               <button
-                onClick={getFlow}
+                onClick={() => getFlow(true)}
                 className="mb-2 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white dark:border-slate-400 dark:text-white"
               >
                 🐞 Debug
               </button>
 
               <button
-                onClick={getFlow}
+                onClick={() => getFlow(false)}
                 className={`mb-2 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500  hover:text-white dark:border-slate-400 dark:text-white ${
                   playing ? "cursor-not-allowed" : ""
                 }`}
@@ -1581,7 +1654,83 @@ const SubFlowCanva = (editing, flowid) => {
                 <div className="slider-content">
                   {currentResult[currentIndex]?.type === "text" && (
                     <div>
-                      <p>{currentResult[currentIndex].value}</p>
+                      <p>
+                        {currentResult[currentIndex].value
+                          ? currentResult[currentIndex].value
+                          : "Loading"}
+                      </p>
+                    </div>
+                  )}
+                  {currentResult[currentIndex]?.type === "image" && (
+                    <img
+                      src={currentResult[currentIndex].value}
+                      alt="Slide content"
+                      onClick={() =>
+                        openPopup(currentResult[currentIndex].value)
+                      }
+                    />
+                  )}
+                </div>
+                <div className="slider-controls">
+                  <button onClick={prevSlide}>⮜ </button>
+                  <button onClick={nextSlide}>⮞ </button>
+                </div>
+                <div className="slider-dots">
+                  {currentResult.map((result, index) => (
+                    <span
+                      key={index}
+                      className={currentIndex === index ? "dot active" : "dot"}
+                      onClick={() => setSlide(index)}
+                    ></span>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                className="hover:bg-red-700 focus:shadow-outline fixed bottom-0 right-0 m-auto mb-2.5 mr-2.5 items-center justify-center rounded bg-red px-4 py-2 text-lg font-semibold text-white focus:outline-none"
+                onClick={() => {
+                  setCurrentResult([]);
+                  setPlayingPreviewSideBar(false);
+                }}
+              >
+                Close
+              </button>
+
+              {/* {currentResult[currentResult.length]?.type === "text" && (
+                <p>{currentResult.value}</p>
+              )}
+              {currentResult[currentResult.length]?.type === "image" && (
+                <img src={currentResult.value} />
+              )} */}
+            </div>
+
+            <div
+              className={`fixed bottom-10 right-0 z-40  h-5/6	 w-[22vw] rounded-lg border-2 border-slate-300 bg-white p-5 text-black shadow-2xl  duration-300 ease-in-out ${
+                debugging ? "translate-x-0 " : "translate-x-full"
+              }`}
+            >
+              <h3 className="text-2xl">🧪 Testing Preview</h3>
+              <p className="text-md mt-4 font-semibold">
+                Node ID : {selectedNodes}
+              </p>
+              <hr></hr>
+              <p className="text-md">Total Steps : {currentStep.total}</p>
+              <p className="text-md">Current Step : {currentStep.step}</p>
+              {/* <p className="text-md">
+                Current result : {JSON.stringify(currentStep.result)}
+              </p> */}
+              <hr></hr>
+              <p className="text-md mt-4 font-semibold">Result Preview :</p>
+
+              <div className="slider">
+                <div className="slider-content">
+                  {currentResult[currentIndex]?.type === "text" && (
+                    <div>
+                      <p>
+                        {currentResult[currentIndex].value
+                          ? currentResult[currentIndex].value
+                          : "Loading"}
+                      </p>
                     </div>
                   )}
                   {currentResult[currentIndex]?.type === "image" && (
