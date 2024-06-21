@@ -98,39 +98,54 @@ const LoggingTable = () => {
   };
 
   return (
-    <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+    <div className="rounded-sm  bg-white px-5 pb-2.5 pt-6  dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
         Execution Logging
       </h4>
 
-      <div className="flex flex-col">
-        <div className="grid grid-cols-5 rounded-sm dark:bg-meta-4 sm:grid-cols-5">
-          <div className="xl:bt-5 pl-2.5 pt-5  xl:pb-2.5 xl:pl-2.5">
-            <h5 className=" text-sm font-medium xsm:text-base">
+      <input
+        type="text"
+        placeholder=" 🔍 Search by Trigger ID or Datetime"
+        className="mb-6 h-10 w-full rounded-md border border-stroke px-3 dark:border-strokedark dark:bg-boxdark"
+        onChange={(e) => {
+          const searchValue = e.target.value.toLowerCase();
+          const filteredLog = allFlow.filter((log) => {
+            return (
+              log.triggerID.toLowerCase().includes(searchValue) ||
+              log.created_at.toLowerCase().includes(searchValue)
+            );
+          });
+          setLogData(filteredLog);
+        }}
+      />
+
+      <div className="flex flex-col rounded-t-lg border	border-slate-300 text-black">
+        <div className="grid grid-cols-5 divide-x divide-slate-300 rounded-t-lg bg-indigo-50 uppercase dark:bg-white sm:grid-cols-5">
+          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+            <h5 className=" text-sm font-medium xsm:text-sm">
               <b>Trigger ID</b>
             </h5>
           </div>
-
-          <div className="xl:bt-5 pl-2.5 pt-5  xl:pb-2.5 xl:pl-2.5">
-            <h5 className="text-sm font-medium  xsm:text-base">
+          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+            <h5 className=" text-sm font-medium xsm:text-sm">
               <b>Execution result</b>
             </h5>
           </div>
 
-          <div className="xl:bt-5 pl-2.5 pt-5  xl:pb-2.5 xl:pl-2.5">
-            <h5 className="text-sm font-medium  xsm:text-base">
+          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+            <h5 className=" text-sm font-medium xsm:text-sm">
               <b>Execution Type</b>
             </h5>
           </div>
 
-          <div className="xl:bt-5 pl-2.5 pt-5  xl:pb-2.5 xl:pl-2.5">
-            <h5 className="text-sm font-medium  xsm:text-base">
+          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+            <h5 className=" text-sm font-medium xsm:text-sm">
               <b>Log DateTime</b>
             </h5>
           </div>
 
-          <div className="xl:bt-5 pl-2.5 pt-5  xl:pb-2.5 xl:pl-2.5">
-            <h5 className="text-sm font-medium  xsm:text-base">
+          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+            <h5 className=" text-sm font-medium xsm:text-sm">
               <b>Actions</b>
             </h5>
           </div>
@@ -138,7 +153,7 @@ const LoggingTable = () => {
 
         {currentLog.map((log, index) => (
           <div
-            className={`grid grid-cols-5 sm:grid-cols-5 ${
+            className={`grid grid-cols-5  divide-x divide-slate-300 sm:grid-cols-5 ${
               index === log.length - 1
                 ? ""
                 : "border-b border-stroke dark:border-strokedark"
@@ -157,11 +172,14 @@ const LoggingTable = () => {
             <div className="flex items-center gap-3 pl-2.5 ">
               <p
                 className={`hidden font-semibold text-black dark:text-white sm:block ${
-                  log.result === "Success" ? "text-green-500" : "text-red-500"
+                  log.result === "Success" ? "text-green-500" : "text-rose-500"
                 }`}
               >
                 {/* {subflow.id} */}
-                {truncateText(log.result, 15)}
+                {truncateText(
+                  log.result === "Success" ? "✅ Success" : "❌ Failed",
+                  15,
+                )}
               </p>
             </div>
 

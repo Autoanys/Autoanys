@@ -453,64 +453,6 @@ const SubflowTable = () => {
         }}
       />
 
-      {/* <div className="absolute inset-0">
-        {showNotification.show && (
-          <div
-            aria-live="assertive"
-            className="pointer-events-none fixed inset-0 z-999 z-999 mt-30 flex items-end px-4 py-6 sm:items-start sm:p-6"
-          >
-            <div className="flex w-full flex-col items-center space-y-4 sm:items-end">
-              <Transition
-                show={showNotification.show}
-                as={Fragment}
-                enter="transform ease-out duration-300 transition"
-                enterFrom="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
-                enterTo="translate-y-0 opacity-100 sm:translate-x-0"
-                leave="transition ease-in duration-100"
-                leaveFrom="opacity-100"
-                leaveTo="opacity-0"
-              >
-                <div className="pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5">
-                  <div className="p-4">
-                    <div className="flex items-start">
-                      <div className="flex-shrink-0">
-                        <ExclamationCircleIcon
-                          className="h-6 w-6 text-red"
-                          aria-hidden="true"
-                        />
-                      </div>
-                      <div className="ml-3 w-0 flex-1 pt-0.5">
-                        <p className="text-sm font-medium text-red">
-                          {showNotification.code}
-                        </p>
-                        <p className="text-gray-500 mt-1 text-sm">
-                          {showNotification.message}
-                        </p>
-                      </div>
-                      <div className="ml-4 flex flex-shrink-0">
-                        <button
-                          className="text-gray-400 hover:text-gray-500 inline-flex rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                          onClick={() => {
-                            setShowNotification({
-                              show: false,
-                              code: 200,
-                              message: "",
-                            });
-                          }}
-                        >
-                          <span className="sr-only">Close</span>
-                          <XIcon className="h-5 w-5" aria-hidden="true" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Transition>
-            </div>
-          </div>
-        )}
-      </div> */}
-
       <div className="flex flex-col rounded-t-lg border	border-slate-300 text-black">
         <div className="grid grid-cols-5 divide-x divide-slate-300 rounded-t-lg bg-indigo-50 uppercase dark:bg-white sm:grid-cols-5">
           <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
@@ -583,7 +525,7 @@ const SubflowTable = () => {
             </div>
             <div className="flex items-center gap-1 pl-2.5 ">
               <p className="hidden text-black dark:text-white sm:block">
-                <div className="flex gap-2">
+                <div className="flex gap-1">
                   <button
                     className="font-sans bg-gray-900 shadow-gray-900/10 hover:shadow-gray-900/20 relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle text-xs font-medium uppercase text-white  transition-all hover:shadow-lg focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                     type="button"
@@ -662,7 +604,7 @@ const SubflowTable = () => {
               </p>
 
               <button
-                className="font-sans from-gray-900 to-gray-800 shadow-gray-900/10 hover:shadow-gray-900/20 relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg bg-gradient-to-tr text-center align-middle text-xs font-medium uppercase text-white  transition-all hover:shadow-lg active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                className="font-sans from-gray-900 to-gray-800 shadow-gray-900/10 hover:shadow-gray-900/20 relative mr-2 h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg bg-gradient-to-tr text-center align-middle text-xs font-medium uppercase text-white  transition-all hover:shadow-lg active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                 type="button"
                 title="Delete Subflow"
                 onClick={() => handleDeleteClick(subflow)}

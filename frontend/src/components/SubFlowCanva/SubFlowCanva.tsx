@@ -64,6 +64,7 @@ import {
 import crypto from "crypto";
 import GlobalVariables from "../Variables/GlobalVariables";
 import CustomVariables from "../Variables/CustomVariables";
+import { debug } from "console";
 
 const proOptions = { hideAttribution: true };
 const addOnChangeToNodeConfig = (config, handleChange) => {
@@ -133,6 +134,8 @@ const SubFlowCanva = (editing, flowid) => {
   const variablePopupRef = useRef(null);
   const confirmPopup = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentDebugIndex, setCurrentDebugIndex] = useState(0);
+  const [resultLoading, setResultLoading] = useState(false);
   const [exportDropdownOpen, setExportDropdownOpen] = useState(false);
   const [customVariables, setCustomVariables] = useState([{ id: 1, key: "" }]);
   const [debugData, setDebugData] = useState([]);
@@ -179,6 +182,7 @@ const SubFlowCanva = (editing, flowid) => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [popupImage, setPopupImage] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentDebugResult, setCurrentDebugResult] = useState([]);
 
   useEffect(() => {
     setVariables(variableConfig);
@@ -356,6 +360,25 @@ const SubFlowCanva = (editing, flowid) => {
 
   const setSlide = (index) => {
     setCurrentIndex(index);
+  };
+
+  const nextDebugSlide = () => {
+    setCurrentDebugIndex(
+      (prevIndex) => (prevIndex + 1) % currentDebugResult.length,
+    );
+    if (currentDebugIndex === debugStep - 1) {
+      setDebugStep(debugStep + 1);
+    }
+  };
+
+  const prevDebugSlide = () => {
+    setCurrentDebugIndex((prevIndex) =>
+      prevIndex === 0 ? currentDebugResult.length - 1 : prevIndex - 1,
+    );
+  };
+
+  const setDebugSlide = (index) => {
+    setCurrentDebugIndex(index);
   };
 
   const openPopup = (image) => {
@@ -642,6 +665,8 @@ const SubFlowCanva = (editing, flowid) => {
         } else {
           const data = await res.json();
           setDebugging(true);
+          setDebugData(data.steps);
+          setDebugStep(0);
           alert("Debugging");
         }
       } catch (err) {
@@ -1015,6 +1040,43 @@ const SubFlowCanva = (editing, flowid) => {
 
     return acc;
   }, {});
+
+  useEffect(() => {
+    const debugFunction = async () => {
+      if (debugStep === 0) {
+        return;
+      } else {
+        setCurrentDebugIndex(debugStep - 1);
+        setResultLoading(true);
+        const res = await fetch(debugData[debugStep - 1].api, {
+          method: debugData[debugStep - 1].method,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body:
+            debugData[debugStep - 1].method === "POST"
+              ? JSON.stringify(debugData[debugStep - 1].post_data)
+              : null,
+        });
+
+        const resData = await res.json();
+
+        if (resData.preview) {
+          console.log("Preview data", resData.preview);
+          setCurrentDebugResult((currentDebugResult) => [
+            ...currentDebugResult,
+            { type: "image", value: resData.preview },
+          ]);
+        } else {
+          setCurrentDebugResult((currentDebugResult) => [
+            ...currentDebugResult,
+            { type: "text", value: resData.message },
+          ]);
+        }
+      }
+    };
+    debugFunction().then(() => setResultLoading(false));
+  }, [debugStep, debugData]);
 
   const nodeDivs = Object.keys(filteredNodes).map((category) => (
     <div key={category}>
@@ -1709,13 +1771,13 @@ const SubFlowCanva = (editing, flowid) => {
                 debugging ? "translate-x-0 " : "translate-x-full"
               }`}
             >
-              <h3 className="text-2xl">🧪 Testing Preview</h3>
+              <h3 className="text-2xl">🪲 Debugging </h3>
               <p className="text-md mt-4 font-semibold">
                 Node ID : {selectedNodes}
               </p>
               <hr></hr>
-              <p className="text-md">Total Steps : {currentStep.total}</p>
-              <p className="text-md">Current Step : {currentStep.step}</p>
+              <p className="text-md">Total Steps : {debugData.length}</p>
+              <p className="text-md">Current Step : {debugStep}</p>
               {/* <p className="text-md">
                 Current result : {JSON.stringify(currentStep.result)}
               </p> */}
@@ -1724,35 +1786,60 @@ const SubFlowCanva = (editing, flowid) => {
 
               <div className="slider">
                 <div className="slider-content">
-                  {currentResult[currentIndex]?.type === "text" && (
+                  {debugStep <= 0 && (
+                    <div>
+                      <button
+                        onClick={() => setDebugStep(debugStep + 1)}
+                        className="rounded-full bg-green-500 px-4 py-2 font-bold text-white hover:bg-green-600"
+                      >
+                        Start
+                      </button>
+                    </div>
+                  )}
+                  {resultLoading && (
+                    <div>
+                      <img
+                        src={"/images/general/loading.gif"}
+                        alt="Loading"
+                        className="mx-auto h-10 w-10 animate-spin"
+                      />
+                    </div>
+                  )}
+                  {currentDebugResult[currentDebugIndex]?.type === "text" && (
                     <div>
                       <p>
-                        {currentResult[currentIndex].value
-                          ? currentResult[currentIndex].value
+                        {currentDebugResult[currentDebugIndex].value
+                          ? currentDebugResult[currentDebugIndex].value
                           : "Loading"}
                       </p>
                     </div>
                   )}
-                  {currentResult[currentIndex]?.type === "image" && (
+                  {currentDebugResult[currentDebugIndex]?.type === "image" && (
                     <img
-                      src={currentResult[currentIndex].value}
+                      src={currentDebugResult[currentDebugIndex].value}
                       alt="Slide content"
                       onClick={() =>
-                        openPopup(currentResult[currentIndex].value)
+                        openPopup(currentDebugResult[currentDebugIndex].value)
                       }
                     />
                   )}
                 </div>
-                <div className="slider-controls">
-                  <button onClick={prevSlide}>⮜ </button>
-                  <button onClick={nextSlide}>⮞ </button>
-                </div>
+                {debugStep > 0 && (
+                  <div className="slider-controls">
+                    <button onClick={prevDebugSlide}>⮜ </button>
+                    {currentDebugIndex < debugData.length && (
+                      <button onClick={nextDebugSlide}>⮞ </button>
+                    )}
+                  </div>
+                )}
                 <div className="slider-dots">
-                  {currentResult.map((result, index) => (
+                  {currentDebugResult.map((result, index) => (
                     <span
                       key={index}
-                      className={currentIndex === index ? "dot active" : "dot"}
-                      onClick={() => setSlide(index)}
+                      className={
+                        currentDebugIndex === index ? "dot active" : "dot"
+                      }
+                      onClick={() => setDebugSlide(index)}
                     ></span>
                   ))}
                 </div>
@@ -1761,8 +1848,9 @@ const SubFlowCanva = (editing, flowid) => {
               <button
                 className="hover:bg-red-700 focus:shadow-outline fixed bottom-0 right-0 m-auto mb-2.5 mr-2.5 items-center justify-center rounded bg-red px-4 py-2 text-lg font-semibold text-white focus:outline-none"
                 onClick={() => {
-                  setCurrentResult([]);
-                  setPlayingPreviewSideBar(false);
+                  setCurrentDebugResult([]);
+                  setDebugging(false);
+                  setDebugStep(0);
                 }}
               >
                 Close
