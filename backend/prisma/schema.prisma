@@ -18,6 +18,9 @@ model SubFlow {
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
   variables String @default("{}")
+  active Boolean @default(false)
+  schueleType String @default("Manual")
+  schedule String @default("* * * * *")
 }
 
 model MainFlow {
@@ -26,7 +29,7 @@ model MainFlow {
   description String  @default("")
   flowjson String 
   active Boolean @default(false)
-  schedule String @default("* * * * *")
+  schedule String @default("")
 }
 
 model SimpleLogs{

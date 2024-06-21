@@ -132,6 +132,8 @@ const SubFlowCanva = (editing, flowid) => {
   const [isVariablePopupOpen, setIsVariablePopupOpen] = useState(false);
   const popupRef = useRef(null);
   const variablePopupRef = useRef(null);
+  const exportPopRef = useRef(null);
+
   const confirmPopup = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentDebugIndex, setCurrentDebugIndex] = useState(0);
@@ -226,6 +228,7 @@ const SubFlowCanva = (editing, flowid) => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
+      setExportDropdownOpen(false);
       if (popupRef.current && !popupRef.current.contains(event.target)) {
         setIsPopupOpen(false);
       }
@@ -1530,7 +1533,7 @@ const SubFlowCanva = (editing, flowid) => {
               <p className="font-semibold">
                 {parms.get("flowid")
                   ? " Flow ID : " + parms.get("flowid")
-                  : "None"}{" "}
+                  : "Not yet save Flow"}{" "}
               </p>
             </Panel>
 
@@ -1647,6 +1650,14 @@ const SubFlowCanva = (editing, flowid) => {
                       className="text-gray-700 hover:bg-gray-100 hover:text-gray-900 block w-full px-2 py-1 text-left text-sm"
                     >
                       Flow Config Data
+                    </button>
+                    <button
+                      onClick={() => {
+                        toggleDropdown();
+                      }}
+                      className="text-gray-700 hover:bg-gray-100 hover:text-gray-900 block w-full px-2 py-1 text-left text-sm"
+                    >
+                      Cancel
                     </button>
                   </div>
                 </div>

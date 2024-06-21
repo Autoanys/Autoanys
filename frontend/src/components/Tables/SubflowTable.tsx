@@ -31,10 +31,70 @@ const SubflowTable = () => {
   const [trLoading, setTrLoading] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [subflowToDelete, setSubflowToDelete] = useState(null);
+  const [configPopup, setConfigPopup] = useState(false);
+  const [configRef, setConfigRef] = useState(null);
 
   const handleDeleteClick = (subflow) => {
     setSubflowToDelete(subflow);
     setShowConfirm(true);
+  };
+
+  const handleTriggerType = async (e, flowID) => {
+    console.log(e.target.value, flowID);
+    const res = fetch(
+      process.env.NEXT_PUBLIC_BACKEND_URL + "/subflow/scheduler/set/",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          flow_id: flowID,
+          schedule: e.target.value,
+        }),
+      },
+    );
+    setSubflows((prevSubflows) => {
+      const updatedSubflows = prevSubflows.map((subflow) => {
+        if (subflow.id === flowID) {
+          return {
+            ...subflow,
+            schueleType: e.target.value,
+          };
+        }
+        return subflow;
+      });
+      return updatedSubflows;
+    });
+  };
+
+  const configSchedule = async (e, flowID) => {
+    console.log(e.target.value, flowID);
+    const res = fetch(
+      process.env.NEXT_PUBLIC_BACKEND_URL + "/subflow/scheduler/set/",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          flow_id: flowID,
+          schedule: e.target.value,
+        }),
+      },
+    );
+    setSubflows((prevSubflows) => {
+      const updatedSubflows = prevSubflows.map((subflow) => {
+        if (subflow.id === flowID) {
+          return {
+            ...subflow,
+            schueleType: e.target.value,
+          };
+        }
+        return subflow;
+      });
+      return updatedSubflows;
+    });
   };
 
   const truncateText = (text, maxLength) => {
@@ -415,6 +475,29 @@ const SubflowTable = () => {
   const handleButtonClick = () => {
     document.getElementById("fileInput").click();
   };
+
+  const handleActiveToggle = async (flowID) => {
+    console.log("Toggled active status for flow with ID:", flowID);
+    const res = fetch(
+      process.env.NEXT_PUBLIC_BACKEND_URL + "/subflow/active/" + flowID,
+      {
+        method: "GET",
+      },
+    );
+    setSubflows((prevSubflows) => {
+      const updatedSubflows = prevSubflows.map((subflow) => {
+        if (subflow.id === flowID) {
+          return {
+            ...subflow,
+            active: !subflow.active,
+          };
+        }
+        return subflow;
+      });
+      return updatedSubflows;
+    });
+  };
+
   return (
     // border border-stroke shadow-default
     <div className="rounded-sm  bg-white px-5 pb-2.5 pt-6  dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
@@ -454,26 +537,38 @@ const SubflowTable = () => {
       />
 
       <div className="flex flex-col rounded-t-lg border	border-slate-300 text-black">
-        <div className="grid grid-cols-5 divide-x divide-slate-300 rounded-t-lg bg-indigo-50 uppercase dark:bg-white sm:grid-cols-5">
-          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+        <div className="grid grid-cols-8 divide-x divide-slate-300 rounded-t-lg border-b border-slate-300 bg-indigo-50 uppercase dark:bg-white sm:grid-cols-8">
+          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5 ">
             <h5 className=" text-sm font-medium xsm:text-sm">
-              <b>Flow Name</b>
+              <b> Name</b>
             </h5>
           </div>
 
           <div className="xl:bt-5 col-span-2 pb-2 pl-2.5  pt-3 xl:pb-2.5 xl:pl-2.5">
             <h5 className=" text-sm font-medium xsm:text-sm">
-              <b>Flow Description</b>
+              <b> Description</b>
             </h5>
           </div>
 
           <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
             <h5 className=" text-sm font-medium xsm:text-sm">
-              <b>Last Update</b>
+              <b> Update</b>
             </h5>
           </div>
 
           <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+            <h5 className=" text-sm font-medium xsm:text-sm">
+              <b> Active </b>
+            </h5>
+          </div>
+
+          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+            <h5 className=" text-sm font-medium xsm:text-sm">
+              <b>scheduler </b>
+            </h5>
+          </div>
+
+          <div className="xl:bt-5 col-span-2 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
             <h5 className=" text-sm font-medium xsm:text-sm">
               <b>Actions (V/E/P/D)</b>
             </h5>
@@ -492,7 +587,7 @@ const SubflowTable = () => {
               setTrLoading(true);
               router.push("/subflowedit?flowid=" + subflow.id);
             }}
-            className={`grid  cursor-alias grid-cols-5  divide-x divide-slate-300 hover:bg-orange-50	 dark:hover:bg-black sm:grid-cols-5 ${
+            className={`grid  cursor-alias grid-cols-8  divide-x divide-slate-300 hover:bg-orange-50	 dark:hover:bg-black sm:grid-cols-8 ${
               index === subflows.length - 1
                 ? ""
                 : "border-b border-stroke dark:border-strokedark"
@@ -523,6 +618,110 @@ const SubflowTable = () => {
                 {formatDate(subflow.updated_at)}
               </p>
             </div>
+
+            <div className="flex  items-center gap-1 pl-2.5 pt-2">
+              <div
+                className="flex cursor-pointer items-center"
+                onClick={() => handleActiveToggle(subflow.id)}
+              >
+                <div className="relative">
+                  <input
+                    type="checkbox"
+                    checked={subflow.active}
+                    onClick={() => handleActiveToggle(subflow.id)}
+                    className="sr-only"
+                  />
+                  <div
+                    className={`block border border-slate-200 ${subflow.active ? "bg-green-500" : "bg-slate-500"} h-6 w-12 rounded-full`}
+                  ></div>
+                  <div
+                    className={`dot  absolute top-1 h-5 w-5 rounded-full transition ${subflow.active ? "translate-x-6" : "translate-x-0"}`}
+                  ></div>
+                </div>
+              </div>
+              <span className="text-gray-700 hidden  text-xs dark:text-white lg:block">
+                {subflow.active ? "Actived" : "Disabled"}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-3 pl-2.5 ">
+              <button
+                ref={configRef}
+                className={`mb-1 ml-2 mr-2 mt-1 rounded		border border-slate-300 bg-zinc-500 pl-2 pr-2 text-white   ${subflow.active ? "" : "text-gray-500 cursor-not-allowed border-slate-200 bg-zinc-200"}`}
+                onClick={() => setConfigPopup(true)}
+                disabled={subflow.active ? false : true}
+              >
+                Config
+              </button>
+            </div>
+
+            {configPopup && (
+              <div className="bg-gray-900 fixed inset-0 flex items-center justify-center bg-opacity-50">
+                <div className="divide-y divide-slate-300 rounded-lg bg-white p-4 shadow-lg">
+                  <h2 className=" w-100 pb-4 pt-2 text-lg font-semibold">
+                    🗓️ Trigger Configuration
+                  </h2>
+                  <div className="mt-2 pt-2">
+                    <label
+                      id={"trigger_type_" + subflow.id}
+                      htmlFor="trigger"
+                      className="text-gray-700 block text-sm font-medium"
+                    >
+                      Trigger Type
+                    </label>
+                    <select
+                      id="trigger"
+                      name="trigger"
+                      className="mt-2 w-full rounded-md border border-slate-400 py-2 pl-3 pr-10 text-base outline-1 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                      onChange={(e) => handleTriggerType(e, subflow.id)}
+                      defaultValue={subflow.schueleType}
+                    >
+                      <option value="Manual">On Demand</option>
+                      <option value="Auto">On Schedule</option>
+                    </select>
+                    {subflow.schueleType === "Auto" && (
+                      <div>
+                        <label
+                          className={`text-gray-700 } mt-2 block text-sm font-medium`}
+                          htmlFor="scheduleConfig"
+                        >
+                          {" "}
+                          Schedule Configuration
+                          <span id="help link" className="pl-2 text-blue-500">
+                            <a href="https://crontab.guru/" target="_blank">
+                              (?)
+                            </a>
+                          </span>
+                        </label>
+
+                        <input
+                          id="scheduleConfig"
+                          className={`mt-2 w-full rounded-md border border-slate-400 py-2 pl-3 pr-10 text-base outline-1 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm `}
+                          placeholder="Schedule Config e.g. 0 0 * * *"
+                          defaultValue={subflow.schedule}
+                        ></input>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mt-4 flex justify-end pt-4">
+                    <button
+                      className="mr-2 rounded-lg bg-slate-100 px-4 py-1"
+                      onClick={() => setConfigPopup(false)}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      className="rounded-lg bg-green-500 px-4 py-1 text-white"
+                      onClick={() => setConfigPopup(false)}
+                    >
+                      Config
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="flex items-center gap-1 pl-2.5 ">
               <p className="hidden text-black dark:text-white sm:block">
                 <div className="flex gap-1">
