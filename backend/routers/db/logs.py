@@ -27,6 +27,7 @@ async def write_logging(flow_json: dict):
     triggerID = flow_json["trigger_id"]
     result = flow_json["result"]
     type = flow_json["type"]
+    flowType = flow_json["flow_type"]
 
     print(result)
 
@@ -35,7 +36,8 @@ async def write_logging(flow_json: dict):
             "flowID" : flowID,
             "result": result,
             "triggerID": triggerID,
-            "type": type
+            "type": type,
+            "flowType": flowType
                             }
     )
     await prisma.disconnect()

@@ -439,7 +439,7 @@ const SubflowTable = () => {
 
       <input
         type="text"
-        placeholder=" 🔍 Search subflow by name or description"
+        placeholder=" 🔍 Search sub flow by name or description"
         className="mb-6 h-10 w-full rounded-md border border-stroke px-3 dark:border-strokedark dark:bg-boxdark"
         onChange={(e) => {
           const searchValue = e.target.value.toLowerCase();

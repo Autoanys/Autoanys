@@ -438,10 +438,12 @@ const SubFlowCanva = (editing, flowid) => {
     logFlowID = String(parms.get("flowid"));
   }
   let type = "Playground";
+  let flow_type = "Subflow";
   let result = "Success";
   let logData = {
     trigger_id: triggerID,
     flow_id: logFlowID,
+    flow_type: flow_type,
     type: type,
     result: result,
   };
@@ -525,6 +527,7 @@ const SubFlowCanva = (editing, flowid) => {
           for (let i = 0, l = data.steps.length; i < l; i++) {
             setPlaying(true);
             setPlayingPreviewSideBar(true);
+            setResultLoading(true);
             setCurrentStep({
               total: data.steps.length,
               step: i + 1,
@@ -587,6 +590,7 @@ const SubFlowCanva = (editing, flowid) => {
 
             if (i === data.steps.length - 1) {
               setPlaying(false);
+              setResultLoading(false);
             }
           }
         }
@@ -1714,6 +1718,15 @@ const SubFlowCanva = (editing, flowid) => {
 
               <div className="slider">
                 <div className="slider-content">
+                  {resultLoading && (
+                    <div>
+                      <img
+                        src={"/images/general/loading.gif"}
+                        alt="Loading"
+                        className="mx-auto h-10 w-10 animate-spin"
+                      />
+                    </div>
+                  )}
                   {currentResult[currentIndex]?.type === "text" && (
                     <div>
                       <p>

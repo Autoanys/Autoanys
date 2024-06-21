@@ -105,7 +105,7 @@ const LoggingTable = () => {
 
       <input
         type="text"
-        placeholder=" 🔍 Search by Trigger ID or Datetime"
+        placeholder=" 🔍 Search Logging by Trigger ID or Datetime"
         className="mb-6 h-10 w-full rounded-md border border-stroke px-3 dark:border-strokedark dark:bg-boxdark"
         onChange={(e) => {
           const searchValue = e.target.value.toLowerCase();
@@ -120,7 +120,7 @@ const LoggingTable = () => {
       />
 
       <div className="flex flex-col rounded-t-lg border	border-slate-300 text-black">
-        <div className="grid grid-cols-5 divide-x divide-slate-300 rounded-t-lg bg-indigo-50 uppercase dark:bg-white sm:grid-cols-5">
+        <div className="grid grid-cols-6 divide-x divide-slate-300 rounded-t-lg bg-indigo-50 uppercase dark:bg-white sm:grid-cols-6">
           <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
             <h5 className=" text-sm font-medium xsm:text-sm">
               <b>Trigger ID</b>
@@ -128,13 +128,19 @@ const LoggingTable = () => {
           </div>
           <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
             <h5 className=" text-sm font-medium xsm:text-sm">
-              <b>Execution result</b>
+              <b>Execution</b>
             </h5>
           </div>
 
           <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
             <h5 className=" text-sm font-medium xsm:text-sm">
-              <b>Execution Type</b>
+              <b>Type</b>
+            </h5>
+          </div>
+
+          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+            <h5 className=" text-sm font-medium xsm:text-sm">
+              <b>Flow Type</b>
             </h5>
           </div>
 
@@ -153,7 +159,7 @@ const LoggingTable = () => {
 
         {currentLog.map((log, index) => (
           <div
-            className={`grid grid-cols-5  divide-x divide-slate-300 sm:grid-cols-5 ${
+            className={`grid grid-cols-6  divide-x divide-slate-300 sm:grid-cols-6 ${
               index === log.length - 1
                 ? ""
                 : "border-b border-stroke dark:border-strokedark"
@@ -165,7 +171,7 @@ const LoggingTable = () => {
                 className="text-bla ck
               hidden dark:text-white sm:block"
               >
-                {log.triggerID}
+                {truncateText(log.triggerID, 10)}
               </p>
             </div>
 
@@ -187,6 +193,13 @@ const LoggingTable = () => {
               <p className="hidden text-black dark:text-white sm:block">
                 {/* {subflow.id} */}
                 {truncateText(log.type, 15)}
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3 pl-2.5 ">
+              <p className="hidden text-black dark:text-white sm:block">
+                {/* {subflow.id} */}
+                {truncateText(log.flowType, 15)}
               </p>
             </div>
 

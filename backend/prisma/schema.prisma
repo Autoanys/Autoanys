@@ -54,6 +54,7 @@ model Logs {
   result String
   created_at DateTime @default(now())
   type String
+  flowType String @default("Subflow")
   steplog StepLogs[]
 }
 
