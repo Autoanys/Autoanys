@@ -17,6 +17,9 @@ const MainflowTable = () => {
   const [playing, setPlaying] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [isActive, setIsActive] = useState(false);
+  const [configPopup, setConfigPopup] = useState(false);
+  const [configRef, setConfigRef] = useState(null);
+  const [onSchedule, setOnSchedule] = useState(false);
 
   const handleToggle = () => {
     setIsActive(!isActive);
@@ -106,6 +109,14 @@ const MainflowTable = () => {
     fetchData();
     setDeleted(false);
   }, [deleted]); // Removed allFlow dependency
+
+  const handleTriggerType = (e) => {
+    if (e.target.value === "On Schedule") {
+      setOnSchedule(true);
+    } else {
+      setOnSchedule(false);
+    }
+  };
 
   const deleteFlow = (id) => async () => {
     setDeleted(true);
@@ -247,26 +258,88 @@ const MainflowTable = () => {
                     className="sr-only"
                   />
                   <div
-                    className={`block border border-slate-200 ${isActive ? "bg-green-500" : "bg-slate-500"} h-5 w-12 rounded-full`}
+                    className={`block border border-slate-200 ${isActive ? "bg-green-500" : "bg-slate-500"} h-6 w-12 rounded-full`}
                   ></div>
                   <div
                     className={`dot  absolute top-1 h-5 w-5 rounded-full transition ${isActive ? "translate-x-6" : "translate-x-0"}`}
                   ></div>
                 </div>
               </div>
-              <span className="text-gray-700 text-xs dark:text-white">
+              <span className="text-gray-700 hidden  text-xs dark:text-white lg:block">
                 {isActive ? "Actived" : "Disabled"}
               </span>
             </div>
 
             <div className="flex items-center gap-3 pl-2.5 ">
-              <p
-                className="hidden text-black dark:text-white sm:block"
-                title={subflow.description}
+              <button
+                ref={configRef}
+                className={`mb-1 ml-2 mr-2 mt-1 rounded		border border-slate-300 bg-zinc-500 pl-2 pr-2 text-white   ${isActive ? "" : "disabled"}`}
+                onClick={() => setConfigPopup(true)}
               >
-                {truncateText(subflow.description, 30)}
-              </p>
+                Config
+              </button>
             </div>
+
+            {configPopup && (
+              <div className="bg-gray-900 fixed inset-0 flex items-center justify-center bg-opacity-50">
+                <div className="divide-y divide-slate-300 rounded-lg bg-white p-4 shadow-lg">
+                  <h2 className=" w-100 pb-4 pt-2 text-lg font-semibold">
+                    🗓️ Trigger Configuration
+                  </h2>
+                  <div className="mt-2 pt-2">
+                    <label
+                      id={"trigger_type_" + subflow.id}
+                      htmlFor="trigger"
+                      className="text-gray-700 block text-sm font-medium"
+                    >
+                      Trigger Type
+                    </label>
+                    <select
+                      id="trigger"
+                      name="trigger"
+                      className="mt-2 w-full rounded-md border border-slate-400 py-2 pl-3 pr-10 text-base outline-1 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                      onChange={handleTriggerType}
+                    >
+                      <option className="outline-1	">On Demand</option>
+                      <option>On Schedule</option>
+                    </select>
+
+                    <label
+                      className={`text-gray-700 mt-2 block text-sm font-medium  ${onSchedule ? "" : "hidden"}`}
+                      htmlFor="scheduleConfig"
+                    >
+                      {" "}
+                      Schedule Configuration
+                      <span id="help link" className="pl-2 text-blue-500">
+                        <a href="https://crontab.guru/" target="_blank">
+                          (?)
+                        </a>
+                      </span>
+                    </label>
+                    <input
+                      id="scheduleConfig"
+                      className={`mt-2 w-full rounded-md border border-slate-400 py-2 pl-3 pr-10 text-base outline-1 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm ${onSchedule ? "" : "hidden"}`}
+                      placeholder="Schedule Config e.g. 0 0 * * *"
+                    ></input>
+                  </div>
+
+                  <div className="mt-4 flex justify-end pt-4">
+                    <button
+                      className="mr-2 rounded-lg bg-slate-100 px-4 py-1"
+                      onClick={() => setConfigPopup(false)}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      className="rounded-lg bg-green-500 px-4 py-1 text-white"
+                      onClick={() => setConfigPopup(false)}
+                    >
+                      Config
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="flex items-center gap-4 pl-2.5 ">
               <p className="hidden text-black dark:text-white sm:block">
