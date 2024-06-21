@@ -15,6 +15,8 @@ import {
   ComponentIcon,
   LoggingIcon,
   SettingIcon,
+  UncollapseIcon,
+  CollapseIcon,
 } from "./icon";
 
 import Head from "next/head";
@@ -178,41 +180,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
           onClick={() => setSidebarExpanded(!sidebarExpanded)}
           className="hidden lg:block"
         >
-          {sidebarExpanded ? (
-            <svg
-              className="fill-current"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M19 12H5M12 19L5 12L12 5"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          ) : (
-            <svg
-              className="fill-current"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M5 12H19M12 5L19 12L12 19"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          )}
+          {sidebarExpanded ? <CollapseIcon /> : <UncollapseIcon />}
         </button>
       </div>
 
@@ -244,8 +212,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
             </ul>
           </div>
           <div className="fixed bottom-0 m-auto items-center justify-center text-sm text-black">
-            <span className="ml-10 pb-12 font-medium">
-              © 2023-2024 ⚙️ AutoAnys
+            <span
+              className={`pb-12 font-medium dark:text-white ${sidebarExpanded ? "ml-4" : "ml-0"}`}
+            >
+              <span className={`  ${sidebarExpanded ? "" : "hidden"}`}>
+                {" "}
+                © 2023-2024 ⚙️ AutoAnys
+              </span>
             </span>
           </div>
         </nav>
