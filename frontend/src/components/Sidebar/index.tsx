@@ -45,13 +45,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
       sn: "/",
     },
     {
-      name: "Main Flow",
+      name: "Multi-Flows",
       icon: <MainFlowIcon />,
       link: "/mainflow",
       sn: "main",
     },
     {
-      name: "Sub Flow",
+      name: "Flow",
       icon: <SubFlowIcon />,
       link: "/subflow",
       sn: "sub",

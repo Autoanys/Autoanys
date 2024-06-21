@@ -249,13 +249,13 @@ const SubflowTable = () => {
         setShowNotification({
           show: true,
           code: 200,
-          message: "Sub flow deleted successfully!",
+          message: "Flow deleted successfully!",
         });
         setTimeout(() => {
           setShowNotification({
             show: false,
             code: 200,
-            message: "Sub flow deleted successfully!",
+            message: "Flow deleted successfully!",
           });
         }, 3000);
       }
@@ -290,13 +290,13 @@ const SubflowTable = () => {
           setShowNotification({
             show: true,
             code: 200,
-            message: "Sub flow deleted successfully!",
+            message: "Flow deleted successfully!",
           });
           setTimeout(() => {
             setShowNotification({
               show: false,
               code: 200,
-              message: "Sub flow deleted successfully!",
+              message: "Flow deleted successfully!",
             });
           }, 3000);
         }
@@ -420,7 +420,7 @@ const SubflowTable = () => {
     <div className="rounded-sm  bg-white px-5 pb-2.5 pt-6  dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <div className="flex justify-between gap-x-4">
         <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
-          Sub Flow List
+          Flow List
         </h4>
         <button
           className="group relative flex items-center gap-2.5 rounded-lg px-4 py-4 text-sm font-medium font-semibold text-black duration-300 ease-in-out dark:text-white dark:hover:bg-meta-4"
@@ -439,7 +439,7 @@ const SubflowTable = () => {
 
       <input
         type="text"
-        placeholder=" 🔍 Search sub flow by name or description"
+        placeholder=" 🔍 Search flow by name or description"
         className="mb-6 h-10 w-full rounded-md border border-stroke px-3 dark:border-strokedark dark:bg-boxdark"
         onChange={(e) => {
           const searchValue = e.target.value.toLowerCase();
@@ -659,13 +659,13 @@ const SubflowTable = () => {
               <div className="bg-gray-900 fixed inset-0 flex items-center justify-center bg-opacity-50">
                 <div className="divide-y divide-slate-300 rounded-lg bg-white p-4 shadow-lg">
                   <h2 className=" pb-4 pt-2 text-lg font-semibold">
-                    ⚠️ Deleting a subflow
+                    ⚠️ Deleting a flow
                   </h2>
                   {/* <hr /> */}
                   <div className="pb-2 pt-2">
-                    <p> You have selected to delete a subflow.</p>
+                    <p> You have selected to delete a flow.</p>
                     <p>
-                      Are you sure you want to delete the subflow "
+                      Are you sure you want to delete the flow "
                       {subflowToDelete.name}" with ID {subflowToDelete.id}?
                     </p>
                     <p>

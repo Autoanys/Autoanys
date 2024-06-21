@@ -25,7 +25,7 @@ const Breadcrumb = ({
                 className="group relative flex items-center gap-2.5 rounded-lg px-4 py-4 text-sm font-medium font-semibold text-black duration-300 ease-in-out dark:hover:bg-meta-4"
               >
                 <button className="font hover:bg-blue rounded-full bg-blue-400 px-4 py-2 text-white hover:bg-blue-500 hover:shadow-2xl">
-                  Create New Sub Flow
+                  Create New Flow
                 </button>
               </Link>
             </div>
@@ -39,7 +39,7 @@ const Breadcrumb = ({
              dark:hover:bg-meta-4`}
             >
               <button className=" font hover:bg-blue rounded-full bg-blue-400 px-4 py-2 text-white hover:bg-blue-500 hover:shadow-2xl">
-                Create Main Flow
+                Create Multi-Flows
               </button>
             </Link>
           )}

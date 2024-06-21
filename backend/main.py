@@ -10,7 +10,7 @@ from routers.chrome import browser
 from routers.utility import flow, general
 from fastapi.middleware.cors import CORSMiddleware
 from routers.databases.mysql import query
-from routers.db import subflow, logs, dashboard, plugins,components
+from routers.db import subflow, logs, dashboard, plugins,components, mainflow
 from routers.ssh import ssh
 from routers.mail import mail
 from routers.excel import csv
@@ -19,7 +19,7 @@ app = FastAPI()
 
 # Combine all routers
 builtIn_list = [browser, flow,
-                components, general, query, subflow, logs, dashboard, plugins, ssh, mail, csv]
+                components, general, query, subflow, logs, dashboard, plugins, ssh, mail, csv, mainflow]
 for router in builtIn_list:
     app.include_router(router.router)
 

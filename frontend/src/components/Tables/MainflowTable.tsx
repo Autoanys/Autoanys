@@ -95,7 +95,7 @@ const MainflowTable = () => {
     const fetchData = async () => {
       try {
         const res = await fetch(
-          process.env.NEXT_PUBLIC_BACKEND_URL + "/components/all/",
+          process.env.NEXT_PUBLIC_BACKEND_URL + "/mainflow/all/",
         );
         const data = await res.json();
         if (data && data.data) {
@@ -159,7 +159,7 @@ const MainflowTable = () => {
     <div className="rounded-sm  bg-white px-5 pb-2.5 pt-6  dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <div className="flex justify-between gap-x-4">
         <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
-          Main Flows List
+          Multi-Flows List
         </h4>
         <button className="group relative flex items-center gap-2.5 rounded-lg px-4 py-4 text-sm font-medium font-semibold text-black duration-300 ease-in-out dark:text-white dark:hover:bg-meta-4">
           📥 Import a Main Flow
@@ -174,7 +174,7 @@ const MainflowTable = () => {
 
       <input
         type="text"
-        placeholder=" 🔍 Search Main flow by name or description"
+        placeholder=" 🔍 Search Multi-flows by name or description"
         className="mb-6 h-10 w-full rounded-md border border-stroke px-3 dark:border-strokedark dark:bg-boxdark"
       />
 
