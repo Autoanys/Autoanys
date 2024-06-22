@@ -57,10 +57,33 @@ async def activate_subflow(flow_id : str):
     return {"message": f"Subflow {flow_id} activated successfully"}
 
 
+@router.post("/subflow/scheduleType/set/")
+async def scheduler_subflow(json_data: dict):
+    flow_id = json_data["flow_id"]
+    schedule = json_data["scheduleType"]
+    print(flow_id)
+
+    prisma = Prisma()
+    await prisma.connect()
+
+
+    flow_data = await prisma.subflow.update(
+        where={
+            "id": flow_id
+        },
+        data={
+            "schueleType": schedule
+        }
+    )
+    await prisma.disconnect()
+    return {"message": f"Flow {flow_id} schedule config successfully"}
+
+
 @router.post("/subflow/scheduler/set/")
 async def scheduler_subflow(json_data: dict):
     flow_id = json_data["flow_id"]
     schedule = json_data["schedule"]
+    print(flow_id)
 
     prisma = Prisma()
     await prisma.connect()

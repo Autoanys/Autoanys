@@ -13,6 +13,7 @@ import { Fragment } from "react";
 import crypto from "crypto";
 import { usePathname } from "next/navigation";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
+import { sanitizeArrExtFile } from "@files-ui/react";
 
 const SubflowTable = () => {
   const router = useRouter();
@@ -31,9 +32,9 @@ const SubflowTable = () => {
   const [trLoading, setTrLoading] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [subflowToDelete, setSubflowToDelete] = useState(null);
-  const [configPopup, setConfigPopup] = useState(false);
+  const [configPopup, setConfigPopup] = useState(null);
   const [configRef, setConfigRef] = useState(null);
-
+  const [scheduleValue, setScheduleValue] = useState("");
   const handleDeleteClick = (subflow) => {
     setSubflowToDelete(subflow);
     setShowConfirm(true);
@@ -42,7 +43,7 @@ const SubflowTable = () => {
   const handleTriggerType = async (e, flowID) => {
     console.log(e.target.value, flowID);
     const res = fetch(
-      process.env.NEXT_PUBLIC_BACKEND_URL + "/subflow/scheduler/set/",
+      process.env.NEXT_PUBLIC_BACKEND_URL + "/subflow/scheduleType/set/",
       {
         method: "POST",
         headers: {
@@ -50,10 +51,11 @@ const SubflowTable = () => {
         },
         body: JSON.stringify({
           flow_id: flowID,
-          schedule: e.target.value,
+          scheduleType: e.target.value,
         }),
       },
     );
+
     setSubflows((prevSubflows) => {
       const updatedSubflows = prevSubflows.map((subflow) => {
         if (subflow.id === flowID) {
@@ -68,7 +70,30 @@ const SubflowTable = () => {
     });
   };
 
+  // const handleActiveToggle = async (flowID) => {
+  //   console.log("Toggled active status for flow with ID:", flowID);
+  //   const res = fetch(
+  //     process.env.NEXT_PUBLIC_BACKEND_URL + "/subflow/active/" + flowID,
+  //     {
+  //       method: "GET",
+  //     },
+  //   );
+  //   setSubflows((prevSubflows) => {
+  //     const updatedSubflows = prevSubflows.map((subflow) => {
+  //       if (subflow.id === flowID) {
+  //         return {
+  //           ...subflow,
+  //           active: !subflow.active,
+  //         };
+  //       }
+  //       return subflow;
+  //     });
+  //     return updatedSubflows;
+  //   });
+  // };
+
   const configSchedule = async (e, flowID) => {
+    setConfigPopup(null);
     console.log(e.target.value, flowID);
     const res = fetch(
       process.env.NEXT_PUBLIC_BACKEND_URL + "/subflow/scheduler/set/",
@@ -88,7 +113,7 @@ const SubflowTable = () => {
         if (subflow.id === flowID) {
           return {
             ...subflow,
-            schueleType: e.target.value,
+            schedule: e.target.value,
           };
         }
         return subflow;
@@ -590,7 +615,7 @@ const SubflowTable = () => {
         {currentSubflows.map((subflow, index) => (
           <div
             title={decodeURI(
-              "Double Click - Edit Subflow%0ARight Click - For more options",
+              "Double Click - Edit Flow%0ARight Click - For more options",
             )}
             onContextMenu={(e) => {
               tableRowContextMenu(e, subflow);
@@ -626,6 +651,9 @@ const SubflowTable = () => {
             >
               <p className="hidden text-black dark:text-white sm:block">
                 {/* {subflow.id} */}
+                {/* {subflow.schedule}
+                {subflow.schueleType}
+                {subflow.id} */}
                 {truncateText(subflow.description, 55)}
               </p>
             </div>
@@ -639,7 +667,9 @@ const SubflowTable = () => {
             >
               <p
                 className="hidden text-black dark:text-white sm:block"
-                title={subflow.description}
+                title={decodeURI(
+                  "Double Click - Edit Flow%0ARight Click - For more options",
+                )}
               >
                 {formatDate(subflow.updated_at)}
               </p>
@@ -672,81 +702,89 @@ const SubflowTable = () => {
 
             <div className="flex items-center gap-3 pl-2.5 ">
               <button
-                ref={configRef}
-                className={`mb-1 ml-2 mr-2 mt-1 rounded		border border-slate-300 bg-zinc-500 pl-2 pr-2 text-white   ${subflow.active ? "" : "text-gray-500 cursor-not-allowed border-slate-200 bg-zinc-200"}`}
-                onClick={() => setConfigPopup(true)}
+                id={"config_" + subflow.id}
+                key={"config_" + subflow.id}
+                className={`mb-1 ml-2 mr-2 mt-1 rounded		border border-slate-300 pl-2 pr-2 text-white   ${subflow.active ? "bg-zinc-500 " : "text-gray-500 cursor-not-allowed border-slate-200 bg-zinc-300"}`}
+                onClick={() => setConfigPopup(subflow.id)}
                 disabled={subflow.active ? false : true}
               >
                 Config
               </button>
-            </div>
 
-            {configPopup && (
-              <div className="bg-gray-900 fixed inset-0 flex items-center justify-center bg-opacity-50">
-                <div className="divide-y divide-slate-300 rounded-lg bg-white p-4 shadow-lg">
-                  <h2 className=" w-100 pb-4 pt-2 text-lg font-semibold">
-                    🗓️ Trigger Configuration
-                  </h2>
-                  <div className="mt-2 pt-2">
-                    <label
-                      id={"trigger_type_" + subflow.id}
-                      htmlFor="trigger"
-                      className="text-gray-700 block text-sm font-medium"
-                    >
-                      Trigger Type
-                    </label>
-                    <select
-                      id="trigger"
-                      name="trigger"
-                      className="mt-2 w-full rounded-md border border-slate-400 py-2 pl-3 pr-10 text-base outline-1 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                      onChange={(e) => handleTriggerType(e, subflow.id)}
-                      defaultValue={subflow.schueleType}
-                    >
-                      <option value="Manual">On Demand</option>
-                      <option value="Auto">On Schedule</option>
-                    </select>
-                    {subflow.schueleType === "Auto" && (
-                      <div>
-                        <label
-                          className={`text-gray-700 } mt-2 block text-sm font-medium`}
-                          htmlFor="scheduleConfig"
-                        >
-                          {" "}
-                          Schedule Configuration
-                          <span id="help link" className="pl-2 text-blue-500">
-                            <a href="https://crontab.guru/" target="_blank">
-                              (?)
-                            </a>
-                          </span>
-                        </label>
+              {configPopup === subflow.id && (
+                <div
+                  key={"trigger_type_" + subflow.id}
+                  id={"trigger_type_" + subflow.id}
+                  className="bg-gray-900 fixed inset-0 z-50 flex items-center justify-center bg-opacity-50"
+                >
+                  <div className="divide-y divide-slate-300 rounded-lg bg-white p-4 shadow-lg">
+                    <h2 className=" w-100 pb-4 pt-2 text-lg font-semibold">
+                      🗓️ Trigger Configuration
+                    </h2>
+                    {subflow.id}
+                    <div className="mt-2 pt-2">
+                      <label
+                        htmlFor="trigger"
+                        className="text-gray-700 block text-sm font-medium"
+                      >
+                        Trigger Type
+                      </label>
+                      <select
+                        id="trigger"
+                        name="trigger"
+                        className="mt-2 w-full rounded-md border border-slate-400 py-2 pl-3 pr-10 text-base outline-1 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                        onChange={(e) => handleTriggerType(e, subflow.id)}
+                        defaultValue={subflow.schueleType}
+                      >
+                        <option value="Manual">On Demand</option>
+                        <option value="Auto">On Schedule</option>
+                      </select>
+                      {subflow.schueleType === "Auto" && (
+                        <div>
+                          <label
+                            className={`text-gray-700 } mt-2 block text-sm font-medium`}
+                            htmlFor="scheduleConfig"
+                          >
+                            {" "}
+                            Schedule Configuration
+                            <span id="help link" className="pl-2 text-blue-500">
+                              <a href="https://crontab.guru/" target="_blank">
+                                (?)
+                              </a>
+                            </span>
+                          </label>
 
-                        <input
-                          id="scheduleConfig"
-                          className={`mt-2 w-full rounded-md border border-slate-400 py-2 pl-3 pr-10 text-base outline-1 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm `}
-                          placeholder="Schedule Config e.g. 0 0 * * *"
-                          defaultValue={subflow.schedule}
-                        ></input>
-                      </div>
-                    )}
-                  </div>
+                          <input
+                            id="scheduleConfig"
+                            className={`mt-2 w-full rounded-md border border-slate-400 py-2 pl-3 pr-10 text-base outline-1 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm `}
+                            placeholder="Schedule Config e.g. 0 0 * * *"
+                            defaultValue={subflow.schedule}
+                            onChange={(e) => setScheduleValue(e)}
+                          ></input>
+                        </div>
+                      )}
+                    </div>
 
-                  <div className="mt-4 flex justify-end pt-4">
-                    <button
-                      className="mr-2 rounded-lg bg-slate-100 px-4 py-1"
-                      onClick={() => setConfigPopup(false)}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      className="rounded-lg bg-green-500 px-4 py-1 text-white"
-                      onClick={() => setConfigPopup(false)}
-                    >
-                      Config
-                    </button>
+                    <div className="mt-4 flex justify-end pt-4">
+                      <button
+                        className="mr-2 rounded-lg bg-slate-100 px-4 py-1"
+                        onClick={() => setConfigPopup(null)}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        className="rounded-lg bg-green-500 px-4 py-1 text-white"
+                        onClick={() =>
+                          configSchedule(scheduleValue, subflow.id)
+                        }
+                      >
+                        Config
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
             <div className="flex items-center gap-1 pl-2.5 ">
               <p className="hidden text-black dark:text-white sm:block">
@@ -829,7 +867,7 @@ const SubflowTable = () => {
               </p>
 
               <button
-                className="font-sans from-gray-900 to-gray-800 shadow-gray-900/10 hover:shadow-gray-900/20 relative mr-2 h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg bg-gradient-to-tr text-center align-middle text-xs font-medium uppercase text-white  transition-all hover:shadow-lg active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                className="font-sans from-gray-900 to-gray-800 shadow-gray-900/10 hover:shadow-gray-900/20 relative mr-2 h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg bg-gradient-to-tr pl-6 text-center align-middle text-xs font-medium uppercase text-white  transition-all hover:shadow-lg active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                 type="button"
                 title="Delete Subflow"
                 onClick={() => handleDeleteClick(subflow)}

@@ -20,7 +20,7 @@ model SubFlow {
   variables String @default("{}")
   active Boolean @default(false)
   schueleType String @default("Manual")
-  schedule String @default("* * * * *")
+  schedule String @default("")
 }
 
 model MainFlow {

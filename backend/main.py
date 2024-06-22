@@ -14,17 +14,20 @@ from routers.db import subflow, logs, dashboard, plugins,components, mainflow
 from routers.ssh import ssh
 from routers.mail import mail
 from routers.excel import csv
-
+from prisma import Prisma
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.triggers.cron import CronTrigger
+from scheduler.test import schedule_subflows 
 app = FastAPI()
+scheduler = AsyncIOScheduler()
+prisma = Prisma()
 
-# Combine all routers
 builtIn_list = [browser, flow,
                 components, general, query, subflow, logs, dashboard, plugins, ssh, mail, csv, mainflow]
 for router in builtIn_list:
     app.include_router(router.router)
 
 
-# Set up CORS
 origins = ["*"]
 
 app.add_middleware(
@@ -34,6 +37,17 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.on_event("startup")
+async def startup_event():
+    await prisma.connect()
+    await schedule_subflows(scheduler, prisma)
+    scheduler.start()
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    scheduler.shutdown()
+    await prisma.disconnect()
 
 @app.get("/")
 async def root():
