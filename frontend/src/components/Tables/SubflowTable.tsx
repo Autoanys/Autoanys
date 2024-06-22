@@ -595,10 +595,6 @@ const SubflowTable = () => {
             onContextMenu={(e) => {
               tableRowContextMenu(e, subflow);
             }}
-            onDoubleClick={() => {
-              setTrLoading(true);
-              router.push("/subflowedit?flowid=" + subflow.id);
-            }}
             className={`grid  cursor-alias grid-cols-8  divide-x divide-slate-300 hover:bg-orange-50	 dark:hover:bg-black sm:grid-cols-8 ${
               index === subflows.length - 1
                 ? ""
@@ -606,7 +602,13 @@ const SubflowTable = () => {
             }`}
             key={subflow.id}
           >
-            <div className="flex items-center gap-3 pl-2.5 ">
+            <div
+              className="flex items-center gap-3 pl-2.5 "
+              onDoubleClick={() => {
+                setTrLoading(true);
+                router.push("/subflowedit?flowid=" + subflow.id);
+              }}
+            >
               <p
                 className="hidden
               text-black dark:text-white sm:block"
@@ -615,14 +617,26 @@ const SubflowTable = () => {
               </p>
             </div>
 
-            <div className="col-span-2 flex items-center gap-3 pl-2.5">
+            <div
+              className="col-span-2 flex items-center gap-3 pl-2.5"
+              onDoubleClick={() => {
+                setTrLoading(true);
+                router.push("/subflowedit?flowid=" + subflow.id);
+              }}
+            >
               <p className="hidden text-black dark:text-white sm:block">
                 {/* {subflow.id} */}
                 {truncateText(subflow.description, 55)}
               </p>
             </div>
 
-            <div className="flex items-center gap-3 pl-2.5 ">
+            <div
+              className="flex items-center gap-3 pl-2.5 "
+              onDoubleClick={() => {
+                setTrLoading(true);
+                router.push("/subflowedit?flowid=" + subflow.id);
+              }}
+            >
               <p
                 className="hidden text-black dark:text-white sm:block"
                 title={subflow.description}
