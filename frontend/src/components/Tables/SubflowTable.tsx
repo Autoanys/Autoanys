@@ -262,6 +262,7 @@ const SubflowTable = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setTrLoading(true);
       try {
         const res = await fetch(
           process.env.NEXT_PUBLIC_BACKEND_URL + "/subflow/all/",
@@ -275,7 +276,7 @@ const SubflowTable = () => {
         console.error("Error fetching data:", error);
       }
     };
-    fetchData();
+    fetchData().then(() => setTrLoading(false));
     setDeleted(false);
   }, [deleted]); // Removed allFlow dependency
 
@@ -535,6 +536,17 @@ const SubflowTable = () => {
           setSubflows(filteredSubflows);
         }}
       />
+      {trLoading && (
+        <div className="bg-gray-900 fixed inset-0 flex items-center justify-center bg-opacity-50">
+          <p className="hidden text-black dark:text-white sm:block">
+            <img
+              src={"/images/general/loading.gif"}
+              alt="Loading"
+              className="mx-auto h-10 w-10 animate-spin"
+            />
+          </p>
+        </div>
+      )}
 
       <div className="flex flex-col rounded-t-lg border	border-slate-300 text-black">
         <div className="grid grid-cols-8 divide-x divide-slate-300 rounded-t-lg border-b border-slate-300 bg-indigo-50 uppercase dark:bg-white sm:grid-cols-8">
