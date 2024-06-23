@@ -3,7 +3,11 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 from prisma import Prisma
 from datetime import datetime
-import asyncio
+from routers.utility import flow, general
+from routers.db.subflow import all_subflow,specific_subflow
+from routers.utility.flow import analyze_json
+import json
+
 
 
 router = APIRouter()
@@ -12,6 +16,12 @@ router = APIRouter()
 # Define your subflow execution function
 async def run_subflow(subflow_id: str):
     print(f"Running subflow with ID: {subflow_id}")
+    res = await specific_subflow(subflow_id)
+    flowjson = res['data'].flowjson
+    flowstep = await analyze_json(json.loads(flowjson))
+    print(flowstep['steps'])
+    # getFlow = await analyze_json(res.data)
+    # print(getFlow)
     return {"message": "Subflow executed", "subflow_id": subflow_id}
     # subflow = await prisma.subflow.find_unique(where={'id': subflow_id})
     # if subflow and subflow.active:
