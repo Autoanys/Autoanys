@@ -18,6 +18,8 @@ from prisma import Prisma
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 from scheduler.test import schedule_subflows 
+import threading
+import asyncio
 app = FastAPI()
 scheduler = AsyncIOScheduler()
 prisma = Prisma()
@@ -38,12 +40,27 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+def start_scheduler():
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(prisma.connect())
+    scheduler.start()
+    loop.run_until_complete(schedule_subflows(scheduler, prisma))
+    loop.run_forever()
+
+# @app.on_event("startup")
+# async def startup_event():
+#     await prisma.connect()
+#     await schedule_subflows(scheduler, prisma)
+#     schedule_thread = threading.Thread(target=scheduler.start)
+#     scheduler.start()
+
+
 @app.on_event("startup")
 async def startup_event():
-    await prisma.connect()
-    await schedule_subflows(scheduler, prisma)
-    scheduler.start()
-
+    scheduler_thread = threading.Thread(target=start_scheduler)
+    scheduler_thread.start()
+    
 @app.on_event("shutdown")
 async def shutdown_event():
     scheduler.shutdown()

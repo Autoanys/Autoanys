@@ -4,6 +4,8 @@ from PIL import Image
 from pathlib import Path
 from routers.db.logs import write_logging
 import socket
+from routers.chrome.browser import OpenBrowser, OpenWebsite, GetScreenshot, CloseBrowser
+from routers.utility.general import sleep_wait
 
 
 hostname = socket.getfqdn()
@@ -63,6 +65,13 @@ async def analyze_json(json_datas: dict):
         # raise HTTPException(status_code=404, detail="Error in analyzing flow")
         raise HTTPException(status_code=450,  detail="Error in analyzing flow")
 
+Correspondence_function_list = {
+    "openBrowser" : "OpenBrowser",
+    "openBrowserLink" : "OpenWebsite",
+    "waitSecond" : "sleep_wait",
+    "closeBrowser" : "CloseBrowser",
+    "getScreenshot" : "GetScreenshot"
+}
 
 @router.post("/flow/v2/")
 async def analyze_json(json_datas: dict):
@@ -84,6 +93,8 @@ async def analyze_json(json_datas: dict):
                         print(source_node['data']['inputs'], "testest")
                         temp["api"] = f"http://{ip}:8000" + source_node['data']['api']
                         temp["method"] = source_node['data']['method']
+                        temp["function"] = Correspondence_function_list[source_node['type']]
+                        # temp["function"] = Correspondence_function(source_node['type'])
                         
                         for i in source_node['data']['inputs']:
                             print(i, "i", i['id'], i['value'])
@@ -99,6 +110,8 @@ async def analyze_json(json_datas: dict):
                     else:
                         temp["api"] = f"http://{ip}:8000" + source_node['data']['api']
                         temp["method"] = source_node['data']['method']
+                        temp["function"] = Correspondence_function_list[source_node['type']]
+
                         steps.append(temp)
                         temp = {}
                       

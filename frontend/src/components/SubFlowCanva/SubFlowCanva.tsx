@@ -430,6 +430,28 @@ const SubFlowCanva = (editing, flowid) => {
     });
   };
 
+  const handleActiveToggle = async (flowID) => {
+    console.log("Toggled active status for flow with ID:", flowID);
+    const res = fetch(
+      process.env.NEXT_PUBLIC_BACKEND_URL + "/subflow/active/" + flowID,
+      {
+        method: "GET",
+      },
+    );
+    setSubflows((prevSubflows) => {
+      const updatedSubflows = prevSubflows.map((subflow) => {
+        if (subflow.id === flowID) {
+          return {
+            ...subflow,
+            active: !subflow.active,
+          };
+        }
+        return subflow;
+      });
+      return updatedSubflows;
+    });
+  };
+
   useEffect(() => {
     setPlayingPreviewSideBar(false);
     setCurrentResult([]);
@@ -2011,7 +2033,7 @@ const SubFlowCanva = (editing, flowid) => {
                   Save
                 </button>
                 <button
-                  className="bg-red-500 hover:bg-red-700 focus:shadow-outline rounded px-4 py-2 font-bold text-white focus:outline-none"
+                  className="hover:bg-red-700 focus:shadow-outline rounded bg-rose-500 px-4 py-2 font-bold text-white focus:outline-none"
                   onClick={togglePopup}
                   type="button"
                 >

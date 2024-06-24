@@ -140,12 +140,12 @@ async def FindByXpath(xpath_data: dict):
 #     element.click()
 #     return {"message": "Element Clicked"}
 
-@router.get("/browser/{website}")
-async def OpenWebsite(website: str):
-    if not website.startswith("http"):
-        driver.get("https://"+website)
-    else:
-        driver.get(website)
+# @router.get("/browser/{website}")
+# async def OpenWebsite(website: str):
+#     if not website.startswith("http"):
+#         driver.get("https://"+website)
+#     else:
+#         driver.get(website)
         
-    return {"message": website+" Opened"}
+#     return {"message": website+" Opened"}
 
