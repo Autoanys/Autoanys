@@ -20,6 +20,7 @@ from apscheduler.triggers.cron import CronTrigger
 from scheduler.test import schedule_subflows 
 import threading
 import asyncio
+import signal
 app = FastAPI()
 scheduler = AsyncIOScheduler()
 prisma = Prisma()
@@ -29,6 +30,12 @@ builtIn_list = [browser, flow,
 for router in builtIn_list:
     app.include_router(router.router)
 
+def signal_handler(sig, frame):
+    print("Exiting...")
+    exit(0)
+
+def update_scheduler():
+    print(scheduler.get_job())
 
 origins = ["*"]
 
@@ -39,33 +46,51 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+loop = asyncio.new_event_loop()
 
 def start_scheduler():
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(prisma.connect())
-    scheduler.start()
-    loop.run_until_complete(schedule_subflows(scheduler, prisma))
-    loop.run_forever()
+    try:
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(prisma.connect())
+        scheduler.start()
+        loop.run_until_complete(schedule_subflows(scheduler, prisma))
+        loop.run_forever()
+    except asyncio.CancelledError:
+        print("Scheduler task was cancelled")
+    except KeyboardInterrupt:
+        print("Exiting...")
+    except Exception as e:
+        print(e)
+        exit(0)
+    finally:
+        try:
+            # shutdown_event()
+            loop.run_until_complete(loop.shutdown_asyncgens())
+            loop.close()
+        except Exception as e:
+            loop.close()
+            print(e)
+        finally:
+            loop.close()
 
-# @app.on_event("startup")
-# async def startup_event():
-#     await prisma.connect()
-#     await schedule_subflows(scheduler, prisma)
-#     schedule_thread = threading.Thread(target=scheduler.start)
-#     scheduler.start()
+def update_scheduler():
+    print(scheduler.get_job())
 
 
 @app.on_event("startup")
 async def startup_event():
+    if scheduler.running:
+        scheduler.shutdown(wait=False)
     scheduler_thread = threading.Thread(target=start_scheduler)
     scheduler_thread.start()
-    
+
 @app.on_event("shutdown")
 async def shutdown_event():
-    scheduler.shutdown()
+    loop.stop()
+    scheduler.shutdown(wait=False)
     await prisma.disconnect()
+
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to the AutoAnys api service. Please use the /docs endpoint to see the available endpoints."}
+    return {"message": "Welcome to the AutoAnys api service. Please use the /docs endpoint to see the available endpoints. Thankss"}

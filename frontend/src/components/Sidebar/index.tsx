@@ -215,9 +215,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
             <span
               className={`pb-12 font-medium dark:text-white ${sidebarExpanded ? "ml-4" : "ml-0"}`}
             >
-              <span className={`  ${sidebarExpanded ? "" : "hidden"}`}>
+              {/* <span className={`  ${sidebarExpanded ? "" : "hidden"}`}> */}
+
+              <span className={``}>
                 {" "}
-                © 2023-2024 ⚙️ AutoAnys
+                {sidebarExpanded ? "© 2023-2024 ⚙️ AutoAnys" : "AutoAnys"}
               </span>
             </span>
           </div>

@@ -10,7 +10,6 @@ import json
 import requests
 from routers.chrome.browser import OpenBrowser, OpenWebsite, GetScreenshot, CloseBrowser
 from routers.utility.general import sleep_wait
-from threading import Thread
 
 
 router = APIRouter()
@@ -60,8 +59,21 @@ async def run_subflow(subflow_id: str):
             func_arg = json.loads(pla_arg)
             await function(func_arg)
 
-    return {"message": "Subflow executed", "subflow_id": subflow_id}
+            # await function(json.loads(step['post_data']))
+            # Function is step['function']
 
+        #     res = requests.post(step['api'], data=step['post_data'])
+        #     print(res.text)
+
+
+    # getFlow = await analyze_json(res.data)
+    # print(getFlow)
+    return {"message": "Subflow executed", "subflow_id": subflow_id}
+    # subflow = await prisma.subflow.find_unique(where={'id': subflow_id})
+    # if subflow and subflow.active:
+    #     print(f"Running subflow: {subflow_id} at {datetime.utcnow()}")
+
+# Function to schedule all active subflows
 async def schedule_subflows(scheduler: AsyncIOScheduler, prisma: Prisma):
     print("Scheduling subflows...")
     subflows = await prisma.subflow.find_many(where={'active': True, 'schueleType': 'Auto'})

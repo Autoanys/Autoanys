@@ -10,6 +10,8 @@ import json
 from general.header import *
 from cryptography.fernet import Fernet
 
+ 
+
 
 router = APIRouter()
 
@@ -31,6 +33,8 @@ async def write_subflow(flow_json: dict):
             "flowjson": flow
         }
     )
+
+    # update_scheduler()
     await prisma.disconnect()
     return {"message": f"Sub Flow saved successfully", "data" : flow_data.id}
 
@@ -53,6 +57,12 @@ async def activate_subflow(flow_id : str):
             "active": switch
         }
     )
+   
+
+
+
+
+
     await prisma.disconnect()
     return {"message": f"Subflow {flow_id} activated successfully"}
 
