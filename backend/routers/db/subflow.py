@@ -8,8 +8,11 @@ import datetime
 from fastapi.responses import FileResponse
 import json
 from general.header import *
+from general.cronValidate import validate_cron
 from cryptography.fernet import Fernet
 import main
+from cron_validator import CronValidator
+
 
 router = APIRouter()
 
@@ -64,12 +67,14 @@ async def activate_subflow(flow_id : str):
         }
     )
 
-    if switch == True and flow_data.schueleType == 'Auto':
+    if switch == True and flow_data.schueleType == 'Auto' and await validate_cron(flow_data.schedule):
         print("Actived")
         # main.remove_subflow_scheduler(flow_id)
         main.add_subflow_scheduler(flow_id, flow_data.schedule)
     else:
         try:
+            print(await validate_cron(flow_data.schedule))
+            print("Why")
             print("Removed")
             main.remove_subflow_scheduler(flow_id)
         except:
@@ -97,6 +102,20 @@ async def scheduler_subflow(json_data: dict):
             "schueleType": schedule
         }
     )
+    if flow_data.active == True and flow_data.schueleType == 'Auto' and await validate_cron(flow_data.schedule):
+        print("Actived")
+        # main.remove_subflow_scheduler(flow_id)
+        main.add_subflow_scheduler(flow_id, flow_data.schedule)
+    else:
+        try:
+            print(await validate_cron(flow_data.schedule))
+            print("Why")
+            print("Removed")
+            main.remove_subflow_scheduler(flow_id)
+        except:
+            pass
+
+    main.checkJobs()
     await prisma.disconnect()
     return {"message": f"Flow {flow_id} schedule config successfully"}
 
@@ -119,6 +138,18 @@ async def scheduler_subflow(json_data: dict):
             "schedule": schedule
         }
     )
+    if flow_data.active == True and flow_data.schueleType == 'Auto' and await validate_cron(flow_data.schedule):
+        print("Actived")
+        # main.remove_subflow_scheduler(flow_id)
+        main.add_subflow_scheduler(flow_id, flow_data.schedule)
+    else:
+        try:
+            print("Removed")
+            main.remove_subflow_scheduler(flow_id)
+        except:
+            pass
+        
+    main.checkJobs()
     await prisma.disconnect()
     return {"message": f"Flow {flow_id} schedule config successfully"}
 

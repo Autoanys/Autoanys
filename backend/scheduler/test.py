@@ -10,6 +10,7 @@ import json
 import requests
 from routers.chrome.browser import OpenBrowser, OpenWebsite, GetScreenshot, CloseBrowser
 from routers.utility.general import sleep_wait
+from general.cronValidate import validate_cron
 
 
 router = APIRouter()
@@ -78,12 +79,13 @@ async def schedule_subflows(scheduler: AsyncIOScheduler, prisma: Prisma):
     print("Scheduling subflows...")
     subflows = await prisma.subflow.find_many(where={'active': True, 'schueleType': 'Auto'})
     for subflow in subflows:
-        scheduler.add_job(
-            run_subflow,
-            CronTrigger.from_crontab(subflow.schedule),
-            args=[subflow.id],
-            id=subflow.id
-        )
+        if validate_cron(subflow.schedule):
+            scheduler.add_job(
+                run_subflow,
+                CronTrigger.from_crontab(subflow.schedule),
+                args=[subflow.id],
+                id=subflow.id
+            )
     print(subflows)
     print(scheduler.get_jobs())
 

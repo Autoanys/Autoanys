@@ -41,7 +41,8 @@ const SubflowTable = () => {
   };
 
   const handleTriggerType = async (e, flowID) => {
-    console.log(e.target.value, flowID);
+    let changeValue =
+      e.target && e.target.value !== undefined ? e.target.value : "";
     const res = fetch(
       process.env.NEXT_PUBLIC_BACKEND_URL + "/subflow/scheduleType/set/",
       {
@@ -51,7 +52,7 @@ const SubflowTable = () => {
         },
         body: JSON.stringify({
           flow_id: flowID,
-          scheduleType: e.target.value,
+          scheduleType: changeValue,
         }),
       },
     );
@@ -61,7 +62,7 @@ const SubflowTable = () => {
         if (subflow.id === flowID) {
           return {
             ...subflow,
-            schueleType: e.target.value,
+            schueleType: changeValue,
           };
         }
         return subflow;
@@ -94,7 +95,8 @@ const SubflowTable = () => {
 
   const configSchedule = async (e, flowID) => {
     setConfigPopup(null);
-    console.log(e.target.value, flowID);
+    let changeValue =
+      e.target && e.target.value !== undefined ? e.target.value : "";
     const res = fetch(
       process.env.NEXT_PUBLIC_BACKEND_URL + "/subflow/scheduler/set/",
       {
@@ -104,7 +106,7 @@ const SubflowTable = () => {
         },
         body: JSON.stringify({
           flow_id: flowID,
-          schedule: e.target.value,
+          schedule: changeValue,
         }),
       },
     );
@@ -113,7 +115,7 @@ const SubflowTable = () => {
         if (subflow.id === flowID) {
           return {
             ...subflow,
-            schedule: e.target.value,
+            schedule: changeValue,
           };
         }
         return subflow;
@@ -737,7 +739,7 @@ const SubflowTable = () => {
                         defaultValue={subflow.schueleType}
                       >
                         <option value="Manual">On Demand</option>
-                        <option value="Auto">On Schedule</option>
+                        <option value="Auto">On Schedule (Crontab) </option>
                       </select>
                       {subflow.schueleType === "Auto" && (
                         <div>
