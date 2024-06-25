@@ -28,6 +28,7 @@ const plugins = [
     doc: "www.github.com",
     telephone: "+1-202-555-0170",
     imageUrl: "/images/nodes/general_icon.png",
+    active: true,
   },
   {
     name: "Excel / CSV",
@@ -36,6 +37,7 @@ const plugins = [
     doc: "www.github.com",
     telephone: "+1-202-555-0170",
     imageUrl: "/images/nodes/csv_icon.png",
+    active: true,
   },
 ];
 
@@ -96,8 +98,8 @@ const Plugins = () => {
                   alt=""
                 />
               </div>
-              <div>
-                <div className="divide-gray-200 -mt-px flex ">
+              <div className="grid grid-cols-2">
+                <div className="divide-gray-200 col-span-1 -mt-px flex">
                   <div className="flex w-0 flex-1">
                     <a
                       href={`mailto:${plugin.doc}`}
@@ -124,32 +126,21 @@ const Plugins = () => {
                       <span className="ml-3">Docs</span>
                     </a>
                   </div>
-                  <div className="-ml-px flex w-0 flex-1">
-                    <label className="flex cursor-pointer items-center">
-                      <div className="relative">
-                        <input
-                          type="checkbox"
-                          className="sr-only"
-                          // checked={activePlugins[plugin.name]}
-                          // onChange={() => handleToggle(plugin.name)}
-                        />
-                        <div className="bg-gray-600 block h-8 w-14 rounded-full"></div>
-                        {/* <div
-                          className={`dot absolute left-1 top-1 h-6 w-6 rounded-full bg-white transition ${
-                            activePlugins[plugin.name]
-                              ? "translate-x-full transform bg-green-500"
-                              : ""
-                          }`} */}
+                </div>
 
-                        <div
-                          className={`dot absolute left-1 top-1 h-6 w-6 rounded-full bg-white transition 
-                          `}
-                        ></div>
-                      </div>
-                      <span className="text-gray-700 ml-3 text-sm font-medium">
-                        {/* {activePlugins[plugin.name] ? "Active" : "Not Active"} */}
-                      </span>
-                    </label>
+                <div className="col-span-1 m-auto flex cursor-pointer items-center">
+                  <div className="relative">
+                    <input
+                      type="checkbox"
+                      checked={plugin.active}
+                      className="sr-only"
+                    />
+                    <div
+                      className={`block border border-slate-200 ${plugin.active ? "bg-green-500" : "bg-slate-500"} h-6 w-12 rounded-full`}
+                    ></div>
+                    <div
+                      className={`dot  absolute top-1 h-5 w-5 rounded-full transition ${plugin.active ? "translate-x-6" : "translate-x-0"}`}
+                    ></div>
                   </div>
                 </div>
               </div>

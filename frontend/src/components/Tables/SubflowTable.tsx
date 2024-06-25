@@ -583,31 +583,31 @@ const SubflowTable = () => {
             </h5>
           </div>
 
-          <div className="xl:bt-5 col-span-2 pb-2 pl-2.5  pt-3 xl:pb-2.5 xl:pl-2.5">
+          <div className="xl:bt-5 col-span-2 hidden pb-2 pl-2.5 pt-3  sm:block xl:pb-2.5 xl:pl-2.5">
             <h5 className=" text-sm font-medium xsm:text-sm">
               <b> Description</b>
             </h5>
           </div>
 
-          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+          <div className="xl:bt-5 hidden pb-2 pl-2.5 pt-3 sm:block  xl:pb-2.5 xl:pl-2.5">
             <h5 className=" text-sm font-medium xsm:text-sm">
               <b> Update</b>
             </h5>
           </div>
 
-          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+          <div className="xl:bt-5 hidden pb-2 pl-2.5 pt-3 sm:block  xl:pb-2.5 xl:pl-2.5">
             <h5 className=" text-sm font-medium xsm:text-sm">
               <b> Active </b>
             </h5>
           </div>
 
-          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+          <div className="xl:bt-5 hidden pb-2 pl-2.5 pt-3 sm:block  xl:pb-2.5 xl:pl-2.5">
             <h5 className=" text-sm font-medium xsm:text-sm">
               <b>scheduler </b>
             </h5>
           </div>
 
-          <div className="xl:bt-5 col-span-2 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+          <div className="xl:bt-5 col-span-2 hidden pb-2 pl-2.5 pt-3 sm:block  xl:pb-2.5 xl:pl-2.5">
             <h5 className=" text-sm font-medium xsm:text-sm">
               <b>Actions (V/E/P/D)</b>
             </h5>
@@ -637,7 +637,7 @@ const SubflowTable = () => {
               }}
             >
               <p
-                className="hidden
+                className="
               text-black dark:text-white sm:block"
               >
                 {truncateText(subflow.name, 20)}
@@ -645,7 +645,7 @@ const SubflowTable = () => {
             </div>
 
             <div
-              className="col-span-2 flex items-center gap-3 pl-2.5"
+              className="col-span-2 flex hidden items-center gap-3 pl-2.5 sm:block"
               onDoubleClick={() => {
                 setTrLoading(true);
                 router.push("/subflowedit?flowid=" + subflow.id);
@@ -661,7 +661,7 @@ const SubflowTable = () => {
             </div>
 
             <div
-              className="flex items-center gap-3 pl-2.5 "
+              className="flex hidden items-center gap-3 pl-2.5 sm:block"
               onDoubleClick={() => {
                 setTrLoading(true);
                 router.push("/subflowedit?flowid=" + subflow.id);
@@ -677,7 +677,7 @@ const SubflowTable = () => {
               </p>
             </div>
 
-            <div className="flex  items-center gap-1 pl-2.5 pt-2">
+            <div className="  hidden items-center gap-1 pl-2.5 pt-2 sm:flex">
               <div
                 className="flex cursor-pointer items-center"
                 onClick={() => handleActiveToggle(subflow.id)}
@@ -697,16 +697,16 @@ const SubflowTable = () => {
                   ></div>
                 </div>
               </div>
-              <span className="text-gray-700 hidden  text-xs dark:text-white lg:block">
+              <span className="text-gray-700 hidden text-xs dark:text-white md:block">
                 {subflow.active ? "Actived" : "Disabled"}
               </span>
             </div>
 
-            <div className="flex items-center gap-3 pl-2.5 ">
+            <div className="flex hidden items-center gap-3 pl-2.5 sm:flex ">
               <button
                 id={"config_" + subflow.id}
                 key={"config_" + subflow.id}
-                className={`mb-1 ml-2 mr-2 mt-1 rounded		border border-slate-300 pl-2 pr-2 text-white   ${subflow.active ? "bg-zinc-500 " : "text-gray-500 cursor-not-allowed border-slate-200 bg-zinc-300"}`}
+                className={`mb-1 ml-2 mr-2 mt-1 rounded border		border-slate-300 pl-2 pr-2 text-sm text-white   ${subflow.active ? "bg-zinc-500 " : "text-gray-500 cursor-not-allowed border-slate-200 bg-zinc-300"}`}
                 onClick={() => setConfigPopup(subflow.id)}
                 disabled={subflow.active ? false : true}
               >
@@ -788,7 +788,7 @@ const SubflowTable = () => {
               )}
             </div>
 
-            <div className="flex items-center gap-1 pl-2.5 ">
+            <div className=" hidden items-center gap-1 pl-2.5 sm:flex">
               <p className="hidden text-black dark:text-white sm:block">
                 <div className="flex gap-1">
                   <button
