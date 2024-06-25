@@ -14,10 +14,27 @@ import crypto from "crypto";
 import { usePathname } from "next/navigation";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
 import { sanitizeArrExtFile } from "@files-ui/react";
+import ReactFlow, {
+  addEdge,
+  applyEdgeChanges,
+  applyNodeChanges,
+  ReactFlowProvider,
+  Controls,
+  ControlButton,
+  Background,
+  useReactFlow,
+  useOnSelectionChange,
+  BackgroundVariant,
+  Panel,
+} from "reactflow";
+import "reactflow/dist/style.css";
+
+const proOptions = { hideAttribution: true };
 
 const SubflowTable = () => {
   const router = useRouter();
   const [subflows, setSubflows] = useState([]);
+  const [selectedNode, setSelectedNode] = useState(null);
   const [allFlow, setAllFlow] = useState([]);
   const [deleted, setDeleted] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -39,6 +56,7 @@ const SubflowTable = () => {
     setSubflowToDelete(subflow);
     setShowConfirm(true);
   };
+  const [viewPopup, setViewPopup] = useState(null);
 
   const handleTriggerType = async (e, flowID) => {
     let changeValue =
@@ -645,13 +663,13 @@ const SubflowTable = () => {
             </div>
 
             <div
-              className="col-span-2 flex hidden items-center gap-3 pl-2.5 sm:block"
+              className="col-span-2 flex hidden content-center items-center gap-3 pl-2.5 sm:block"
               onDoubleClick={() => {
                 setTrLoading(true);
                 router.push("/subflowedit?flowid=" + subflow.id);
               }}
             >
-              <p className="hidden text-black dark:text-white sm:block">
+              <p className="hidden items-center  text-black  dark:text-white sm:block">
                 {/* {subflow.id} */}
                 {/* {subflow.schedule}
                 {subflow.schueleType}
@@ -795,6 +813,7 @@ const SubflowTable = () => {
                     className="font-sans bg-gray-900 shadow-gray-900/10 hover:shadow-gray-900/20 relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle text-xs font-medium uppercase text-white  transition-all hover:shadow-lg focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                     type="button"
                     title="View Subflow"
+                    onClick={() => setViewPopup(subflow)}
                   >
                     <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform">
                       <svg
@@ -865,47 +884,46 @@ const SubflowTable = () => {
                       </span>
                     )}
                   </button>
+                  <button
+                    className="font-sans from-gray-900 to-gray-800 shadow-gray-900/10 hover:shadow-gray-900/20 relative mr-2 h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg bg-gradient-to-tr pl-6 text-center align-middle text-xs font-medium uppercase text-white  transition-all hover:shadow-lg active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                    type="button"
+                    title="Delete Subflow"
+                    onClick={() => handleDeleteClick(subflow)}
+                  >
+                    <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        className="dark:fill-current"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M17.0038 17.9792L18.7155 8.56456C18.8322 7.9227 18.8906 7.60178 18.7282 7.51633C18.5659 7.43088 18.3344 7.66067 17.8714 8.12025L16.985 9L12 10L6.99621 9L6.13263 8.13478C5.66847 7.66974 5.43639 7.43722 5.27345 7.5225C5.1105 7.60778 5.16927 7.931 5.28681 8.57744L6.99621 17.9792C6.99868 17.9927 7.00522 18.0052 7.01497 18.015C9.76813 20.7681 14.2319 20.7681 16.985 18.015C16.9948 18.0052 17.0013 17.9927 17.0038 17.9792Z"
+                          className="fill-current"
+                          fill-opacity="0.24"
+                        />
+                        <ellipse
+                          cx="12"
+                          cy="7"
+                          rx="7"
+                          ry="3"
+                          stroke="#222222"
+                          stroke-width="1.2"
+                          stroke-linecap="round"
+                        />
+                        <path
+                          d="M5 7L6.99621 17.9792C6.99868 17.9927 7.00522 18.0052 7.01497 18.015V18.015C9.76813 20.7681 14.2319 20.7681 16.985 18.015V18.015C16.9948 18.0052 17.0013 17.9927 17.0038 17.9792L19 7"
+                          stroke="#222222"
+                          stroke-width="1.2"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </span>
+                  </button>
                 </div>
               </p>
-
-              <button
-                className="font-sans from-gray-900 to-gray-800 shadow-gray-900/10 hover:shadow-gray-900/20 relative mr-2 h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg bg-gradient-to-tr pl-6 text-center align-middle text-xs font-medium uppercase text-white  transition-all hover:shadow-lg active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                type="button"
-                title="Delete Subflow"
-                onClick={() => handleDeleteClick(subflow)}
-              >
-                <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    className="dark:fill-current"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M17.0038 17.9792L18.7155 8.56456C18.8322 7.9227 18.8906 7.60178 18.7282 7.51633C18.5659 7.43088 18.3344 7.66067 17.8714 8.12025L16.985 9L12 10L6.99621 9L6.13263 8.13478C5.66847 7.66974 5.43639 7.43722 5.27345 7.5225C5.1105 7.60778 5.16927 7.931 5.28681 8.57744L6.99621 17.9792C6.99868 17.9927 7.00522 18.0052 7.01497 18.015C9.76813 20.7681 14.2319 20.7681 16.985 18.015C16.9948 18.0052 17.0013 17.9927 17.0038 17.9792Z"
-                      className="fill-current"
-                      fill-opacity="0.24"
-                    />
-                    <ellipse
-                      cx="12"
-                      cy="7"
-                      rx="7"
-                      ry="3"
-                      stroke="#222222"
-                      stroke-width="1.2"
-                      stroke-linecap="round"
-                    />
-                    <path
-                      d="M5 7L6.99621 17.9792C6.99868 17.9927 7.00522 18.0052 7.01497 18.015V18.015C9.76813 20.7681 14.2319 20.7681 16.985 18.015V18.015C16.9948 18.0052 17.0013 17.9927 17.0038 17.9792L19 7"
-                      stroke="#222222"
-                      stroke-width="1.2"
-                      stroke-linecap="round"
-                    />
-                  </svg>
-                </span>
-              </button>
             </div>
 
             {trLoading && (
@@ -921,8 +939,8 @@ const SubflowTable = () => {
             )}
 
             {showConfirm && (
-              <div className="bg-gray-900 fixed inset-0 flex items-center justify-center bg-opacity-50">
-                <div className="divide-y divide-slate-300 rounded-lg bg-white p-4 shadow-lg">
+              <div className="fixed inset-0 flex items-center justify-center bg-slate-900 bg-opacity-10">
+                <div className="w-2/4 divide-y divide-slate-300 rounded-lg bg-white p-4 shadow-lg">
                   <h2 className=" pb-4 pt-2 text-lg font-semibold">
                     ⚠️ Deleting a flow
                   </h2>
@@ -962,6 +980,120 @@ const SubflowTable = () => {
             )}
           </div>
         ))}
+
+        {viewPopup && (
+          <div className="fixed inset-0 flex items-center justify-center bg-slate-900 bg-opacity-50">
+            <div className="grid w-3/4 grid-cols-3 divide-y divide-slate-300 rounded-lg bg-white p-4  shadow-lg lg:ml-60">
+              <div className="h-96">
+                <h2 className=" pb-4 pt-2 text-lg font-semibold">
+                  📄 Subflow Details
+                </h2>
+                <div className="col-span-1 h-96 pb-2 pt-2">
+                  <p>
+                    <b>Flow ID:</b> {viewPopup.id}
+                  </p>
+                  <p>
+                    <b>Flow Name:</b> {viewPopup.name}
+                  </p>
+                  <p>
+                    <b>Flow Description:</b>{" "}
+                    {viewPopup.description.length < 1
+                      ? "No description"
+                      : viewPopup.description}
+                  </p>
+
+                  <p>
+                    <b>Active Status:</b>{" "}
+                    {viewPopup.active ? "Active 🟢" : "Inactive 🚫"}
+                  </p>
+
+                  {viewPopup.active && (
+                    <p>
+                      <b>Scheduler:</b> {viewPopup.schedule}
+                    </p>
+                  )}
+
+                  <p>
+                    <b>Created At:</b> {formatDate(viewPopup.created_at)}
+                  </p>
+                  <p>
+                    <b>Updated At:</b> {formatDate(viewPopup.updated_at)}
+                  </p>
+                  {selectedNode && (
+                    <div className="mt-4">
+                      <p>
+                        <b>Selected Node ID:</b>
+                      </p>
+                      <p>{selectedNode.id}</p>
+                      {/* <p>{JSON.stringify(selectedNode.data.inputs)}</p> */}
+                      {/* <p>{JSON.stringify(selectedNode.data.length)}</p> */}
+                      {selectedNode.data.inputs && (
+                        <div>
+                          <p className="break-words">
+                            <b>Node Input Data:</b>
+                          </p>
+                          {selectedNode.data.inputs.map((data, index) => (
+                            <p key={index} className="break-words">
+                              <b>{data.label}:</b> {data.value}
+                            </p>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+                <div className="flex justify-start pt-4">
+                  <button
+                    className="rounded-lg bg-slate-500 px-4 py-1 text-white"
+                    onClick={() => {
+                      setViewPopup(null);
+                      setTrLoading(true);
+                      router.push("/subflowedit?flowid=" + viewPopup.id);
+                    }}
+                  >
+                    Edit Flow
+                  </button>
+                </div>
+              </div>
+
+              <div className="col-span-2">
+                <h3 className="text-center text-lg font-semibold">
+                  Flow Diagram
+                </h3>
+
+                <div className="z-20 mt-1 h-96 w-full border border-stroke">
+                  <ReactFlow
+                    nodes={JSON.parse(viewPopup.flowjson).nodes}
+                    edges={JSON.parse(viewPopup.flowjson).edges}
+                    proOptions={proOptions}
+                    onInit={() => setSelectedNode(null)}
+                    onNodesChange={(changedNodes) => {
+                      const changedNodeId = changedNodes[0]?.id;
+                      const matchedNode = JSON.parse(
+                        viewPopup.flowjson,
+                      ).nodes.find((node) => node.id === changedNodeId);
+                      if (matchedNode) {
+                        setSelectedNode(matchedNode);
+                      }
+                    }}
+                  >
+                    {" "}
+                    <Background id="2" color="#333" />
+                    <Controls showInteractive={false} />
+                  </ReactFlow>
+                </div>
+                <div className="mt-4 flex justify-end pt-4">
+                  <button
+                    className="rounded-lg bg-rose-400 px-4 py-1 text-white"
+                    onClick={() => setViewPopup(null)}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       <div className="mt-4 flex items-center justify-between">
         <div>

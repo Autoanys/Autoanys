@@ -57,7 +57,9 @@ const ExtensionsGrid = () => {
   return (
     <div className="mx-auto max-w-270">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-gray-900 mt-6 text-xl font-semibold">Extensions</h2>
+        <h2 className="text-gray-900 mt-6 text-xl font-semibold">
+          {tabMenu === "builtIn" ? "Built-In Extensions" : "Marketplace"}
+        </h2>
         <div className="flex space-x-4">
           <button
             onClick={() => setTabMenu("builtIn")}
@@ -160,8 +162,8 @@ const ExtensionsGrid = () => {
                       className={`dot  absolute top-1 h-5 w-5 rounded-full transition ${plugin.active ? "translate-x-6" : "translate-x-0"}`}
                     ></div>
                   </div>
-                  <span className="text-gray-700 hidden text-xs dark:text-white md:block">
-                    {plugin.active ? "Actived" : "Disabled"}
+                  <span className="text-gray-700 hidden pl-2 text-xs dark:text-white md:block">
+                    {plugin.active ? "Active" : "Disabled"}
                   </span>
                 </div>
               </div>

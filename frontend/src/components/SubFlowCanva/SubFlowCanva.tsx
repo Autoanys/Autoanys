@@ -110,6 +110,7 @@ const SubFlowCanva = (editing, flowid) => {
     code: 200,
     message: "",
   });
+  const [cateLoading, setCateLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [needConfirmation, setNeedConfirmation] = useState(true);
   const [selectedNodes, setSelectedNodes] = useState([]);
@@ -207,6 +208,7 @@ const SubFlowCanva = (editing, flowid) => {
   };
 
   useEffect(() => {
+    setCateLoading(true);
     let activated = [];
 
     const fetchDatas = async () => {
@@ -228,7 +230,9 @@ const SubFlowCanva = (editing, flowid) => {
         console.error("Error fetching data:", error);
       }
     };
-    fetchDatas().then(() => setActivedCategory(activated));
+    fetchDatas()
+      .then(() => setActivedCategory(activated))
+      .then(() => setCateLoading(false));
   }, []);
 
   const handleSearchChange = (event) => {
@@ -1555,6 +1559,20 @@ const SubFlowCanva = (editing, flowid) => {
             </div>
 
             {nodeDivs}
+            {!cateLoading && activedCategory.length === 0 && (
+              <div className="flex h-64 items-center justify-center">
+                <p className="text-lg">No active plugins</p>
+              </div>
+            )}
+            {cateLoading && (
+              <div>
+                <img
+                  src={"/images/general/loading.gif"}
+                  alt="Loading"
+                  className="mx-auto h-10 w-10 animate-spin"
+                />
+              </div>
+            )}
           </aside>
         </div>
 
