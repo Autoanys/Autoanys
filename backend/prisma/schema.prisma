@@ -93,6 +93,45 @@ model PluginCategory {
   plugins     Plugin[]
 }
 
+model ExtensionList {
+  id String @id @default(cuid())
+  name String
+  title String
+  doc String
+  imageUrl String
+  active Boolean @default(true)
+}
+
+  // const plugins = [
+  //   {
+  //     name: "Browser",
+  //     title: "Chrome Browser Extension",
+  //     role: "Development",
+  //     doc: "www.github.com",
+  //     telephone: "+1-202-555-0170",
+  //     imageUrl: "/images/nodes/chrome_icon.png",
+  //     active: true,
+  //   },
+  //   {
+  //     name: "General",
+  //     title: "General features",
+  //     role: "Development",
+  //     doc: "www.github.com",
+  //     telephone: "+1-202-555-0170",
+  //     imageUrl: "/images/nodes/general_icon.png",
+  //     active: true,
+  //   },
+  //   {
+  //     name: "Excel / CSV",
+  //     title: "Excel / CSV features",
+  //     role: "Development",
+  //     doc: "www.github.com",
+  //     telephone: "+1-202-555-0170",
+  //     imageUrl: "/images/nodes/csv_icon.png",
+  //     active: true,
+  //   },
+  // ];
+
 model Plugin {
   id   String @id @default(cuid())
   name        String

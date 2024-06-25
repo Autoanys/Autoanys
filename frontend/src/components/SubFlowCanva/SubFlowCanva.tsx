@@ -185,6 +185,7 @@ const SubFlowCanva = (editing, flowid) => {
   const [popupImage, setPopupImage] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentDebugResult, setCurrentDebugResult] = useState([]);
+  const [activedCategory, setActivedCategory] = useState([]);
 
   useEffect(() => {
     setVariables(variableConfig);
@@ -204,6 +205,31 @@ const SubFlowCanva = (editing, flowid) => {
       [category]: !prev[category],
     }));
   };
+
+  useEffect(() => {
+    let activated = [];
+
+    const fetchDatas = async () => {
+      try {
+        const res = await fetch(
+          process.env.NEXT_PUBLIC_BACKEND_URL + "/plugins/actived/",
+          {
+            method: "GET",
+          },
+        );
+
+        const data = await res.json();
+        console.log("YOYO", data);
+
+        for (let i = 0; i < data.actived.length; i++) {
+          activated.push(data.actived[i].name);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchDatas().then(() => setActivedCategory(activated));
+  }, []);
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value.toLowerCase());
@@ -1020,8 +1046,6 @@ const SubFlowCanva = (editing, flowid) => {
     }).then(downloadImage);
   };
 
-  const cateConfig = { cate: ["Browser", "General"] };
-
   const groupByCategory = (nodes) => {
     return nodes.reduce((acc, key) => {
       const category = nodeConfig[key].category || "Uncategorized";
@@ -1108,7 +1132,10 @@ const SubFlowCanva = (editing, flowid) => {
   }, [debugStep, debugData]);
 
   const nodeDivs = Object.keys(filteredNodes).map((category) => (
-    <div key={category}>
+    <div
+      key={category}
+      className={` ${activedCategory.includes(category) ? "" : "hidden"} `}
+    >
       <div
         // className="flex cursor-pointer items-center justify-between border-b border-slate-400 px-4 py-2 hover:bg-slate-100"
         className={`mt-4 flex cursor-pointer items-center justify-between border-b border-slate-400 px-4 py-2 hover:bg-slate-50 

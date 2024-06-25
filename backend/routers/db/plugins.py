@@ -12,22 +12,47 @@ router = APIRouter()
 async def get_plugins_cate():
     prisma = Prisma()
     await prisma.connect()
-    plugin_categories = await prisma.plugincategory.find_many()
+    plugin_categories = await prisma.extensionlist.find_many()
     await prisma.disconnect()
 
-    # Convert each PluginCategory object into a dictionary
-    plugin_categories_dict = [
-        {
-            "id": category.id,
-            "name": category.name,
-            "description": category.description,
-            "endpoint": category.endpoint,
-            "image": category.image,
-            "active": category.active,
-            "plugins": category.plugins  # Assuming category.plugins is a list of plugins
+
+    return {"message" : "successful", "plugins": plugin_categories}
+
+
+@router.get("/plugins/active/{extensionID}")
+async def update_plugin(extensionID: str):
+    prisma = Prisma()
+    await prisma.connect()
+    orginal_extension = await prisma.extensionlist.find_unique(where={
+        "id": extensionID
+    })
+
+    switch = False if orginal_extension.active else True
+
+    new_data = await prisma.extensionlist.update(
+        where={
+            "id": extensionID
+        },
+        data={
+            "active": switch
         }
-        for category in plugin_categories
-    ]
+    )
 
-    return {"plugins": plugin_categories_dict}
+ 
+    await prisma.disconnect()
+    return {"message": f"Extension {extensionID} activated successfully"}
 
+
+
+@router.get("/plugins/actived/")
+async def get_allactived():
+    prisma = Prisma()
+    await prisma.connect()
+    plugin_categories = await prisma.extensionlist.find_many(where={
+        "active": True
+    })
+
+    await prisma.disconnect()
+
+
+    return {"message" : "successful", "actived": plugin_categories}
