@@ -120,8 +120,8 @@ const LoggingTable = () => {
       />
 
       <div className="flex flex-col rounded-t-lg border	border-slate-300 text-black">
-        <div className="grid grid-cols-6 divide-x divide-slate-300 rounded-t-lg bg-indigo-50 uppercase dark:bg-white sm:grid-cols-6">
-          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+        <div className="grid grid-cols-9 divide-x divide-slate-300 rounded-t-lg bg-indigo-50 uppercase dark:bg-white sm:grid-cols-9">
+          <div className="xl:bt-5 col-span-2 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
             <h5 className=" text-sm font-medium xsm:text-sm">
               <b>Trigger ID</b>
             </h5>
@@ -144,7 +144,7 @@ const LoggingTable = () => {
             </h5>
           </div>
 
-          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+          <div className="xl:bt-5 col-span-3 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
             <h5 className=" text-sm font-medium xsm:text-sm">
               <b>Log DateTime</b>
             </h5>
@@ -159,19 +159,19 @@ const LoggingTable = () => {
 
         {currentLog.map((log, index) => (
           <div
-            className={`grid grid-cols-6  divide-x divide-slate-300 sm:grid-cols-6 ${
+            className={`grid grid-cols-9 divide-x divide-slate-300 sm:grid-cols-9 ${
               index === log.length - 1
                 ? ""
                 : "border-b border-stroke dark:border-strokedark"
             }`}
             key={log.triggerID}
           >
-            <div className="flex items-center gap-3 pl-2.5 ">
+            <div className="col-span-2 flex items-center gap-2 pl-2.5 ">
               <p
                 className="text-bla ck
               hidden dark:text-white sm:block"
               >
-                {truncateText(log.triggerID, 10)}
+                {truncateText(log.triggerID, 20)}
               </p>
             </div>
 
@@ -183,7 +183,7 @@ const LoggingTable = () => {
               >
                 {/* {subflow.id} */}
                 {truncateText(
-                  log.result === "Success" ? "✅ Success" : "❌ Failed",
+                  log.result === "Success" ? "Success" : " Failed",
                   15,
                 )}
               </p>
@@ -203,7 +203,7 @@ const LoggingTable = () => {
               </p>
             </div>
 
-            <div className="flex items-center gap-3 pl-2.5 ">
+            <div className="col-span-3 flex items-center gap-3 pl-2.5 ">
               <p
                 className="hidden text-black dark:text-white sm:block"
                 title={log.result}
@@ -213,7 +213,7 @@ const LoggingTable = () => {
               </p>
             </div>
 
-            <div className="flex items-center gap-4 pl-2.5 ">
+            <div className="col-span-1 flex items-center gap-4 pl-2.5 ">
               <p className="hidden text-black dark:text-white sm:block">
                 <div className="flex gap-4">
                   <button

@@ -4,8 +4,10 @@ from apscheduler.triggers.cron import CronTrigger
 from prisma import Prisma
 from datetime import datetime
 from routers.utility import flow, general
+from general.header import get_random_string
 from routers.db.subflow import all_subflow,specific_subflow
 from routers.utility.flow import analyze_json
+from routers.db.logs import write_logging, write_step_logs
 import json
 import requests
 from routers.chrome.browser import OpenBrowser, OpenWebsite, GetScreenshot, CloseBrowser
@@ -15,19 +17,43 @@ from general.cronValidate import validate_cron
 
 router = APIRouter()
 
-# Correspondence_function_list = {
-#     "OpenBrowser" : OpenBrowser,
-#     "OpenWebsite" : OpenWebsite,
-#     "sleep_wait" : sleep_wait,
-#     "CloseBrowser" : CloseBrowser,
-#     "GetScreenshot" : GetScreenshot
-# }
+async def getLogJson(flowID):
+    triggerID =   get_random_string(16)
+    logFlowID = flowID
+    type = "Scheduled"
+    flow_type = "Flow"
+    result = "Success"
+    logData = {
+    "trigger_id": triggerID,
+    "flow_id": logFlowID,
+    "flow_type": flow_type,
+    "type": type,
+    "result": result,
+    }
+    
+    return logData
 
+async def getLogJsonSubflow(triggerID, api, step, result):
+    postD = {
+        "log_id" : triggerID,
+        "api": api,
+        "step": step,
+        "result": result
+
+    }
+
+    return postD
+
+    # body: JSON.stringify({
+    #               log_id: triggerID,
+    #               api: data.steps[i].api,
+    #               step: i + 1,
+    #               result: JSON.stringify(resData),
+    #             }),
 
 def get_function_by_name(name):
     return globals().get(name)
 
-# Define your subflow execution function
 async def run_subflow(subflow_id: str):
     print(f"Running subflow with ID: {subflow_id}")
     res = await specific_subflow(subflow_id)
@@ -37,9 +63,11 @@ async def run_subflow(subflow_id: str):
     print(flowstep['steps'])
     print("-----------------------------")
 
+    logData = await getLogJson(subflow_id)
+    log = await write_logging(logData)
+    print(log)
 
-
-    for step in flowstep['steps']:
+    for idx, step in enumerate(flowstep['steps']):
         function_name = step['function']
         function = get_function_by_name(function_name)
         print(step, "Looping")
@@ -50,31 +78,18 @@ async def run_subflow(subflow_id: str):
 
         if step['method'] == 'GET':
             print("call function")
-            await function()
-            # Function is step['function']
-            # Correspondence_function_list[step['function']]
-            print("done")
+            data = await function()
+            logStep = await getLogJsonSubflow(logData['trigger_id'], step['api'], idx, data)
+            print(data, "OK")
         elif step['method'] == 'POST':
             print("call function")
             pla_arg = json.dumps(step['post_data'])
             func_arg = json.loads(pla_arg)
-            await function(func_arg)
+            ran = await function(func_arg)
+            logStep = await getLogJsonSubflow(logData['trigger_id'], step['api'], idx, ran)
 
-            # await function(json.loads(step['post_data']))
-            # Function is step['function']
-
-        #     res = requests.post(step['api'], data=step['post_data'])
-        #     print(res.text)
-
-
-    # getFlow = await analyze_json(res.data)
-    # print(getFlow)
     return {"message": "Subflow executed", "subflow_id": subflow_id}
-    # subflow = await prisma.subflow.find_unique(where={'id': subflow_id})
-    # if subflow and subflow.active:
-    #     print(f"Running subflow: {subflow_id} at {datetime.utcnow()}")
 
-# Function to schedule all active subflows
 async def schedule_subflows(scheduler: AsyncIOScheduler, prisma: Prisma):
     print("Scheduling subflows...")
     subflows = await prisma.subflow.find_many(where={'active': True, 'schueleType': 'Auto'})
@@ -90,33 +105,3 @@ async def schedule_subflows(scheduler: AsyncIOScheduler, prisma: Prisma):
     print(scheduler.get_jobs())
 
 
-# Endpoint to add or update a subflow and reschedule
-# @router.post("/subflow")
-# async def add_or_update_subflow(subflow: dict):
-#     subflow_id = subflow.get('id')
-#     if subflow_id:
-#         await prisma.subflow.update(where={'id': subflow_id}, data=subflow)
-#     else:
-#         subflow = await prisma.subflow.create(data=subflow)
-#         subflow_id = subflow.id
-    
-#     # Remove the old job if it exists
-#     try:
-#         scheduler.remove_job(subflow_id)
-#     except:
-#         pass
-
-#     # Reschedule if active and Auto
-#     if subflow.get('active') and subflow.get('schueleType') == 'Auto':
-#         scheduler.add_job(
-#             run_subflow,
-#             CronTrigger.from_crontab(subflow.get('schedule')),
-#             args=[subflow_id],
-#             id=subflow_id
-#         )
-#     return {"message": "Subflow scheduled", "subflow_id": subflow_id}
-
-# # Endpoint to list all subflows
-# @router.get("/subflows")
-# async def get_subflows():
-#     return await prisma.subflow.find_many()

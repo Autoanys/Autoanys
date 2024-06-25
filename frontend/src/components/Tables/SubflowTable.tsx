@@ -594,7 +594,7 @@ const SubflowTable = () => {
       )}
 
       <div className="flex flex-col rounded-t-lg border	border-slate-300 text-black">
-        <div className="grid grid-cols-8 divide-x divide-slate-300 rounded-t-lg border-b border-slate-300 bg-indigo-50 uppercase dark:bg-white sm:grid-cols-8">
+        <div className="grid grid-cols-8 divide-x divide-slate-300 rounded-t-lg border-b border-slate-300 bg-indigo-50 uppercase dark:bg-[#1E1E2F] dark:text-white sm:grid-cols-8">
           <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5 ">
             <h5 className=" text-sm font-medium xsm:text-sm">
               <b> Name</b>
@@ -720,11 +720,11 @@ const SubflowTable = () => {
               </span>
             </div>
 
-            <div className="flex hidden items-center gap-3 pl-2.5 sm:flex ">
+            <div className="flex hidden  items-center gap-3 sm:flex ">
               <button
                 id={"config_" + subflow.id}
                 key={"config_" + subflow.id}
-                className={`mb-1 ml-2 mr-2 mt-1 rounded border		border-slate-300 pl-2 pr-2 text-sm text-white   ${subflow.active ? "bg-zinc-500 " : "text-gray-500 cursor-not-allowed border-slate-200 bg-zinc-300"}`}
+                className={`m-auto  mb-1 mt-1 rounded	border	border-slate-300 pl-2 pr-2 text-sm text-white   ${subflow.active ? "bg-zinc-500 " : "text-gray-500 cursor-not-allowed border-slate-200 bg-zinc-300"}`}
                 onClick={() => setConfigPopup(subflow.id)}
                 disabled={subflow.active ? false : true}
               >

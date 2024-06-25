@@ -23,12 +23,12 @@ async def delete_all_logs():
 async def write_logging(flow_json: dict):
     prisma = Prisma()
     await prisma.connect()
+    print(flow_json, "writing Logs")
     flowID = flow_json["flow_id"]
     triggerID = flow_json["trigger_id"]
     result = flow_json["result"]
     type = flow_json["type"]
     flowType = flow_json["flow_type"]
-
     print(result)
 
     flow_data = await prisma.logs.create(
