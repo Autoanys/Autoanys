@@ -33,7 +33,7 @@ async def getLogJson(flowID):
     
     return logData
 
-async def getLogJsonSubflow(triggerID, api, step, result):
+async def getStepLogJson(triggerID, api, step, result):
     postD = {
         "log_id" : triggerID,
         "api": api,
@@ -70,7 +70,7 @@ async def run_subflow(subflow_id: str):
     for idx, step in enumerate(flowstep['steps']):
         function_name = step['function']
         function = get_function_by_name(function_name)
-        print(step, "Looping")
+        # print(step, "Looping")
 
         if not function:
             print(f"Function {function_name} not found")
@@ -79,14 +79,22 @@ async def run_subflow(subflow_id: str):
         if step['method'] == 'GET':
             print("call function")
             data = await function()
-            logStep = await getLogJsonSubflow(logData['trigger_id'], step['api'], idx, data)
-            print(data, "OK")
+            result = json.dumps(data)
+            # result = json.loads(result)
+            stepLog = await getStepLogJson(logData['trigger_id'], step['api'], idx + 1, result)
+            ingestLog = await write_step_logs(stepLog)
+            print(ingestLog)
         elif step['method'] == 'POST':
             print("call function")
             pla_arg = json.dumps(step['post_data'])
             func_arg = json.loads(pla_arg)
             ran = await function(func_arg)
-            logStep = await getLogJsonSubflow(logData['trigger_id'], step['api'], idx, ran)
+            result = json.dumps(ran)
+            # result = json.loads(result)
+            stepLog = await getStepLogJson(logData['trigger_id'], step['api'], idx + 1, result)
+            print("ran", ran, "stepLog", stepLog)
+            ingestLog = await write_step_logs(stepLog)
+            print(ingestLog)
 
     return {"message": "Subflow executed", "subflow_id": subflow_id}
 
