@@ -9,11 +9,15 @@ from fastapi.responses import FileResponse
 import json
 from general.header import *
 from cryptography.fernet import Fernet
-
- 
-
+import main
 
 router = APIRouter()
+
+@router.get("/ttt")
+async def ttt():
+    t = main.update_scheduler()
+    print(t)
+    return {"message": "Hello World"}
 
 @router.post("/subflow/write/")
 async def write_subflow(flow_json: dict):
@@ -33,6 +37,8 @@ async def write_subflow(flow_json: dict):
             "flowjson": flow
         }
     )
+
+
 
     # update_scheduler()
     await prisma.disconnect()
@@ -57,12 +63,18 @@ async def activate_subflow(flow_id : str):
             "active": switch
         }
     )
-   
 
-
-
-
-
+    if switch == True and flow_data.schueleType == 'Auto':
+        print("Actived")
+        # main.remove_subflow_scheduler(flow_id)
+        main.add_subflow_scheduler(flow_id, flow_data.schedule)
+    else:
+        try:
+            print("Removed")
+            main.remove_subflow_scheduler(flow_id)
+        except:
+            pass
+    main.checkJobs()
     await prisma.disconnect()
     return {"message": f"Subflow {flow_id} activated successfully"}
 

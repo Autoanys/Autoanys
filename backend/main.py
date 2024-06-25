@@ -17,7 +17,7 @@ from routers.excel import csv
 from prisma import Prisma
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
-from scheduler.test import schedule_subflows 
+from scheduler.test import schedule_subflows , run_subflow
 import threading
 import asyncio
 import signal
@@ -34,8 +34,23 @@ def signal_handler(sig, frame):
     print("Exiting...")
     exit(0)
 
-def update_scheduler():
-    print(scheduler.get_job())
+def checkJobs():
+    print(scheduler.print_jobs())
+    return scheduler.print_jobs()
+
+
+# def update_scheduler(flow_id):
+#     print("Scheduling subflows...")
+#     subflows =  prisma.subflow.find_unique(where={'id': flow_id})
+#     for subflow in subflows:
+#         scheduler.add_job(
+#             run_subflow,
+#             CronTrigger.from_crontab(subflow.schedule),
+#             args=[subflow.id],
+#             id=subflow.id
+#         )
+#     print(subflows)
+#     print(scheduler.print_jobs())
 
 origins = ["*"]
 
@@ -47,6 +62,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 loop = asyncio.new_event_loop()
+
+
+def add_subflow_scheduler(flow_id, shed):
+    scheduler.add_job(
+        run_subflow,
+        CronTrigger.from_crontab(shed),
+        args=[flow_id],
+        id=flow_id
+    )
+
+def remove_subflow_scheduler(flow_id):
+    try:
+        scheduler.remove_job(flow_id)
+        print("Removed")
+    except:
+        pass
+    
 
 def start_scheduler():
     try:
@@ -73,8 +105,6 @@ def start_scheduler():
         finally:
             loop.close()
 
-def update_scheduler():
-    print(scheduler.get_job())
 
 
 @app.on_event("startup")
