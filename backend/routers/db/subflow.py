@@ -110,8 +110,6 @@ async def scheduler_subflow(json_data: dict):
     else:
         try:
             print(await validate_cron(flow_data.schedule))
-            print("Why")
-            print("Removed")
             main.remove_subflow_scheduler(flow_id)
         except:
             pass

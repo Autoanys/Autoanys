@@ -126,7 +126,7 @@ const LoggingTable = () => {
         <div className="grid grid-cols-9 divide-x divide-slate-300 rounded-t-lg bg-indigo-50 uppercase dark:bg-white sm:grid-cols-9">
           <div className="xl:bt-5 col-span-2 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
             <h5 className=" text-sm font-medium xsm:text-sm">
-              <b>Triggered Flow</b>
+              <b>Triggered ID</b>
             </h5>
           </div>
           <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
@@ -174,7 +174,7 @@ const LoggingTable = () => {
 
         {currentLog.map((log, index) => (
           <div
-            className={`grid grid-cols-9 divide-x divide-slate-300 sm:grid-cols-9 ${
+            className={`grid grid-cols-9 divide-x divide-slate-300 hover:bg-orange-50 dark:hover:bg-black	 sm:grid-cols-9 ${
               index === log.length - 1
                 ? ""
                 : "border-b border-stroke dark:border-strokedark"
@@ -228,11 +228,11 @@ const LoggingTable = () => {
               </p>
             </div>
 
-            <div className="col-span-1 flex items-center gap-4 pl-2.5 ">
+            <div className="col-span-1 flex items-center gap-4 pl-3 ">
               <p className="hidden text-black dark:text-white sm:block">
                 <div className="flex gap-4">
                   <button
-                    className="font-sans bg-gray-900 shadow-gray-900/10 hover:shadow-gray-900/20 relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle text-xs font-medium uppercase text-white shadow-md transition-all hover:shadow-lg focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                    className="font-sans bg-gray-900 shadow-gray-900/10 hover:shadow-gray-900/20 relative h-10 max-h-[25px] w-10 max-w-[25px] select-none rounded-lg text-center align-middle text-xs font-medium uppercase text-white shadow-md transition-all hover:shadow-lg focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                     type="button"
                     onClick={() => {
                       setResultLoading(true);
@@ -344,11 +344,17 @@ const LoggingTable = () => {
               <div>
                 <h2 className="mb-4 text-xl font-bold">🧾 Log Details</h2>
                 <p className="mb-4">
-                  <strong>Trigger ID:</strong> {logDetails[0].id}
+                  {logDetails.length > 0 && (
+                    <strong>Triggered ID : {logDetails[0].logID}</strong>
+                  )}
                 </p>
                 <p className="mb-4">
-                  <strong>Triggered Date Time : </strong>{" "}
-                  {formatDate(logDetails[0].created_at)}
+                  {logDetails.length > 0 && (
+                    <strong>
+                      Triggered Date Time :
+                      {formatDate(logDetails[0].created_at)}{" "}
+                    </strong>
+                  )}
                 </p>
                 <div className="space-y-2">
                   {logDetails.length === 0 && (
