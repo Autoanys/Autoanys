@@ -18,6 +18,8 @@ import {
   UncollapseIcon,
   CollapseIcon,
 } from "./icon";
+import { useTranslation } from "next-i18next";
+import { appWithTranslation } from "next-i18next";
 
 import Head from "next/head";
 
@@ -28,7 +30,7 @@ interface SidebarProps {
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const pathname = usePathname();
-
+  const { t } = useTranslation("sidebar");
   const trigger = useRef(null);
   const sidebar = useRef(null);
 
@@ -141,7 +143,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
             alt="Logo"
             priority
           />
-
+          <p>{t("sidebar_main_dashboard")}</p>
           <Image
             className="hidden dark:block"
             width={sidebarExpanded ? 245 : 50}
@@ -229,4 +231,4 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   );
 };
 
-export default Sidebar;
+export default appWithTranslation(Sidebar);

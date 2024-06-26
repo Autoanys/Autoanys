@@ -21,6 +21,7 @@ const SelectAuthorization: React.FC = () => {
 
       <div className="relative z-20 mt-2 bg-transparent dark:bg-form-input">
         <select
+          disabled
           value={selectedOption}
           onChange={(e) => {
             setSelectedOption(e.target.value);

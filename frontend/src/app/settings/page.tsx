@@ -39,7 +39,7 @@ const Settings = () => {
                         <input
                           type="text"
                           value={env.NEXT_PUBLIC_BACKEND_URL}
-                          className="ursor-not-allowed	 w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary "
+                          className="w-full	 cursor-not-allowed rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary "
                           disabled
                         />
                       </div>
