@@ -28,6 +28,7 @@ import ReactFlow, {
   Panel,
 } from "reactflow";
 import "reactflow/dist/style.css";
+import { act } from "react-dom/test-utils";
 
 const proOptions = { hideAttribution: true };
 
@@ -523,30 +524,151 @@ const SubflowTable = () => {
   };
 
   const handleActiveToggle = async (flowID) => {
-    console.log("Toggled active status for flow with ID:", flowID);
-    const res = fetch(
-      process.env.NEXT_PUBLIC_BACKEND_URL + "/subflow/active/" + flowID,
-      {
-        method: "GET",
-      },
-    );
-    setSubflows((prevSubflows) => {
-      const updatedSubflows = prevSubflows.map((subflow) => {
-        if (subflow.id === flowID) {
-          return {
-            ...subflow,
-            active: !subflow.active,
-          };
-        }
-        return subflow;
+    try {
+      setSubflows((prevSubflows) => {
+        const updatedSubflows = prevSubflows.map((subflow) => {
+          if (subflow.id === flowID) {
+            return {
+              ...subflow,
+              active: !subflow.active,
+            };
+          }
+          return subflow;
+        });
+        return updatedSubflows;
       });
-      return updatedSubflows;
-    });
+
+      const res = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_URL + "/subflow/active/" + flowID,
+        {
+          method: "GET",
+        },
+      );
+
+      if (res.status === 200) {
+        const data = await res.json();
+        console.log("Response from active toggle:", data);
+        setShowNotification({
+          show: true,
+          code: 200,
+          message: data.message,
+        });
+        setTimeout(() => {
+          setShowNotification({
+            show: false,
+            code: 200,
+            message: data.message,
+          });
+        }, 3000);
+      } else {
+        setSubflows((prevSubflows) => {
+          const updatedSubflows = prevSubflows.map((subflow) => {
+            if (subflow.id === flowID) {
+              return {
+                ...subflow,
+                active: !subflow.active,
+              };
+            }
+            return subflow;
+          });
+          return updatedSubflows;
+        });
+        setShowNotification({
+          show: true,
+          code: 500,
+          message: "Failed to toggle active status",
+        });
+        setTimeout(() => {
+          setShowNotification({
+            show: false,
+            code: 500,
+            message: "Failed to toggle active status",
+          });
+        }, 3000);
+      }
+    } catch (error) {
+      setSubflows((prevSubflows) => {
+        const updatedSubflows = prevSubflows.map((subflow) => {
+          if (subflow.id === flowID) {
+            return {
+              ...subflow,
+              active: !subflow.active,
+            };
+          }
+          return subflow;
+        });
+        return updatedSubflows;
+      });
+    }
   };
 
   return (
     // border border-stroke shadow-default
     <div className="rounded-sm  bg-white px-5 pb-2.5 pt-6  dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+      {showNotification.show && (
+        <div
+          aria-live="assertive"
+          className="pointer-events-none fixed inset-0 z-999 mt-30 flex items-end px-4 py-6 sm:items-start sm:p-6"
+        >
+          <div className="flex w-full flex-col items-center space-y-4 sm:items-end">
+            <Transition
+              show={showNotification.show}
+              as={Fragment}
+              enter="transform ease-out duration-300 transition"
+              enterFrom="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+              enterTo="translate-y-0 opacity-100 sm:translate-x-0"
+              leave="transition ease-in duration-100"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="pointer-events-auto w-1/3 overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+                <div className="p-4">
+                  <div className="flex items-start">
+                    <div className="flex-shrink-0">
+                      {showNotification.code == 200 ? (
+                        <CheckCircleIcon
+                          className="h-6 w-6 text-emerald-700"
+                          aria-hidden="true"
+                        />
+                      ) : (
+                        <ExclamationCircleIcon
+                          className="h-6 w-6 text-red"
+                          aria-hidden="true"
+                        />
+                      )}
+                    </div>
+                    <div className="ml-3 w-0 flex-1 pt-0.5">
+                      <p
+                        className={`text-sm font-medium ${showNotification.code == 200 ? "text-emerald-700" : "text-red"} `}
+                      >
+                        {showNotification.code}
+                      </p>
+                      <p className="text-gray-500 mt-1 text-sm">
+                        {showNotification.message}
+                      </p>
+                    </div>
+                    <div className="ml-4 flex flex-shrink-0">
+                      <button
+                        className="text-gray-400 hover:text-gray-500 inline-flex rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        onClick={() => {
+                          setShowNotification({
+                            show: false,
+                            code: 200,
+                            message: "",
+                          });
+                        }}
+                      >
+                        <span className="sr-only">Close</span>
+                        <XIcon className="h-5 w-5" aria-hidden="true" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Transition>
+          </div>
+        </div>
+      )}
       <div className="flex justify-between gap-x-4">
         <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
           Flow List
@@ -695,7 +817,7 @@ const SubflowTable = () => {
               </p>
             </div>
 
-            <div className="  hidden items-center gap-1 pl-2.5 pt-2 sm:flex">
+            <div className="  mr-1  hidden items-center gap-1 pl-1.5 pt-2 sm:flex">
               <div
                 className="flex cursor-pointer items-center"
                 onClick={() => handleActiveToggle(subflow.id)}
@@ -724,6 +846,11 @@ const SubflowTable = () => {
               <button
                 id={"config_" + subflow.id}
                 key={"config_" + subflow.id}
+                title={
+                  subflow.active
+                    ? "Configure Flow"
+                    : "Please activate flow to configure"
+                }
                 className={`m-auto  mb-1 mt-1 rounded	border	border-slate-300 pl-2 pr-2 text-sm text-white   ${subflow.active ? "bg-zinc-500 " : "text-gray-500 cursor-not-allowed border-slate-200 bg-zinc-300"}`}
                 onClick={() => setConfigPopup(subflow.id)}
                 disabled={subflow.active ? false : true}

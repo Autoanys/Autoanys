@@ -1,14 +1,46 @@
 "use client";
 import { useState, useEffect, use } from "react";
+import { Fragment } from "react";
+import {
+  ExclamationCircleIcon,
+  XIcon,
+  CheckCircleIcon,
+} from "@heroicons/react/outline";
+import { Transition } from "@headlessui/react";
+
 import Link from "next/link";
 import { get } from "http";
+import { plugin } from "postcss";
+// import Notification from "../common/Notification";
 
 const ExtensionsGrid = () => {
   const [plugins, setPlugins] = useState([]);
   const [tabMenu, setTabMenu] = useState("builtIn");
+  const [resultLoading, setResultLoading] = useState(true);
+  const [showNotification, setShowNotification] = useState({
+    show: false,
+    code: 200,
+    message: "",
+  });
+
+  const notify = async (code, message) => {
+    setShowNotification({
+      show: true,
+      code: code,
+      message: message,
+    });
+    setTimeout(() => {
+      setShowNotification({
+        show: false,
+        code: 200,
+        message: "",
+      });
+    }, 3000);
+  };
 
   useEffect(() => {
     const fetchDatas = async () => {
+      setResultLoading(true);
       try {
         const res = await fetch(
           process.env.NEXT_PUBLIC_BACKEND_URL + "/plugins/",
@@ -25,37 +57,112 @@ const ExtensionsGrid = () => {
         console.error("Error fetching data:", error);
       }
     };
-    console.log("TTE", plugins);
-    fetchDatas();
-
-    console.log("DASDASDSA", plugins);
-    // console.log("ASD");
+    fetchDatas().then(() => {
+      setResultLoading(false);
+    });
   }, []);
 
-  const handleActiveToggle = async (extenID) => {
+  const handleActiveToggle = (extenID) => {
     console.log("extenID", extenID);
-    const res = fetch(
-      process.env.NEXT_PUBLIC_BACKEND_URL + "/plugins/active/" + extenID,
-      {
-        method: "GET",
-      },
-    );
-    setPlugins((prevPlugins) => {
-      const updatedPlugins = prevPlugins.map((plugin) => {
-        if (plugin.id === extenID) {
-          return {
-            ...plugin,
-            active: !plugin.active,
-          };
-        }
-        return plugin;
+    try {
+      const res = fetch(
+        process.env.NEXT_PUBLIC_BACKEND_URL + "/plugins/active/" + extenID,
+        {
+          method: "GET",
+        },
+      );
+      // if (res.status !== 200) {
+      //   notify(res.status, "Error in activating plugin");
+      // }
+
+      let plugTF;
+
+      setPlugins((prevPlugins) => {
+        const updatedPlugins = prevPlugins.map((plugin) => {
+          if (plugin.id === extenID) {
+            return {
+              ...plugin,
+              active: !plugin.active,
+            };
+          }
+          plugTF = plugin.active;
+          return plugin;
+        });
+        notify("200", "Successful");
+        return updatedPlugins;
       });
-      return updatedPlugins;
-    });
+    } catch (error) {
+      notify(res.status, "Error in activating plugin");
+    }
   };
 
   return (
-    <div className="mx-auto max-w-270">
+    <div className="max-w-200 mx-auto">
+      {showNotification.show && (
+        <div
+          aria-live="assertive"
+          className="pointer-events-none fixed inset-0 z-999 mt-30 flex items-end px-4 py-6 sm:items-start sm:p-6"
+        >
+          <div className="flex w-full flex-col items-center space-y-4 sm:items-end">
+            <Transition
+              show={showNotification.show}
+              as={Fragment}
+              enter="transform ease-out duration-300 transition"
+              enterFrom="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+              enterTo="translate-y-0 opacity-100 sm:translate-x-0"
+              leave="transition ease-in duration-100"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="pointer-events-auto w-1/3 overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+                <div className="p-4">
+                  <div className="flex items-start">
+                    <div className="flex-shrink-0">
+                      {showNotification.code == 200 ? (
+                        <CheckCircleIcon
+                          className="h-6 w-6 text-emerald-700"
+                          aria-hidden="true"
+                        />
+                      ) : (
+                        <ExclamationCircleIcon
+                          className="h-6 w-6 text-red"
+                          aria-hidden="true"
+                        />
+                      )}
+                    </div>
+                    <div className="ml-3 w-0 flex-1 pt-0.5">
+                      <p
+                        className={`text-sm font-medium ${showNotification.code == 200 ? "text-emerald-700" : "text-red"} `}
+                      >
+                        {showNotification.code}
+                      </p>
+                      <p className="text-gray-500 mt-1 text-sm">
+                        {showNotification.message}
+                      </p>
+                    </div>
+                    <div className="ml-4 flex flex-shrink-0">
+                      <button
+                        className="text-gray-400 hover:text-gray-500 inline-flex rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        onClick={() => {
+                          setShowNotification({
+                            show: false,
+                            code: 200,
+                            message: "",
+                          });
+                        }}
+                      >
+                        <span className="sr-only">Close</span>
+                        <XIcon className="h-5 w-5" aria-hidden="true" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Transition>
+          </div>
+        </div>
+      )}
+
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-gray-900 mt-6 text-xl font-semibold">
           {tabMenu === "builtIn" ? "Built-In Extensions" : "Marketplace"}
@@ -83,6 +190,19 @@ const ExtensionsGrid = () => {
           </button>
         </div>
       </div>
+
+      {resultLoading && (
+        <div className="bg-gray-900 fixed inset-0 flex items-center justify-center bg-opacity-50">
+          <p className="hidden text-black dark:text-white sm:block">
+            <img
+              src={"/images/general/loading.gif"}
+              alt="Loading"
+              className="mx-auto h-10 w-10 animate-spin"
+            />
+          </p>
+        </div>
+      )}
+
       {tabMenu === "custom" && <div>Marketplace Coming Soon</div>}
       {tabMenu === "builtIn" && (
         <ul

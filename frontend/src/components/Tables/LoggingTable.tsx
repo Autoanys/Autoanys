@@ -17,6 +17,7 @@ const LoggingTable = () => {
   const [playing, setPlaying] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [collapsedIndex, setCollapsedIndex] = useState(null);
+  const [resultLoading, setResultLoading] = useState(false);
 
   const toggleCollapse = (index) => {
     setCollapsedIndex(collapsedIndex === index ? null : index);
@@ -31,6 +32,7 @@ const LoggingTable = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setResultLoading(true);
       try {
         const res = await fetch(
           process.env.NEXT_PUBLIC_BACKEND_URL + "/logs/all/",
@@ -44,7 +46,7 @@ const LoggingTable = () => {
         console.error("Error fetching data:", error);
       }
     };
-    fetchData();
+    fetchData().then(() => setResultLoading(false));
     setDeleted(false);
   }, [deleted]);
 
@@ -84,6 +86,7 @@ const LoggingTable = () => {
         setLogDetails(data.data);
         setDetailPopup(true);
       })
+      .then(() => setResultLoading(false))
       .catch((err) => console.error("Error fetching data:", err));
   };
 
@@ -123,7 +126,7 @@ const LoggingTable = () => {
         <div className="grid grid-cols-9 divide-x divide-slate-300 rounded-t-lg bg-indigo-50 uppercase dark:bg-white sm:grid-cols-9">
           <div className="xl:bt-5 col-span-2 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
             <h5 className=" text-sm font-medium xsm:text-sm">
-              <b>Trigger ID</b>
+              <b>Triggered Flow</b>
             </h5>
           </div>
           <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
@@ -156,6 +159,18 @@ const LoggingTable = () => {
             </h5>
           </div>
         </div>
+
+        {resultLoading && (
+          <div className="bg-gray-900 fixed inset-0 flex items-center justify-center bg-opacity-50">
+            <p className="hidden text-black dark:text-white sm:block">
+              <img
+                src={"/images/general/loading.gif"}
+                alt="Loading"
+                className="mx-auto h-10 w-10 animate-spin"
+              />
+            </p>
+          </div>
+        )}
 
         {currentLog.map((log, index) => (
           <div
@@ -219,7 +234,10 @@ const LoggingTable = () => {
                   <button
                     className="font-sans bg-gray-900 shadow-gray-900/10 hover:shadow-gray-900/20 relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle text-xs font-medium uppercase text-white shadow-md transition-all hover:shadow-lg focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                     type="button"
-                    onClick={() => getLog(log.triggerID)}
+                    onClick={() => {
+                      setResultLoading(true);
+                      getLog(log.triggerID);
+                    }}
                   >
                     <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform">
                       <svg
@@ -239,7 +257,17 @@ const LoggingTable = () => {
               </p>
             </div>
 
-            {/* Render other columns here */}
+            {resultLoading && (
+              <div className="bg-gray-900 fixed inset-0 flex items-center justify-center bg-opacity-50">
+                <p className="hidden text-black dark:text-white sm:block">
+                  <img
+                    src={"/images/general/loading.gif"}
+                    alt="Loading"
+                    className="mx-auto h-10 w-10 animate-spin"
+                  />
+                </p>
+              </div>
+            )}
           </div>
         ))}
       </div>
@@ -315,6 +343,13 @@ const LoggingTable = () => {
             {logDetails ? (
               <div>
                 <h2 className="mb-4 text-xl font-bold">🧾 Log Details</h2>
+                <p className="mb-4">
+                  <strong>Trigger ID:</strong> {logDetails[0].id}
+                </p>
+                <p className="mb-4">
+                  <strong>Triggered Date Time : </strong>{" "}
+                  {formatDate(logDetails[0].created_at)}
+                </p>
                 <div className="space-y-2">
                   {logDetails.length === 0 && (
                     <p>No Step logs found for this trigger ID</p>
@@ -343,7 +378,7 @@ const LoggingTable = () => {
                           </span>
                         </div>
                         {collapsedIndex === index && (
-                          <div className="text-gray-500 px-4 pb-2 pt-4 text-sm">
+                          <div className="text-gray-500 px-4 pb-2 pt-1 text-sm">
                             <p>
                               <strong>API:</strong> {item.api}
                             </p>

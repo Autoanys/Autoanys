@@ -57,7 +57,7 @@ async def activate_subflow(flow_id : str):
     })
 
     switch = False if orginal_flow.active else True
-
+    activation = "activated" if switch else "deactivated"
     flow_data = await prisma.subflow.update(
         where={
             "id": flow_id
@@ -66,6 +66,7 @@ async def activate_subflow(flow_id : str):
             "active": switch
         }
     )
+    aStatus = ""
 
     if switch == True and flow_data.schueleType == 'Auto' and await validate_cron(flow_data.schedule):
         print("Actived")
@@ -81,7 +82,7 @@ async def activate_subflow(flow_id : str):
             pass
     main.checkJobs()
     await prisma.disconnect()
-    return {"message": f"Subflow {flow_id} activated successfully"}
+    return {"message": f"Subflow {flow_id} {activation} successfully"}
 
 
 @router.post("/subflow/scheduleType/set/")
