@@ -174,6 +174,10 @@ const LoggingTable = () => {
 
         {currentLog.map((log, index) => (
           <div
+            onDoubleClick={() => {
+              setResultLoading(true);
+              getLog(log.triggerID);
+            }}
             className={`grid grid-cols-9 divide-x divide-slate-300 hover:bg-orange-50 dark:hover:bg-black	 sm:grid-cols-9 ${
               index === log.length - 1
                 ? ""
@@ -345,7 +349,7 @@ const LoggingTable = () => {
                 <h2 className="mb-4 text-xl font-bold">🧾 Log Details</h2>
                 <p className="mb-4">
                   {logDetails.length > 0 && (
-                    <strong>Triggered ID : {logDetails[0].logID}</strong>
+                    <strong>Flow ID : {logDetails[0].logID}</strong>
                   )}
                 </p>
                 <p className="mb-4">
