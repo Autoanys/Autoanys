@@ -87,9 +87,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   useEffect(() => {
     const clickHandler = ({ target }) => {
       if (!sidebar.current || !trigger.current) return;
-      if (localStorage.getItem("langSelect")) {
-        i18n.changeLanguage(localStorage.getItem("langSelect"));
-      }
+
       if (
         !sidebarOpen ||
         sidebar.current.contains(target) ||

@@ -9,6 +9,7 @@ import { appWithTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import nextI18NextConfig from "../../next-i18next.config";
 import "./i18n";
+import { useTranslation } from "next-i18next";
 
 export default function RootLayout({
   children,
@@ -17,10 +18,12 @@ export default function RootLayout({
 }>) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
-
+  const { t, i18n } = useTranslation();
   // const pathname = usePathname();
 
   useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("langSelect"));
+
     setTimeout(() => setLoading(false), 1000);
   }, []);
 

@@ -4,6 +4,7 @@ import ExecutionTableOne from "../Charts/ExecutionTableOne";
 import ExecutionTableTwo from "../Charts/ExecutionTableTwo";
 import CardDataStats from "../CardDataStats";
 import { useEffect, useState } from "react";
+import { useTranslation } from "next-i18next";
 
 const Dashboard: React.FC = () => {
   const [totalflow, setTotalFlow] = useState([]);
@@ -16,6 +17,7 @@ const Dashboard: React.FC = () => {
   const [totalclient, setTotalClient] = useState([]);
   const [totalExecution, setTotalExecution] = useState([]);
   const [totalSuccessful, setTotalSuccessful] = useState([]);
+  const { t } = useTranslation("dashboard");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -73,7 +75,7 @@ const Dashboard: React.FC = () => {
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <CardDataStats
-          title="Total Workflows"
+          title={t("total_workflows")}
           // total={totalflow ? totalflow : ""}
           total={
             totalflow.length < 1 ? (
@@ -111,7 +113,7 @@ const Dashboard: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Total Clients" total={totalclient}>
+        <CardDataStats title={t("total_client")} total={totalclient}>
           <svg
             className="fill-primary dark:fill-white"
             width="35"
@@ -133,7 +135,7 @@ const Dashboard: React.FC = () => {
           </svg>
         </CardDataStats>
         <CardDataStats
-          title="Total Execution"
+          title={t("total_execution")}
           total={
             totalExecution.length < 1 ? (
               <div>
@@ -181,7 +183,7 @@ const Dashboard: React.FC = () => {
           </svg>
         </CardDataStats>
         <CardDataStats
-          title="Total Successful Execution"
+          title={t("total_successful")}
           total={
             totalSuccessful.length < 1 ? (
               <div>
