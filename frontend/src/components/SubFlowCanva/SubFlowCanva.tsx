@@ -98,7 +98,7 @@ const initialNodes = [
         {
           type: "text",
           label: "Save variable to end result",
-          id: "query",
+          id: "variable",
           placeholder: "Enter variable name",
           required: false,
           value: "",
@@ -123,6 +123,8 @@ const SubFlowCanva = (editing, flowid) => {
     code: 200,
     message: "",
   });
+  const [suggestions, setSuggestions] = useState([]);
+
   const [cateLoading, setCateLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [needConfirmation, setNeedConfirmation] = useState(true);
@@ -153,7 +155,9 @@ const SubFlowCanva = (editing, flowid) => {
   const [currentDebugIndex, setCurrentDebugIndex] = useState(0);
   const [resultLoading, setResultLoading] = useState(false);
   const [exportDropdownOpen, setExportDropdownOpen] = useState(false);
-  const [customVariables, setCustomVariables] = useState([{ id: 1, key: "" }]);
+  const [customVariables, setCustomVariables] = useState([
+    { id: 1, key: "", value: "" },
+  ]);
   const [debugData, setDebugData] = useState([]);
   const [debugStep, setDebugStep] = useState(0);
   const [debugging, setDebugging] = useState(false);
@@ -166,12 +170,20 @@ const SubFlowCanva = (editing, flowid) => {
     );
   };
 
+  const handleCustomVariableChangeValue = (id: number, newValue: string) => {
+    setCustomVariables((prevVariables) =>
+      prevVariables.map((variable) =>
+        variable.id === id ? { ...variable, value: newValue } : variable,
+      ),
+    );
+  };
+
   const handleAddVariable = () => {
     const newId =
       customVariables.length > 0
         ? Math.max(...customVariables.map((v) => v.id)) + 1
         : 1;
-    setCustomVariables([...customVariables, { id: newId, key: "" }]);
+    setCustomVariables([...customVariables, { id: newId, key: "", value: "" }]);
   };
 
   const handleDeleteVariable = (id: number) => {
@@ -377,6 +389,11 @@ const SubFlowCanva = (editing, flowid) => {
     }
   };
 
+  const validateInput = (value: string) => {
+    const regex = /^[a-zA-Z0-9$]*$/;
+    return regex.test(value);
+  };
+
   const deleteNode = (selectedNodes) => {
     console.log("selectedNodes", selectedNodes);
     console.log("Deleting nodes:", selectedNodes);
@@ -456,6 +473,7 @@ const SubFlowCanva = (editing, flowid) => {
         for (const input of node.data.inputs) {
           console.log("DAS", node.data.inputs);
           if (input.required && !input.value) {
+            alert(`Required input ${input.label} is missing`);
             console.log(`Required input ${input.label} is missing`);
             return false;
           }
@@ -712,15 +730,14 @@ const SubFlowCanva = (editing, flowid) => {
             });
           }, 3000);
 
-          fetch(
+          await fetch(
             process.env.NEXT_PUBLIC_BACKEND_URL + "/logs/failed/" + triggerID,
             {
               method: "GET",
             },
           );
         }
-        if (!inputReq) {
-          console.log("IN ma?");
+        if (!inputReq || res.status != 200) {
           setShowNotification({
             show: true,
             code: 402,
@@ -740,7 +757,6 @@ const SubFlowCanva = (editing, flowid) => {
           setDebugging(true);
           setDebugData(data.steps);
           setDebugStep(0);
-          alert("Debugging");
         }
       } catch (err) {
         console.log(err);
@@ -757,10 +773,10 @@ const SubFlowCanva = (editing, flowid) => {
   };
 
   const handleVariableSubmit = (event) => {
-    console.log("EVENT", event);
+    console.log("EVENT");
     event.preventDefault();
-    setCustomVariables(event.target.custom_variables.value);
-    setIsVariablePopupOpen(false);
+    // setCustomVariables(event.target.custom_variables.value);
+    // setIsVariablePopupOpen(false);
   };
 
   const autoLayoutNodes = (nodes, edges) => {
@@ -1327,9 +1343,24 @@ const SubFlowCanva = (editing, flowid) => {
                           placeholder={input.placeholder}
                           value={input.value}
                           onChange={(e) =>
-                            changeNodeValue(e, selectedNodes, input.id)
+                            handleInputChange(e, node_id, input.id)
                           }
                         />
+                        {input.id === "variable" && suggestions.length > 0 && (
+                          <div className="suggestions-dropdown mt-1 rounded-lg border border-slate-200 bg-white shadow-lg">
+                            {suggestions.map((variable) => (
+                              <div
+                                key={variable.id}
+                                className="suggestion-item cursor-pointer px-3 py-2 hover:bg-sky-100"
+                                onClick={() =>
+                                  handleSuggestionClick(variable.key, input.id)
+                                }
+                              >
+                                {variable.key}
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
@@ -1343,30 +1374,80 @@ const SubFlowCanva = (editing, flowid) => {
     );
   };
 
+  const handleInputChange = (e, nodeID, input_id) => {
+    const newValue = e.target.value;
+    changeNodeValue(e, selectedNodes, input_id);
+
+    if (input_id === "variable") {
+      setSuggestions(
+        customVariables.filter((variable) =>
+          variable.key.toLowerCase().includes(newValue.toLowerCase()),
+        ),
+      );
+    }
+  };
+
+  const handleSuggestionClick = (suggestion, input_id) => {
+    changeNodeValue({ target: { value: suggestion } }, selectedNodes, input_id);
+    setSuggestions([]);
+  };
+
   const changeNodeValue = (e, node_id, input_id) => {
-    const newNodes = nodes.map((node) => {
-      if (node.id == node_id) {
-        const newInput = node.data.inputs.map((input) => {
-          if (input.id == input_id) {
-            input.value = e.target.value;
-            return { ...input, value: e.target.value };
+    if (input_id === "variable") {
+      if (validateInput(e.target.value)) {
+        console.log("Valid");
+        const newNodes = nodes.map((node) => {
+          if (node.id == node_id) {
+            const newInput = node.data.inputs.map((input) => {
+              if (input.id == input_id) {
+                input.value = e.target.value;
+                return { ...input, value: e.target.value };
+              } else {
+                return input;
+              }
+            });
+            return {
+              ...node,
+              data: {
+                ...node.data,
+                inputs: newInput,
+              },
+            };
           } else {
-            return input;
+            return node;
           }
         });
-        return {
-          ...node,
-          data: {
-            ...node.data,
-            inputs: newInput,
-          },
-        };
-      } else {
-        return node;
-      }
-    });
 
-    setNodes(newNodes);
+        setNodes(newNodes);
+      } else {
+        console.log("Invalid");
+        alert("Invalid");
+      }
+    } else {
+      const newNodes = nodes.map((node) => {
+        if (node.id == node_id) {
+          const newInput = node.data.inputs.map((input) => {
+            if (input.id == input_id) {
+              input.value = e.target.value;
+              return { ...input, value: e.target.value };
+            } else {
+              return input;
+            }
+          });
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              inputs: newInput,
+            },
+          };
+        } else {
+          return node;
+        }
+      });
+
+      setNodes(newNodes);
+    }
   };
 
   // const changeNodeValue = (e, node_id, input_id) => {
@@ -2107,10 +2188,10 @@ const SubFlowCanva = (editing, flowid) => {
       )}
 
       {isVariablePopupOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 ml-50 flex items-center justify-center bg-black bg-opacity-50">
           <div
             ref={variablePopupRef}
-            className="w-2/5 rounded bg-white p-6 shadow-lg"
+            className="w-3/5 rounded bg-white p-6 shadow-lg"
           >
             <h2 className="mb-4 text-xl font-semibold">Variable Setting</h2>
             <form onSubmit={handleVariableSubmit}>
@@ -2133,6 +2214,9 @@ const SubFlowCanva = (editing, flowid) => {
                   customVariables={variable}
                   onChangeValue={(newValue) =>
                     handleCustomVariableChange(variable.id, newValue)
+                  }
+                  onChangeValueValue={(newValueValue) =>
+                    handleCustomVariableChangeValue(variable.id, newValueValue)
                   }
                   onDelete={() => handleDeleteVariable(variable.id)}
                 />

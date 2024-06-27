@@ -46,6 +46,7 @@ async def analyze_json(json_datas: dict):
         if(startToEnd):
             steps = []
             for step in json_datas["edges"]:
+                
                 if step["source"] != "start-node" and step["source"] != "end-node":
                     # get node details from edges and nodes
                     source = step["source"]
@@ -56,6 +57,8 @@ async def analyze_json(json_datas: dict):
                         steps.append(f"http://{ip}:8000" + source_node['data']['api'] +  source_node['data']['value'])
                     else:
                         steps.append(f"http://{ip}:8000" + source_node['data']['api'])
+                if step["source"] == "end-node":
+                    print(step)
             print(steps)
             return {"message":"Start to end valid", "steps":steps}
         else:
@@ -114,6 +117,12 @@ async def analyze_json(json_datas: dict):
 
                         steps.append(temp)
                         temp = {}
+
+            for node in json_datas["nodes"]:
+                if node["id"] == "end-node" and node["data"]["inputs"][0]["value"]:
+                    print("-------------------END-------------------")
+                    print(node)
+
                       
             print("STEP", steps)
             return {"message":"Start to end valid", "steps":steps}
