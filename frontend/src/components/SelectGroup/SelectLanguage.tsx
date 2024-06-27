@@ -41,7 +41,10 @@ const SelectLanguage: React.FC = () => {
             English
           </option>
           <option value="cn" className="text-body dark:text-bodydark">
-            中文
+            中文 (简体)
+          </option>
+          <option value="zh-CN" className="text-body dark:text-bodydark">
+            中文 (繁體)
           </option>
         </select>
 

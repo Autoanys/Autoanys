@@ -1,6 +1,6 @@
 import Link from "next/link";
 import DarkModeSwitcher from "./DarkModeSwitcher";
-
+import { useState } from "react";
 import Image from "next/image";
 import { useHotkeys } from "react-hotkeys-hook";
 
@@ -8,6 +8,12 @@ const Header = (props: {
   sidebarOpen: string | boolean | undefined;
   setSidebarOpen: (arg0: boolean) => void;
 }) => {
+  const [showInfoBox, setShowInfoBox] = useState(false);
+
+  const togglePopup = () => {
+    setShowInfoBox(!showInfoBox);
+  };
+
   return (
     <header className="sticky top-0 z-999 flex w-full bg-slate-50	 drop-shadow-1 dark:bg-[#1A1A29] dark:drop-shadow-none">
       <div className="flex flex-grow items-center justify-between px-4 py-4 shadow-2 md:px-6 2xl:px-11">
@@ -115,11 +121,63 @@ const Header = (props: {
 
             <DarkModeSwitcher />
 
-            <div className="cursor-pointer rounded-lg bg-green-600 px-2 py-1 text-white">
+            <div
+              className="cursor-pointer rounded-lg bg-green-600 px-2 py-1 text-white"
+              // onClick={togglePopup}
+            >
               Community
             </div>
           </ul>
         </div>
+        {/* {showInfoBox && (
+          <div className="absolute inset-0 flex items-center justify-center bg-slate-900 bg-opacity-10">
+            <div className="w-2/4 divide-y divide-slate-300 rounded-lg bg-white p-4 shadow-lg">
+              <div className="flex items-center gap-2">
+                <Image
+                  width={32}
+                  height={32}
+                  src={"/images/logo/logo-icon.svg"}
+                  alt="Logo"
+                />
+                <h1 className="text-lg font-bold">Autoanys</h1>
+
+                <div className="flex items-center gap-2">
+                  <a
+                    target="_blank"
+                    href="https://github.com/autoanys/autoanys"
+                    className="flex items-center gap-2"
+                  >
+                    <Image
+                      width={24}
+                      height={24}
+                      src="/images/social/github.svg"
+                      alt="GitHub"
+                    />
+                  </a>
+                </div>
+                <p>
+                  Autoanys is a platform for automating your daily tasks. It is
+                  an open-source project and is free to use.
+                </p>
+
+                <div className="flex items-center gap-2">
+                  <a
+                    target="_blank"
+                    href="https://autoanys.com"
+                    className="flex items-center gap-2"
+                  >
+                    <Image
+                      width={24}
+                      height={24}
+                      src="/images/social/website.svg"
+                      alt="Website"
+                    />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        )} */}
       </div>
     </header>
   );

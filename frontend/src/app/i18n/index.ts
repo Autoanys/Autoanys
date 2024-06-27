@@ -7,8 +7,8 @@ i18n.use(initReactI18next).init({
   lng: "en",
   fallbackLng: "en",
   defaultNS: "common",
-  preload: ["en", "cn"],
-  ns: ["common", "sidebar"],
+  preload: ["en", "cn", "zh-CN"],
+  ns: ["common", "sidebar", "dashboard"],
   interpolation: {
     escapeValue: false,
   },
