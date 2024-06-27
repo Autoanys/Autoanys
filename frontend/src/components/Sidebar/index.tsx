@@ -18,10 +18,9 @@ import {
   UncollapseIcon,
   CollapseIcon,
 } from "./icon";
-import { useTranslation } from "next-i18next";
-import { appWithTranslation } from "next-i18next";
 
 import Head from "next/head";
+import { useTranslation } from "react-i18next";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -30,9 +29,9 @@ interface SidebarProps {
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const pathname = usePathname();
-  const { t } = useTranslation("sidebar");
   const trigger = useRef(null);
   const sidebar = useRef(null);
+  const { t, i18n } = useTranslation("sidebar");
 
   const storedSidebarExpanded = localStorage.getItem("sidebar-expanded");
   const [sidebarExpanded, setSidebarExpanded] = useState(
@@ -41,43 +40,43 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
 
   const sideBarItem = [
     {
-      name: "Dashboard",
+      name: t("sidebar_main_dashboard"),
       icon: <HomeIcon />,
       link: "/",
       sn: "/",
     },
     {
-      name: "Multi-Flows",
+      name: t("sidebar_main_mainflow"),
       icon: <MainFlowIcon />,
       link: "/mainflow",
       sn: "main",
     },
     {
-      name: "Flow",
+      name: t("sidebar_main_subflow"),
       icon: <SubFlowIcon />,
       link: "/subflow",
       sn: "sub",
     },
     {
-      name: "Custom Components",
+      name: t("sidebar_main_custom_component"),
       icon: <ComponentIcon />,
       link: "/customcomponents",
       sn: "component",
     },
     {
-      name: "Plugins & Extensions",
+      name: t("sidebar_main_plugins_extensions"),
       icon: <PluginIcon />,
       link: "/plugins",
       sn: "plugin",
     },
     {
-      name: "Logging",
+      name: t("sidebar_main_logging"),
       icon: <LoggingIcon />,
       link: "/logging",
       sn: "log",
     },
     {
-      name: "Settings",
+      name: t("sidebar_main_settings"),
       icon: <SettingIcon />,
       link: "/settings",
       sn: "setting",
@@ -88,6 +87,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   useEffect(() => {
     const clickHandler = ({ target }) => {
       if (!sidebar.current || !trigger.current) return;
+      if (localStorage.getItem("langSelect")) {
+        i18n.changeLanguage(localStorage.getItem("langSelect"));
+      }
       if (
         !sidebarOpen ||
         sidebar.current.contains(target) ||
@@ -143,7 +145,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
             alt="Logo"
             priority
           />
-          <p>{t("sidebar_main_dashboard")}</p>
+
           <Image
             className="hidden dark:block"
             width={sidebarExpanded ? 245 : 50}
@@ -191,7 +193,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
           <div>
             {sidebarExpanded && (
               <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2 dark:text-white">
-                Welcome to AutoAnys
+                {t("sidebar_welcome")}
               </h3>
             )}
 
@@ -231,4 +233,4 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   );
 };
 
-export default appWithTranslation(Sidebar);
+export default Sidebar;

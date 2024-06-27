@@ -4,6 +4,7 @@ import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import Flowbar from "@/components/FlowBar";
 import { useHotkeys } from "react-hotkeys-hook";
+import { useTranslation } from "react-i18next";
 
 export default function DefaultLayout({
   children,
@@ -13,7 +14,7 @@ export default function DefaultLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isPromptVisible, setIsPromptVisible] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-
+  const { t } = useTranslation();
   useHotkeys("ctrl+k, cmd+k", (event) => {
     event.preventDefault();
     if (inputRef.current) {
@@ -57,6 +58,7 @@ export default function DefaultLayout({
         <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden bg-white dark:bg-[#1E1E2F]">
           {/* <!-- ===== Header Start ===== --> */}
           <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+
           {/* <div className="relative">
             <input
               type="text"

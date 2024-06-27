@@ -1,12 +1,21 @@
 "use client";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const SelectLanguage: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [isOptionSelected, setIsOptionSelected] = useState<boolean>(false);
-
+  const { t, i18n } = useTranslation();
   const changeTextColor = () => {
     setIsOptionSelected(true);
+  };
+
+  let lang = localStorage.getItem("langSelect") || "en";
+
+  const handleChangeLanguage = async (e) => {
+    localStorage.setItem("langSelect", e.target.value);
+    await i18n.changeLanguage(e.target.value);
+    console.log("OK", localStorage.getItem("langSelect"));
   };
 
   return (
@@ -18,10 +27,11 @@ const SelectLanguage: React.FC = () => {
 
       <div className="relative z-20 bg-transparent dark:bg-form-input">
         <select
-          value={selectedOption}
+          value={lang}
           onChange={(e) => {
             setSelectedOption(e.target.value);
             changeTextColor();
+            handleChangeLanguage(e);
           }}
           className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary ${
             isOptionSelected ? "text-black dark:text-white" : ""
