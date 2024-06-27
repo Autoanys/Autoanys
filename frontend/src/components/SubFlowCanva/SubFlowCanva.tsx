@@ -91,7 +91,20 @@ const initialNodes = [
     id: "end-node",
     type: "end",
     position: { x: 400, y: 550 },
-    data: { label: "End", result: "End for this node" },
+    data: {
+      label: "End",
+      result: "End for this node",
+      inputs: [
+        {
+          type: "text",
+          label: "Save variable to end result",
+          id: "query",
+          placeholder: "Enter variable name",
+          required: false,
+          value: "",
+        },
+      ],
+    },
   },
 ];
 
@@ -353,8 +366,6 @@ const SubFlowCanva = (editing, flowid) => {
   });
 
   const getNodeDoc = (selectedNodes) => {
-    console.log("Doc lei", selectedNodes);
-    console.log("Doc lei", selectedNodes);
     console.log(
       "Doc lei",
       nodes.find((node) => node.id == selectedNodes),
@@ -369,6 +380,9 @@ const SubFlowCanva = (editing, flowid) => {
   const deleteNode = (selectedNodes) => {
     console.log("selectedNodes", selectedNodes);
     console.log("Deleting nodes:", selectedNodes);
+    if (selectedNodes == "start-node" || selectedNodes == "end-node") {
+      return;
+    }
 
     setNodes((nds) => nds.filter((node) => !selectedNodes.includes(node.id)));
 
@@ -1142,12 +1156,12 @@ const SubFlowCanva = (editing, flowid) => {
     >
       <div
         // className="flex cursor-pointer items-center justify-between border-b border-slate-400 px-4 py-2 hover:bg-slate-100"
-        className={`mt-4 flex cursor-pointer items-center justify-between border-b border-slate-400 px-4 py-2 hover:bg-slate-50 
+        className={`mt-4  flex cursor-pointer items-center justify-between border-b border-slate-400 px-4 py-2 hover:bg-slate-50 dark:bg-slate-900 
         ${collapsedSections[category] ? "" : "bg-slate-50  dark:bg-[#F5F5F5]"}`}
         onClick={() => toggleSection(category)}
       >
         <span
-          className={`text-sm font-medium	${collapsedSections[category] ? "" : "bg-slate-50  text-black dark:bg-[#F5F5F5]"}`}
+          className={`text-sm font-medium  dark:bg-slate-900 dark:text-white	${collapsedSections[category] ? "" : "bg-slate-50  text-black dark:bg-[#F5F5F5]"}`}
         >
           {category}
         </span>
@@ -1743,14 +1757,16 @@ const SubFlowCanva = (editing, flowid) => {
                   aria-hidden="true"
                 />
               </button>
-              {/* <p>{selectedNodes}</p> */}
-              <button className="float-right">
-                <TrashIcon
-                  onClick={() => deleteNode(selectedNodes)}
-                  className="h-6 w-6 rounded border p-1 text-red hover:bg-red hover:text-white"
-                  aria-hidden="true"
-                />
-              </button>
+              {selectedNodes !== "start-node" &&
+                selectedNodes !== "end-node" && (
+                  <button className="float-right">
+                    <TrashIcon
+                      onClick={() => deleteNode(selectedNodes)}
+                      className={`h-6 w-6 rounded border p-1 text-red hover:bg-red hover:text-white ${selectedNodes == "start-node" ? "cursor-not-allowed" : ""} ${selectedNodes == "end-node" ? "cursor-not-allowed" : ""}`}
+                      aria-hidden="true"
+                    />
+                  </button>
+                )}
 
               <h3 className="text-2xl">✏️ Edit Node</h3>
               <p className="text-md mt-4 font-semibold">Node ID :</p>
