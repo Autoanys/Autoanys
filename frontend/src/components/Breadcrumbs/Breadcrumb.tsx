@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 
 interface BreadcrumbProps {
   pageName: string;
@@ -13,9 +14,12 @@ const Breadcrumb = ({
   newMainFlow,
   newComponent,
 }: BreadcrumbProps) => {
+  const { t } = useTranslation("common");
   return (
     <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-      <h5 className=" font-semibold text-black dark:text-white">{pageName}</h5>
+      <h5 className=" font-semibold text-black dark:text-white">
+        {t(pageName)}
+      </h5>
       <nav>
         <ol className="flex items-center gap-2">
           {newSubFlow && (
@@ -62,7 +66,7 @@ const Breadcrumb = ({
               Dashboard /
             </Link>
           </li>
-          <li className="font-medium text-primary">{pageName}</li>
+          <li className="font-medium text-primary">{t(pageName)}</li>
         </ol>
       </nav>
     </div>

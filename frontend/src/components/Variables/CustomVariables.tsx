@@ -56,25 +56,27 @@ const CustomVariables: React.FC<CustomVariablesProps> = ({
       </p>
 
       <div className="flex items-center">
-        <span className="text-gray-700 mr-2 text-sm font-semibold">CAAS$</span>
+        <span className="  rounded-l-md border	bg-zinc-500 p-2.5 text-sm   text-white">
+          CAAS$
+        </span>
         <input
           id={customVariables.id.toString()}
           type="text"
           value={inputValue.substring("CAAS$".length)}
           onChange={handleInputChange}
-          className="text-gray-800 flex-1 rounded-md border p-2 text-sm"
+          className="text-gray-800 flex-1  border p-2 text-sm"
           placeholder="Enter a custom variable name"
         />
 
-        <span className="text-gray-700 ml-2 mr-2 text-sm font-semibold">
-          Value
+        <span className="bg-zinc-500 p-2.5 text-sm   text-white">
+          Default Value
         </span>
         <input
           id={customVariables.id.toString() + customVariables.key.toString()}
           type="text"
           value={inputValueValue}
           onChange={handleInputValueChange}
-          className="text-gray-800 flex-1 rounded-md border p-2 text-sm"
+          className="text-gray-800 flex-1 rounded-r-md border p-2 text-sm"
           placeholder="Default value for the custom variable, leave empty for none"
         />
         <button

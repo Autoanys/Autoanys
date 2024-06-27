@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 const SubFlow = () => {
   return (
     <DefaultLayout>
-      <Breadcrumb pageName="Flow" newSubFlow="true" />
+      <Breadcrumb pageName="flow" newSubFlow="true" />
       <div className="flex flex-col gap-10">
         <SubflowTable />
       </div>

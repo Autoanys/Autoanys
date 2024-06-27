@@ -5,9 +5,9 @@ import DefaultLayout from "@/components/Layouts/DefaultLayout";
 // import SelectGroupOne from "@/components/SelectGroup/SelectGroupOne";
 import SelectLanguage from "@/components/SelectGroup/SelectLanguage";
 import SelectAuthorization from "@/components/SelectGroup/SelectAuthorization";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 import { env } from "process";
-
 export const metadata: Metadata = {
   title: "AutoAnys | Settings",
   description: "AutoAnys, Automate Anything. Settings",
@@ -17,7 +17,7 @@ const Settings = () => {
   return (
     <DefaultLayout>
       <div className="mx-auto max-w-270">
-        <Breadcrumb pageName="Settings" />
+        <Breadcrumb pageName="setting" />
         <div className="m-auto grid w-5/6 grid-cols-1">
           <div className="flex flex-col gap-9">
             {/* <!-- Contact Form --> */}

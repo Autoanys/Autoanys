@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 const SelectLanguage: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [isOptionSelected, setIsOptionSelected] = useState<boolean>(false);
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation("setting");
   const changeTextColor = () => {
     setIsOptionSelected(true);
   };
@@ -22,7 +22,7 @@ const SelectLanguage: React.FC = () => {
     <div className="mb-4.5">
       <label className="mb-3 block text-sm font-medium text-black dark:text-white">
         {" "}
-        Default Language <span className="text-meta-1">*</span>
+        {t("default_language")} <span className="text-meta-1">*</span>
       </label>
 
       <div className="relative z-20 bg-transparent dark:bg-form-input">

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 const MainFlow = () => {
   return (
     <DefaultLayout>
-      <Breadcrumb pageName="Multi-Flows" newMainFlow="true" />
+      <Breadcrumb pageName="multiflow" newMainFlow="true" />
       <div className="flex flex-col gap-10">
         <MainflowTable />
       </div>

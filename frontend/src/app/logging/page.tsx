@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 const Logging = () => {
   return (
     <DefaultLayout>
-      <Breadcrumb pageName="Execution Logging" />
+      <Breadcrumb pageName="logging" />
       <div className="flex flex-col gap-10">
         <LoggingTable />
       </div>

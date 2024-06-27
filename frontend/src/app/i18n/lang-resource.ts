@@ -5,22 +5,31 @@ import zhSidebar from "./zh-CN/sidebar/sidebar";
 import enDashboard from "./en/dashboard/dashboard";
 import cnDashboard from "./cn/dashboard/dashboard";
 import zhDashboard from "./zh-CN/dashboard/dashboard";
+import enSetting from "./en/setting/setting";
+import cnSetting from "./cn/setting/setting";
+import zhSetting from "./zh-CN/setting/setting";
+import cnCommon from "./cn/common/common";
+import enCommon from "./en/common/common";
+import zhCommon from "./zh-CN/common/common";
 
 const resources = {
   en: {
-    common: {},
+    common: enCommon,
     sidebar: enSidebar,
     dashboard: enDashboard,
+    setting: enSetting,
   },
   cn: {
-    common: {},
+    common: cnCommon,
     sidebar: cnSidebar,
     dashboard: cnDashboard,
+    setting: cnSetting,
   },
   "zh-CN": {
-    common: {},
+    common: zhCommon,
     sidebar: zhSidebar,
     dashboard: zhDashboard,
+    setting: zhSetting,
   },
 };
 

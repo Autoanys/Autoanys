@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 const CustomComponents = () => {
   return (
     <DefaultLayout>
-      <Breadcrumb pageName="Custom Component" newComponent="true" />
+      <Breadcrumb pageName="component" newComponent="true" />
       <div className="flex flex-col gap-10">
         <ComponentTable />
       </div>

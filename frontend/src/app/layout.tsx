@@ -5,9 +5,7 @@ import "@/css/satoshi.css";
 import "@/css/style.css";
 import React, { useEffect, useState } from "react";
 import Loader from "@/components/common/Loader";
-import { appWithTranslation } from "next-i18next";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import nextI18NextConfig from "../../next-i18next.config";
+
 import "./i18n";
 import { useTranslation } from "next-i18next";
 
@@ -21,6 +19,7 @@ export default function RootLayout({
   const { t, i18n } = useTranslation();
   // const pathname = usePathname();
 
+  let lang = localStorage.getItem("langSelect") || "en";
   useEffect(() => {
     i18n.changeLanguage(localStorage.getItem("langSelect"));
 
@@ -28,7 +27,7 @@ export default function RootLayout({
   }, []);
 
   return (
-    <html lang="en">
+    <html lang={lang}>
       <body suppressHydrationWarning={true}>
         <div className="dark:bg-boxdark-2 dark:text-bodydark">
           {loading ? <Loader /> : children}

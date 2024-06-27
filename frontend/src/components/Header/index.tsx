@@ -123,7 +123,7 @@ const Header = (props: {
 
             <div
               className="cursor-pointer rounded-lg bg-green-600 px-2 py-1 text-white"
-              // onClick={togglePopup}
+              onClick={togglePopup}
             >
               Community
             </div>
