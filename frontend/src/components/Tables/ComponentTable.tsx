@@ -235,7 +235,7 @@ const ComponentTable = () => {
       />
 
       <div className="flex flex-col rounded-t-lg border	border-slate-300 text-black">
-        <div className="grid grid-cols-4 divide-x divide-slate-300 rounded-t-lg bg-indigo-50 uppercase dark:bg-white sm:grid-cols-4">
+        <div className="grid grid-cols-4 divide-x divide-slate-300 rounded-t-lg border-b border-slate-300 bg-indigo-50 uppercase dark:bg-[#1E1E2F] dark:text-white sm:grid-cols-4">
           <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
             <h5 className=" text-sm font-medium xsm:text-sm">
               <b>Component Name</b>

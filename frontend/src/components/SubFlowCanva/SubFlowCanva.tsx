@@ -210,7 +210,9 @@ const SubFlowCanva = (editing, flowid) => {
   });
   const [currentResult, setCurrentResult] = useState([]);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const [isTextPopupVisible, setIsTextPopupVisible] = useState(false);
   const [popupImage, setPopupImage] = useState(null);
+  const [popupText, setPopupText] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentDebugResult, setCurrentDebugResult] = useState([]);
   const [activedCategory, setActivedCategory] = useState([]);
@@ -450,6 +452,16 @@ const SubFlowCanva = (editing, flowid) => {
   const openPopup = (image) => {
     setPopupImage(image);
     setIsPopupVisible(true);
+  };
+
+  const openTextPopup = (text) => {
+    setPopupText(text);
+    setIsTextPopupVisible(true);
+  };
+
+  const closeTextPopup = () => {
+    setIsTextPopupVisible(false);
+    setPopupText(null);
   };
 
   const closePopup = () => {
@@ -1363,7 +1375,7 @@ const SubFlowCanva = (editing, flowid) => {
                           id={`${node_id}-${input.label}`}
                           key={`${node_id}-${input.label}`}
                           className="h-10 w-full rounded-lg border border-slate-200 px-3 py-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-sky-500"
-                          type={input.type}
+                          type={input.variable ? "text" : input.type}
                           {...(input.required ? { required: true } : {})}
                           placeholder={
                             input.variableValue
@@ -2017,12 +2029,20 @@ const SubFlowCanva = (editing, flowid) => {
                     </div>
                   )}
                   {currentResult[currentIndex]?.type === "text" && (
-                    <div>
-                      <p>
+                    <div
+                      onClick={() =>
+                        openTextPopup(currentResult[currentIndex].value)
+                      }
+                    >
+                      <span
+                        onClick={() =>
+                          openTextPopup(currentResult[currentIndex].value)
+                        }
+                      >
                         {currentResult[currentIndex].value
                           ? currentResult[currentIndex].value
                           : "Loading"}
-                      </p>
+                      </span>
                     </div>
                   )}
                   {currentResult[currentIndex]?.type === "image" && (
@@ -2174,6 +2194,13 @@ const SubFlowCanva = (editing, flowid) => {
         <div className="popup">
           <div className="popup-overlay" onClick={closePopup}></div>
           <img src={popupImage} alt="Popup content" />
+        </div>
+      )}
+
+      {isTextPopupVisible && (
+        <div className="popup">
+          <div className="popup-overlay" onClick={closeTextPopup}></div>
+          <p className="p-4 text-lg text-white">{popupText}</p>
         </div>
       )}
 

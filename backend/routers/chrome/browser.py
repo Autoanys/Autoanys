@@ -30,19 +30,23 @@ async def OpenBrowser():
 
 @router.post("/browser/access")
 async def OpenWebsite(json: dict):
-    imageFile = get_random_string(12)+".png"
-    #imageFile = string.ascii_letters + str(random.randint(0, 1000)) + ".png"
-    print(json)
-    if "website_url" in json:
-        url = json["website_url"]
-        if not url.startswith("http"):
-            driver.get("https://"+url)
-            driver.save_screenshot("storage/"+imageFile)
-        else:
-            driver.get(url)
-            driver.save_screenshot("storage/"+imageFile)
-            
-    return {"message": url+" Opened", "preview" : f"http://{ip}:8000/browser/screenshot/"+ imageFile}
+    try:
+        imageFile = get_random_string(12)+".png"
+        #imageFile = string.ascii_letters + str(random.randint(0, 1000)) + ".png"
+        print(json)
+        if "website_url" in json:
+            url = json["website_url"]
+            if not url.startswith("http"):
+                driver.get("https://"+url)
+                driver.save_screenshot("storage/"+imageFile)
+            else:
+                driver.get(url)
+                driver.save_screenshot("storage/"+imageFile)
+                
+        return {"message": url+" Opened", "preview" : f"http://{ip}:8000/browser/screenshot/"+ imageFile}
+    except Exception as e:
+        print(e)
+        return {"message": f"Error Occured {e}"}
 
 @router.get("/browser/screenshot/{imageFile}")
 async def GetScreenshot(imageFile: str):
