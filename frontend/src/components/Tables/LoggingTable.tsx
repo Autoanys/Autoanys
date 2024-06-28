@@ -172,6 +172,16 @@ const LoggingTable = () => {
           </div>
         )}
 
+        {currentLog.length === 0 && (
+          <div className="grid grid-cols-8 divide-x divide-slate-300 rounded-b-lg border-b border-slate-300 dark:border-strokedark dark:bg-boxdark">
+            <div className="col-span-8 flex items-center justify-center p-5">
+              <p className="text-black dark:text-white">
+                No logs found, try searching with different keyword
+              </p>
+            </div>
+          </div>
+        )}
+
         {currentLog.map((log, index) => (
           <div
             onDoubleClick={() => {

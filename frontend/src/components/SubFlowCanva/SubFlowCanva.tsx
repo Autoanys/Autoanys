@@ -97,11 +97,13 @@ const initialNodes = [
       inputs: [
         {
           type: "text",
-          label: "Save variable to end result",
+          label: "End Result Value",
           id: "variable",
           placeholder: "Enter variable name",
           required: false,
-          value: "",
+          value: "CAAS$",
+          variable: true,
+          variableValue: "",
         },
       ],
     },
@@ -583,7 +585,7 @@ const SubFlowCanva = (editing, flowid) => {
             });
           }, 3000);
 
-          fetch(
+          await fetch(
             process.env.NEXT_PUBLIC_BACKEND_URL + "/logs/failed/" + triggerID,
             {
               method: "GET",
@@ -1204,10 +1206,6 @@ const SubFlowCanva = (editing, flowid) => {
     </div>
   ));
 
-  const chooseInputMethod = (e) => {
-    console.log(e.target.id);
-  };
-
   const rectOfNodes = getNodesBounds(nodes);
 
   const editForm = (node_id) => {
@@ -1246,32 +1244,38 @@ const SubFlowCanva = (editing, flowid) => {
                 return (
                   <div>
                     <span className="font-medium">{input.label}</span>
-                    {/* <span className="ml-2">
+                    <span className="mb-2	 ml-2 text-sm ">
                       <button
                         id={`${node_id}-${input.label}-static`}
-                        className="rounded-l-lg border border-black pl-1 pr-1"
-                        onClick={(e) => chooseInputMethod(e)}
+                        className={` mb-2 rounded-l-lg border border-black pl-1 pr-1 hover:bg-slate-500 hover:text-white ${!input.variable && "cursor-not-allowed bg-slate-500 text-white"}`}
+                        onClick={(e) =>
+                          chooseInputMethod(selectedNodes, input.id, e)
+                        }
                       >
                         Static{" "}
                       </button>
                       <button
                         id={`${node_id}-${input.label}-variable`}
-                        className="rounded-r-lg border border-black pl-1 pr-1
-
-"
-                        onClick={(e) => chooseInputMethod(e)}
+                        className={`mb-2 rounded-r-lg border border-black pl-1 pr-1 hover:bg-slate-500 hover:text-white ${input.variable && "cursor-not-allowed bg-slate-500 text-white "}`}
+                        onClick={(e) =>
+                          chooseInputMethod(selectedNodes, input.id, e)
+                        }
                       >
                         Variable{" "}
                       </button>
-                    </span> */}
+                    </span>
                     {input.type === "select" ? (
                       <select
                         id={`${node_id}-${input.id}`}
                         key={`${node_id}-${input.id}`}
-                        className="h-10 w-full rounded-lg border border-slate-200 px-3 py-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-sky-500"
+                        className="h-10 w-full rounded-lg  border border-slate-200 px-3 py-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-sky-500"
                         value={input.value}
                         onChange={(e) =>
-                          changeNodeValue(e, selectedNodes, input.id)
+                          changeNodeValue(
+                            e,
+                            selectedNodes,
+                            input.variable ? "variable" : input.id,
+                          )
                         }
                       >
                         {Array.isArray(input.value) ? (
@@ -1307,7 +1311,11 @@ const SubFlowCanva = (editing, flowid) => {
                           onChange={(e) => {
                             const selectedFile = e.target.files[0];
                             setFile(selectedFile);
-                            changeNodeValue(e, selectedNodes, input.id);
+                            changeNodeValue(
+                              e,
+                              selectedNodes,
+                              input.variable ? "variable" : input.id,
+                            );
                           }}
                         />
                       </div>
@@ -1340,13 +1348,17 @@ const SubFlowCanva = (editing, flowid) => {
                           className="h-10 w-full rounded-lg border border-slate-200 px-3 py-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-sky-500"
                           type={input.type}
                           {...(input.required ? { required: true } : {})}
-                          placeholder={input.placeholder}
+                          placeholder={
+                            input.variableValue
+                              ? input.variableValue
+                              : input.placeholder
+                          }
                           value={input.value}
                           onChange={(e) =>
                             handleInputChange(e, node_id, input.id)
                           }
                         />
-                        {input.id === "variable" && suggestions.length > 0 && (
+                        {input.variable && suggestions.length > 0 && (
                           <div className="suggestions-dropdown mt-1 rounded-lg border border-slate-200 bg-white shadow-lg">
                             {suggestions.map((variable) => (
                               <div
@@ -1392,8 +1404,88 @@ const SubFlowCanva = (editing, flowid) => {
     setSuggestions([]);
   };
 
+  const chooseInputMethod = (node_id, input_id, e) => {
+    if (e.target.id.split("-").pop() == "static") {
+      const newNodes = nodes.map((node) => {
+        if (node.id == node_id) {
+          const newInput = node.data.inputs.map((input) => {
+            if (input.id == input_id) {
+              input.value = e.target.value;
+              return {
+                ...input,
+                variable: false,
+                variableValue: "",
+              };
+            } else {
+              return input;
+            }
+          });
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              inputs: newInput,
+            },
+          };
+        } else {
+          return node;
+        }
+      });
+      setNodes(newNodes);
+    }
+    if (e.target.id.split("-").pop() == "variable") {
+      const newNodes = nodes.map((node) => {
+        if (node.id == node_id) {
+          const newInput = node.data.inputs.map((input) => {
+            if (input.id == input_id) {
+              input.value = e.target.value;
+              return {
+                ...input,
+                variable: true,
+                variableValue: "Enter Variable Name",
+              };
+            } else {
+              return input;
+            }
+          });
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              inputs: newInput,
+            },
+          };
+        } else {
+          return node;
+        }
+      });
+      setNodes(newNodes);
+    }
+  };
+
   const changeNodeValue = (e, node_id, input_id) => {
     if (input_id === "variable") {
+      const newNodes = nodes.map((node) => {
+        if (node.id == node_id) {
+          const newInput = node.data.inputs.map((input) => {
+            if (input.id == input_id) {
+              input.value = e.target.value;
+              return { ...input, value: e.target.value, variable: true };
+            } else {
+              return input;
+            }
+          });
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              inputs: newInput,
+            },
+          };
+        } else {
+          return node;
+        }
+      });
       if (validateInput(e.target.value)) {
         console.log("Valid");
         const newNodes = nodes.map((node) => {
@@ -1421,7 +1513,6 @@ const SubFlowCanva = (editing, flowid) => {
         setNodes(newNodes);
       } else {
         console.log("Invalid");
-        alert("Invalid");
       }
     } else {
       const newNodes = nodes.map((node) => {
@@ -1926,6 +2017,7 @@ const SubFlowCanva = (editing, flowid) => {
                   <button onClick={nextSlide}>⮞ </button>
                 </div>
                 <div className="slider-dots">
+                  <p>Step {currentIndex + 1}</p>
                   {currentResult.map((result, index) => (
                     <span
                       key={index}

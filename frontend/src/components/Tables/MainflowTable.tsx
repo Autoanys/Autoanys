@@ -212,6 +212,15 @@ const MainflowTable = () => {
           </div>
         </div>
 
+        {currentSubflows.length === 0 && (
+          <div className="grid grid-cols-8 divide-x divide-slate-300 rounded-b-lg border-b border-slate-300 dark:border-strokedark dark:bg-boxdark">
+            <div className="col-span-8 flex items-center justify-center p-5">
+              <p className="text-black dark:text-white">
+                No multi-flows found. Please create a new multi-flow.
+              </p>
+            </div>
+          </div>
+        )}
         {currentSubflows.map((subflow, index) => (
           <div
             className={`grid cursor-alias grid-cols-7 divide-x  divide-slate-300 hover:bg-orange-50 sm:grid-cols-7 ${
