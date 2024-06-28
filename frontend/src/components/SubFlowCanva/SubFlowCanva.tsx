@@ -888,6 +888,14 @@ const SubFlowCanva = (editing, flowid) => {
   );
   // const flowKey = "generated-flow";
 
+  // useEffect(() => {
+  //   console.log(JSON.stringify(customVariables));
+  //   const varibaleoNKECT = {
+  //     variables: JSON.stringify(customVariables),
+  //   };
+  //   console.log("Combined", JSON.stringify(varibaleoNKECT));
+  // }, [customVariables]);
+
   const router = useRouter();
 
   const onSave = useCallback(async () => {
@@ -935,7 +943,15 @@ const SubFlowCanva = (editing, flowid) => {
       console.log("SASDSADASDDASD");
 
       const flow = rfInstance.toObject();
+      const variablesObject = {
+        variables: JSON.stringify(customVariables),
+      };
+
+      console.log("This is variablesObject", customVariables, variablesObject);
+      const mergedFlow = { ...flow, ...variablesObject };
+
       console.log("This is Flow", flow);
+      console.log("This is customVariables", customVariables);
       const res = await fetch(
         process.env.NEXT_PUBLIC_BACKEND_URL + "/subflow/write/",
         {
@@ -946,7 +962,7 @@ const SubFlowCanva = (editing, flowid) => {
           body: JSON.stringify({
             name: flowKeys,
             description: flowDescription,
-            flowjson: String(JSON.stringify(flow)),
+            flowjson: String(JSON.stringify(mergedFlow)),
           }),
         },
       );
@@ -960,7 +976,7 @@ const SubFlowCanva = (editing, flowid) => {
       setAutoSaving(false);
     }
     // }
-  }, [rfInstance, flowKeys, flowDescription]);
+  }, [rfInstance, flowKeys, flowDescription, customVariables]);
 
   const confirmAddingSubflow = async () => {
     // console.log("Setting need confirmation to false");
@@ -1342,6 +1358,7 @@ const SubFlowCanva = (editing, flowid) => {
                         id={`${node_id}-${input.label}`}
                         key={`${node_id}-${input.label}`}
                       >
+                        <p>{input.variable}</p>
                         <input
                           id={`${node_id}-${input.label}`}
                           key={`${node_id}-${input.label}`}
@@ -1355,7 +1372,12 @@ const SubFlowCanva = (editing, flowid) => {
                           }
                           value={input.value}
                           onChange={(e) =>
-                            handleInputChange(e, node_id, input.id)
+                            handleInputChange(
+                              e,
+                              node_id,
+                              input.id,
+                              input.variable,
+                            )
                           }
                         />
                         {input.variable && suggestions.length > 0 && (
@@ -1386,11 +1408,11 @@ const SubFlowCanva = (editing, flowid) => {
     );
   };
 
-  const handleInputChange = (e, nodeID, input_id) => {
+  const handleInputChange = (e, nodeID, input_id, input_state) => {
     const newValue = e.target.value;
     changeNodeValue(e, selectedNodes, input_id);
 
-    if (input_id === "variable") {
+    if (input_id === "variable" || input_state) {
       setSuggestions(
         customVariables.filter((variable) =>
           variable.key.toLowerCase().includes(newValue.toLowerCase()),
@@ -1438,7 +1460,7 @@ const SubFlowCanva = (editing, flowid) => {
         if (node.id == node_id) {
           const newInput = node.data.inputs.map((input) => {
             if (input.id == input_id) {
-              input.value = e.target.value;
+              input.value = "CAAS$";
               return {
                 ...input,
                 variable: true,
@@ -1459,6 +1481,7 @@ const SubFlowCanva = (editing, flowid) => {
           return node;
         }
       });
+
       setNodes(newNodes);
     }
   };
@@ -1737,7 +1760,7 @@ const SubFlowCanva = (editing, flowid) => {
                   target="_blank"
                   href="/plugins"
                 >
-                  here
+                  hereF
                 </a>{" "}
                 make sure you have enabled for more plugins.
               </span>
@@ -2017,7 +2040,7 @@ const SubFlowCanva = (editing, flowid) => {
                   <button onClick={nextSlide}>⮞ </button>
                 </div>
                 <div className="slider-dots">
-                  <p>Step {currentIndex + 1}</p>
+                  <p className="pr-2 ">Step {currentIndex + 1}</p>
                   {currentResult.map((result, index) => (
                     <span
                       key={index}

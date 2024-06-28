@@ -805,7 +805,10 @@ const SubflowTable = () => {
                 {/* {subflow.schedule}
                 {subflow.schueleType}
                 {subflow.id} */}
-                {truncateText(subflow.description, 55)}
+                {subflow.description
+                  ? truncateText(subflow.description, 55)
+                  : "No Description"}
+                {/* {truncateText(subflow.description, 55)} */}
               </p>
             </div>
 

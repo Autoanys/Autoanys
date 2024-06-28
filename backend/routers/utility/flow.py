@@ -101,8 +101,22 @@ async def analyze_json(json_datas: dict):
                         
                         for i in source_node['data']['inputs']:
                             print(i, "i", i['id'], i['value'])
-                            post_data[i['id']] = i['value']
-                            print("this is post_data", post_data)
+                            if(i['variable'] and i['value'].startswith("CAAS$") or i['variable'] and i['value'].startswith("AAS$")):
+                                try:
+                                    for var in json_datas["variables"]:
+                                        if var['key'] == i['value'] and var['value']:
+                                            post_data[i['id']] = var['value']
+                                            print("this is post_data", post_data)
+                                        else:
+                                            post_data[i['id']] = i['value']
+                                            print("this is post_data", post_data)
+                                except Exception as e:
+                                    print(e)
+                                    raise HTTPException(status_code=450,  detail="Error in analyzing flow")
+                                
+                            else:
+                                post_data[i['id']] = i['value']
+                                print("this is post_data", post_data)
                             
                         temp["post_data"] = post_data
                         print(temp, "temp")
