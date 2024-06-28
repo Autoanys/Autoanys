@@ -18,6 +18,7 @@ import {
   UncollapseIcon,
   CollapseIcon,
 } from "./icon";
+import { useHotkeys } from "react-hotkeys-hook";
 
 import Head from "next/head";
 import { useTranslation } from "react-i18next";
@@ -37,6 +38,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const [sidebarExpanded, setSidebarExpanded] = useState(
     storedSidebarExpanded === null ? true : storedSidebarExpanded === "true",
   );
+
+  useHotkeys("ctrl+b, cmd+b", (event) => {
+    event.preventDefault();
+    setSidebarExpanded(!sidebarExpanded);
+  });
 
   const sideBarItem = [
     {
@@ -199,6 +205,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
               {sideBarItem.map((item, index) => (
                 <li key={index}>
                   <Link
+                    title={item.name}
                     href={item.link}
                     className={`gbold group relative flex items-center gap-2.5 rounded-lg px-4 py-4 text-sm font-medium font-semibold text-black duration-300 ease-in-out hover:bg-white hover:shadow-2xl dark:text-[#FFFFFF] dark:hover:bg-meta-4 ${
                       (pathname === item.link ||
