@@ -1425,6 +1425,25 @@ const SubFlowCanva = (editing, flowid) => {
         </p>
 
         <br></br>
+
+        <p>
+          <label>Save Result to</label>
+          <select
+            id={`${node_id}-saveResult`}
+            key={`${node_id}-saveResult`}
+            className="h-10 w-full rounded-lg  border border-slate-200 px-3 py-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-sky-500"
+          >
+            <option key={`${node_id}-saveResult-null`} value="null">
+              Null
+            </option>
+            <option key={`${node_id}-saveResult-static`} value="static">
+              Static{" "}
+            </option>
+            <option key={`${node_id}-saveResult-variable`} value="variable">
+              Variable{" "}
+            </option>
+          </select>
+        </p>
         <br></br>
       </div>
     );

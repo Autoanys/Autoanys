@@ -11,6 +11,9 @@ import zhSetting from "./zh-CN/setting/setting";
 import cnCommon from "./cn/common/common";
 import enCommon from "./en/common/common";
 import zhCommon from "./zh-CN/common/common";
+import enFlow from "./en/flow/flow";
+import cnFlow from "./cn/flow/flow";
+import zhFlow from "./zh-CN/flow/flow";
 
 const resources = {
   en: {
@@ -18,18 +21,21 @@ const resources = {
     sidebar: enSidebar,
     dashboard: enDashboard,
     setting: enSetting,
+    subflow: enFlow,
   },
   cn: {
     common: cnCommon,
     sidebar: cnSidebar,
     dashboard: cnDashboard,
     setting: cnSetting,
+    subflow: cnFlow,
   },
   "zh-CN": {
     common: zhCommon,
     sidebar: zhSidebar,
     dashboard: zhDashboard,
     setting: zhSetting,
+    subflow: zhFlow,
   },
 };
 

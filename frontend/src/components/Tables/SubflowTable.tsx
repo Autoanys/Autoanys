@@ -29,10 +29,12 @@ import ReactFlow, {
 } from "reactflow";
 import "reactflow/dist/style.css";
 import { act } from "react-dom/test-utils";
+import { useTranslation } from "next-i18next";
 
 const proOptions = { hideAttribution: true };
 
 const SubflowTable = () => {
+  const { t } = useTranslation("subflow");
   const router = useRouter();
   const [subflows, setSubflows] = useState([]);
   const [selectedNode, setSelectedNode] = useState(null);
@@ -671,13 +673,13 @@ const SubflowTable = () => {
       )}
       <div className="flex justify-between gap-x-4">
         <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
-          Flow List
+          {t("flowList")}
         </h4>
         <button
           className="group relative flex items-center gap-2.5 rounded-lg px-4 py-4 text-sm font-medium font-semibold text-black duration-300 ease-in-out dark:text-white dark:hover:bg-meta-4"
           onClick={handleButtonClick}
         >
-          📥 Import a Flow
+          📥 {t("flowImport")}
         </button>
         <input
           type="file"
@@ -690,7 +692,7 @@ const SubflowTable = () => {
 
       <input
         type="text"
-        placeholder=" 🔍 Search flow by name or description"
+        placeholder={` 🔍 ${t("searchPlacement")}`}
         className="mb-6 h-10 w-full rounded-md border border-stroke px-3 dark:border-strokedark dark:bg-boxdark"
         onChange={(e) => {
           const searchValue = e.target.value.toLowerCase();
@@ -719,37 +721,37 @@ const SubflowTable = () => {
         <div className="grid grid-cols-8 divide-x divide-slate-300 rounded-t-lg border-b border-slate-300 bg-indigo-50 uppercase dark:bg-[#1E1E2F] dark:text-white sm:grid-cols-8">
           <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5 ">
             <h5 className=" text-sm font-medium xsm:text-sm">
-              <b> Name</b>
+              <b>{t("name")}</b>
             </h5>
           </div>
 
           <div className="xl:bt-5 col-span-2 hidden pb-2 pl-2.5 pt-3  sm:block xl:pb-2.5 xl:pl-2.5">
             <h5 className=" text-sm font-medium xsm:text-sm">
-              <b> Description</b>
+              <b>{t("description")}</b>
             </h5>
           </div>
 
           <div className="xl:bt-5 hidden pb-2 pl-2.5 pt-3 sm:block  xl:pb-2.5 xl:pl-2.5">
             <h5 className=" text-sm font-medium xsm:text-sm">
-              <b> Update</b>
+              <b>{t("update")}</b>
             </h5>
           </div>
 
           <div className="xl:bt-5 hidden pb-2 pl-2.5 pt-3 sm:block  xl:pb-2.5 xl:pl-2.5">
             <h5 className=" text-sm font-medium xsm:text-sm">
-              <b> Active </b>
+              <b>{t("active")} </b>
             </h5>
           </div>
 
           <div className="xl:bt-5 hidden pb-2 pl-2.5 pt-3 sm:block  xl:pb-2.5 xl:pl-2.5">
             <h5 className=" text-sm font-medium xsm:text-sm">
-              <b>scheduler </b>
+              <b>{t("scheduler")} </b>
             </h5>
           </div>
 
           <div className="xl:bt-5 col-span-2 hidden pb-2 pl-2.5 pt-3 sm:block  xl:pb-2.5 xl:pl-2.5">
             <h5 className=" text-sm font-medium xsm:text-sm">
-              <b>Actions (V/E/P/D)</b>
+              <b>{t("actions")}</b>
             </h5>
           </div>
         </div>
@@ -807,7 +809,7 @@ const SubflowTable = () => {
                 {subflow.id} */}
                 {subflow.description
                   ? truncateText(subflow.description, 55)
-                  : "No Description"}
+                  : t("noDescription")}
                 {/* {truncateText(subflow.description, 55)} */}
               </p>
             </div>
@@ -850,7 +852,7 @@ const SubflowTable = () => {
                 </div>
               </div>
               <span className="text-gray-700 hidden text-xs dark:text-white md:block">
-                {subflow.active ? "Actived" : "Disabled"}
+                {subflow.active ? t("actived") : t("disabled")}
               </span>
             </div>
 
@@ -867,7 +869,7 @@ const SubflowTable = () => {
                 onClick={() => setConfigPopup(subflow.id)}
                 disabled={subflow.active ? false : true}
               >
-                Config
+                {t("configure")}
               </button>
 
               {configPopup === subflow.id && (
@@ -1237,7 +1239,7 @@ const SubflowTable = () => {
       <div className="mt-4 flex items-center justify-between">
         <div>
           <label htmlFor="itemsPerPage" className="mr-2 font-bold	">
-            Items per page:
+            {t("ipp")}:
           </label>
           <select
             id="itemsPerPage"
@@ -1263,10 +1265,11 @@ const SubflowTable = () => {
                 currentPage === 1 ? "cursor-not-allowed" : "text-blue-700	"
               }
             >
-              Previous
+              {t("previous")}
             </button>
             <span className="mx-2">
-              Page {currentPage} of {Math.ceil(subflows.length / itemsPerPage)}
+              {t("page")} {currentPage} of{" "}
+              {Math.ceil(subflows.length / itemsPerPage)}
             </span>
             <button
               onClick={() =>
@@ -1285,7 +1288,7 @@ const SubflowTable = () => {
                   : "text-blue-700	"
               }
             >
-              Next
+              {t("next")}
             </button>
           </div>
         </div>

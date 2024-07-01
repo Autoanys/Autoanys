@@ -38,11 +38,12 @@ const Breadcrumb = ({
           {newMainFlow && (
             <Link
               href="/mainflowdraw"
-              className={`bold } group relative flex items-center gap-2.5  rounded-lg px-4	py-4
+              className={`bold disabled group pointer-events-none relative flex items-center gap-2.5  rounded-lg px-4	py-4
              text-sm font-medium font-semibold text-black duration-300 ease-in-out
              dark:hover:bg-meta-4`}
             >
-              <button className=" font hover:bg-blue rounded-full bg-blue-400 px-4 py-2 text-white hover:bg-blue-500 hover:shadow-2xl">
+              <p>Currently this feature is disabled</p>
+              <button className="disabled font hover:bg-blue cursor-not-allowed rounded-full bg-blue-400 px-4 py-2 text-white hover:bg-blue-500 hover:shadow-2xl">
                 Create Multi-Flows
               </button>
             </Link>
