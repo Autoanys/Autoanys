@@ -16,4 +16,6 @@ export default {
   flowList: "Flow List",
   flowImport: "Import a Flow",
   searchPlacement: "Search flow by name or description",
+  createFlow: "Create New Flow",
+  dashboard: "Dashboard",
 };

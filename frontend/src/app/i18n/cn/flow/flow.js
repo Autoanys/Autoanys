@@ -16,4 +16,6 @@ export default {
   flowList: "流程列表",
   flowImport: "导入流程数据",
   searchPlacement: "按名称或描述搜索流程",
+  createFlow: "创建新流程",
+  dashboard: "主页",
 };

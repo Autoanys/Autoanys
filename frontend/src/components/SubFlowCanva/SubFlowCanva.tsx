@@ -65,7 +65,7 @@ import crypto from "crypto";
 import GlobalVariables from "../Variables/GlobalVariables";
 import CustomVariables from "../Variables/CustomVariables";
 import { debug } from "console";
-
+import { useTranslation } from "next-i18next";
 const proOptions = { hideAttribution: true };
 const addOnChangeToNodeConfig = (config, handleChange) => {
   const updatedConfig = { ...config };
@@ -75,50 +75,15 @@ const addOnChangeToNodeConfig = (config, handleChange) => {
   return updatedConfig;
 };
 
-const initialNodes = [
-  {
-    id: "start-node",
-    type: "start",
-    position: { x: 400, y: 200 },
-    data: {
-      label: "Start",
-      value: "",
-      description: "This is an start node",
-      onChange: (id, value) => handleNodeChange(id, value),
-    },
-  },
-  {
-    id: "end-node",
-    type: "end",
-    position: { x: 400, y: 550 },
-    data: {
-      label: "End",
-      result: "End for this node",
-      inputs: [
-        {
-          type: "text",
-          label: "End Result Value",
-          id: "variable",
-          placeholder: "Enter variable name",
-          required: false,
-          value: "CAAS$",
-          variable: true,
-          variableValue: "",
-        },
-      ],
-    },
-  },
-];
-
 const flowKeys = signal("new-sub-flow");
 
 const edgeTypes = { custom: CustomEdge };
 
 const SubFlowCanva = (editing, flowid) => {
+  const { t } = useTranslation("flowCanvas");
   const [previewButton, setPreviewButton] = useState(false);
   const [confirmAdding, setConfirmAdding] = useState(false);
   const pathname = usePathname();
-  const [nodes, setNodes] = useState(initialNodes);
   const [edges, setEdges] = useState([]);
   const [showNotification, setShowNotification] = useState({
     show: false,
@@ -163,6 +128,42 @@ const SubFlowCanva = (editing, flowid) => {
   const [debugData, setDebugData] = useState([]);
   const [debugStep, setDebugStep] = useState(0);
   const [debugging, setDebugging] = useState(false);
+
+  const initialNodes = [
+    {
+      id: "start-node",
+      type: "start",
+      position: { x: 400, y: 200 },
+      data: {
+        label: t("startnode"),
+        value: "",
+        description: "This is an start node",
+        onChange: (id, value) => handleNodeChange(id, value),
+      },
+    },
+    {
+      id: "end-node",
+      type: "end",
+      position: { x: 400, y: 550 },
+      data: {
+        label: t("endnode"),
+        result: "End for this node",
+        inputs: [
+          {
+            type: "text",
+            label: "End Result Value",
+            id: "variable",
+            placeholder: "Enter variable name",
+            required: false,
+            value: "CAAS$",
+            variable: true,
+            variableValue: "",
+          },
+        ],
+      },
+    },
+  ];
+  const [nodes, setNodes] = useState(initialNodes);
 
   const handleCustomVariableChange = (id: number, newValue: string) => {
     setCustomVariables((prevVariables) =>
@@ -1867,7 +1868,7 @@ const SubFlowCanva = (editing, flowid) => {
                     autoSaving ? "cursor-not-allowed" : ""
                   }`}
                 >
-                  ↩️ Back
+                  ↩️ {t("back")}
                 </button>
 
                 <button
@@ -1885,7 +1886,7 @@ const SubFlowCanva = (editing, flowid) => {
                       />
                     </div>
                   ) : (
-                    "💾 Save"
+                    `💾 ${t("save")} `
                   )}
                 </button>
 
@@ -1904,21 +1905,21 @@ const SubFlowCanva = (editing, flowid) => {
                 onClick={handleAutoLayout}
                 className="mb-2 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white dark:border-slate-400 dark:text-white"
               >
-                ⏹️ Auto-Layout
+                ⏹️ {t("autolayout")}
               </button>
 
               <button
                 onClick={toggleVariablePopup}
                 className="mb-2 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white dark:border-slate-400 dark:text-white"
               >
-                🔣 Variables
+                🔣 {t("variables")}
               </button>
 
               <button
                 onClick={() => getFlow(true)}
                 className="mb-2 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white dark:border-slate-400 dark:text-white"
               >
-                🐞 Debug
+                🐞 {t("debug")}
               </button>
 
               <button
@@ -1934,14 +1935,14 @@ const SubFlowCanva = (editing, flowid) => {
                     className="mx-auto h-6 w-6 animate-spin"
                   />
                 ) : (
-                  "▶️ Play"
+                  `▶️ ${t("play")} `
                 )}
               </button>
               <button
                 onClick={toggleDropdown}
                 className="mb-2 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white dark:border-slate-400 dark:text-white"
               >
-                📁 Export
+                📁 {t("export")}
               </button>
 
               {exportDropdownOpen && (
@@ -1959,7 +1960,7 @@ const SubFlowCanva = (editing, flowid) => {
                       }}
                       className="text-gray-700 hover:bg-gray-100 hover:text-gray-900 block w-full px-2 py-1 text-left text-sm"
                     >
-                      Flow Image Diagram
+                      {t("flowdiagram")}
                     </button>
                     <button
                       onClick={() => {
@@ -1968,7 +1969,7 @@ const SubFlowCanva = (editing, flowid) => {
                       }}
                       className="text-gray-700 hover:bg-gray-100 hover:text-gray-900 block w-full px-2 py-1 text-left text-sm"
                     >
-                      Flow Config Data
+                      {t("flowconfig")}
                     </button>
                     <button
                       onClick={() => {
@@ -1976,7 +1977,7 @@ const SubFlowCanva = (editing, flowid) => {
                       }}
                       className="text-gray-700 hover:bg-gray-100 hover:text-gray-900 block w-full px-2 py-1 text-left text-sm"
                     >
-                      Cancel
+                      {t("cancel")}
                     </button>
                   </div>
                 </div>

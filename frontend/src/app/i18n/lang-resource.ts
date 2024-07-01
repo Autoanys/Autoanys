@@ -14,6 +14,9 @@ import zhCommon from "./zh-CN/common/common";
 import enFlow from "./en/flow/flow";
 import cnFlow from "./cn/flow/flow";
 import zhFlow from "./zh-CN/flow/flow";
+import cnFlowCanva from "./cn/flowCanvas/flowCanvas";
+import enFlowCanva from "./en/flowCanvas/flowCanvas";
+import zhFlowCanva from "./zh-CN/flowCanvas/flowCanvas";
 
 const resources = {
   en: {
@@ -22,6 +25,7 @@ const resources = {
     dashboard: enDashboard,
     setting: enSetting,
     subflow: enFlow,
+    flowCanvas: enFlowCanva,
   },
   cn: {
     common: cnCommon,
@@ -29,6 +33,7 @@ const resources = {
     dashboard: cnDashboard,
     setting: cnSetting,
     subflow: cnFlow,
+    flowCanvas: cnFlowCanva,
   },
   "zh-CN": {
     common: zhCommon,
@@ -36,6 +41,7 @@ const resources = {
     dashboard: zhDashboard,
     setting: zhSetting,
     subflow: zhFlow,
+    flowCanvas: zhFlowCanva,
   },
 };
 
