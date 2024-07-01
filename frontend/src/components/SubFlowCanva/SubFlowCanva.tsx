@@ -217,6 +217,7 @@ const SubFlowCanva = (editing, flowid) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentDebugResult, setCurrentDebugResult] = useState([]);
   const [activedCategory, setActivedCategory] = useState([]);
+  const [showDescription, setShowDescription] = useState(false);
 
   useEffect(() => {
     setVariables(variableConfig);
@@ -332,6 +333,18 @@ const SubFlowCanva = (editing, flowid) => {
   };
 
   const nodeTypes = useMemo(() => ({ ...nodeTypesInit }), []);
+  const toggleDesc = () => {
+    setShowDescription((prev) => !prev);
+    setNodes((nds) =>
+      nds.map((node) => ({
+        ...node,
+        data: {
+          ...node.data,
+          showDescription: !node.data.showDescription,
+        },
+      })),
+    );
+  };
 
   Object.keys(nodeConfig).forEach((key) => {
     nodeTypes[key] = CustomNode;
@@ -1850,6 +1863,10 @@ const SubFlowCanva = (editing, flowid) => {
             <Controls></Controls>
 
             <Panel position="bottom-right" className="inline">
+              <p className="float-right font-semibold">
+                Hide Description <input type="checkbox" onChange={toggleDesc} />
+              </p>
+              <br></br>
               <p className="font-semibold">
                 {parms.get("flowid")
                   ? " Flow ID : " + parms.get("flowid")

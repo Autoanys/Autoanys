@@ -14,6 +14,6 @@ export default {
   flowname: "流程名称",
   flowdescription: "流程描述",
   close: "关闭",
-  startnode: "Start",
-  endnode: "End",
+  startnode: "开始节点",
+  endnode: "结束节点",
 };
