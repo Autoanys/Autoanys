@@ -250,7 +250,6 @@ const SubFlowCanva = (editing, flowid) => {
         );
 
         const data = await res.json();
-        console.log("YOYO", data);
 
         for (let i = 0; i < data.actived.length; i++) {
           activated.push(data.actived[i].name);
@@ -1734,8 +1733,11 @@ const SubFlowCanva = (editing, flowid) => {
         </div>
       )}
 
-      <div className="grid grid-cols-5 gap-3">
-        <div className="border-r-2 border-slate-200 pt-20 ">
+      <div className="grid h-screen grid-cols-5 gap-3">
+        <div
+          className="overflow-auto border-r-2 border-slate-200 pt-20"
+          style={{ scrollbarWidth: "thin" }}
+        >
           <aside>
             <div className="description p-2 pb-4">
               <div className="m-2 mx-auto	 max-w-md rounded-lg border-2 border-slate-200">
@@ -1779,7 +1781,6 @@ const SubFlowCanva = (editing, flowid) => {
               </span>
               {/* <button onClick={collapseAll}>Collapse All</button> */}
             </div>
-
             {nodeDivs}
             {!cateLoading && activedCategory.length === 0 && (
               <div className="flex h-64 items-center justify-center">
