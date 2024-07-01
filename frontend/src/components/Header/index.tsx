@@ -1,6 +1,6 @@
 import Link from "next/link";
 import DarkModeSwitcher from "./DarkModeSwitcher";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useHotkeys } from "react-hotkeys-hook";
 
@@ -9,7 +9,6 @@ const Header = (props: {
   setSidebarOpen: (arg0: boolean) => void;
 }) => {
   const [showInfoBox, setShowInfoBox] = useState(false);
-
   const togglePopup = () => {
     setShowInfoBox(!showInfoBox);
   };

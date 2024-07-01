@@ -1306,10 +1306,11 @@ const SubFlowCanva = (editing, flowid) => {
                           )
                         }
                       >
-                        {Array.isArray(input.value) ? (
-                          input.value.map((value) => (
-                            <option key={value} value={value}>
-                              {value}
+                        {Array.isArray(input.options) ? (
+                          input.options.map((option) => (
+                            <option key={option} value={option}>
+                              {option}
+                              {/* {input.value ? input.value : optios[0]} */}
                             </option>
                           ))
                         ) : (
@@ -1734,11 +1735,11 @@ const SubFlowCanva = (editing, flowid) => {
       )}
 
       <div className="grid grid-cols-5 gap-3">
-        <div className="border-r-2 border-slate-200 pt-20">
+        <div className="border-r-2 border-slate-200 pt-20 ">
           <aside>
             <div className="description p-2 pb-4">
               <div className="m-2 mx-auto	 max-w-md rounded-lg border-2 border-slate-200">
-                <div className="relative flex h-7 w-full items-center overflow-hidden rounded-lg bg-white focus-within:shadow-lg">
+                <div className="relative flex h-7 w-full	items-center overflow-hidden rounded-lg bg-white focus-within:shadow-lg dark:bg-slate-800">
                   <div className="text-gray-300 grid h-full w-12 place-items-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -1757,7 +1758,7 @@ const SubFlowCanva = (editing, flowid) => {
                   </div>
 
                   <input
-                    className=" peer h-full w-full pr-2 text-sm outline-none"
+                    className="peer h-full w-full pr-2 text-sm outline-none dark:bg-slate-800 dark:text-white"
                     type="text"
                     id="search"
                     placeholder="Search flow blocks"
@@ -1772,7 +1773,7 @@ const SubFlowCanva = (editing, flowid) => {
                   target="_blank"
                   href="/plugins"
                 >
-                  hereF
+                  here
                 </a>{" "}
                 make sure you have enabled for more plugins.
               </span>

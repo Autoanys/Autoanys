@@ -4,8 +4,9 @@ from PIL import Image
 from pathlib import Path
 from routers.db.logs import write_logging
 import socket
-from routers.chrome.browser import OpenBrowser, OpenWebsite, GetScreenshot, CloseBrowser
+from routers.chrome.browser import OpenBrowser, OpenWebsite, GetScreenshot, CloseBrowser, FindByXpathType, FindByXpathClick
 from routers.utility.general import sleep_wait
+import json
 
 
 hostname = socket.getfqdn()
@@ -73,7 +74,9 @@ Correspondence_function_list = {
     "openBrowserLink" : "OpenWebsite",
     "waitSecond" : "sleep_wait",
     "closeBrowser" : "CloseBrowser",
-    "getScreenshot" : "GetScreenshot"
+    "getScreenshot" : "GetScreenshot",
+    "findElementClick" : "FindByXpathClick",
+    "findElementType" : "FindByXpathType",
 }
 
 @router.post("/flow/v2/")
@@ -90,10 +93,8 @@ async def analyze_json(json_datas: dict):
                     # get node details from edges and nodes
                     source = step["source"]
                     source_node = next((node for node in json_datas["nodes"] if node["id"] == source), None)
-                    print("OK", source_node['data']['inputs'])
                           
                     if len(source_node['data']['inputs']) > 0 and source_node['data']['method'] == "POST":
-                        print(source_node['data']['inputs'], "testest")
                         temp["api"] = f"http://{ip}:8000" + source_node['data']['api']
                         temp["method"] = source_node['data']['method']
                         temp["function"] = Correspondence_function_list[source_node['type']]
@@ -103,7 +104,9 @@ async def analyze_json(json_datas: dict):
                             print(i, "i", i['id'], i['value'])
                             if(i['variable'] and i['value'].startswith("CAAS$") or i['variable'] and i['value'].startswith("AAS$")):
                                 try:
+                                 
                                     for var in json_datas["variables"]:
+                                        print("this is var", var)
                                         if var['key'] == i['value'] and var['value']:
                                             post_data[i['id']] = var['value']
                                             print("this is post_data", post_data)
@@ -111,8 +114,19 @@ async def analyze_json(json_datas: dict):
                                             post_data[i['id']] = i['value']
                                             print("this is post_data", post_data)
                                 except Exception as e:
-                                    print(e)
-                                    raise HTTPException(status_code=450,  detail="Error in analyzing flow")
+                                    try:
+                                        for var in json.loads(json_datas["variables"]):
+                                            print("this is var", var)
+                                            if var['key'] == i['value'] and var['value']:
+                                                post_data[i['id']] = var['value']
+                                                print("this is post_data", post_data)
+                                            else:
+                                                post_data[i['id']] = i['value']
+                                                print("this is post_data", post_data)
+                                    except Exception as e:
+                                        print(e)
+                                        raise HTTPException(status_code=450,  detail="Error in analyzing flow")
+
                                 
                             else:
                                 post_data[i['id']] = i['value']

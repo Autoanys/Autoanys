@@ -53,51 +53,13 @@ async def GetScreenshot(imageFile: str):
     imageFile = Path("storage/"+imageFile)
     return FileResponse(imageFile)
 
-@router.get("/OpenGoogle")
-async def OpenGoogle():
-    driver.get("https://www.google.com")
-    return {"message": "Google Opened"}
 
-@router.get("/OpenTest")
-async def OpenTest():
-    driver.get("https://www.vicodtech.com")
-    driver.save_screenshot("temp.png")
-    results={"message":"Opened Test"}
-    return FileResponse("temp.png", headers=results)
-
-    #return {"message": "Google Opened"}
 
 @router.get("/browser/close")
 async def CloseBrowser():
     driver.quit()
     return {"message": "Browser Closed"}
 
-# @router.post("/browser/findByXpath/")
-# async def FindByXpath(xpath_data: dict):
-#     xpath = xpath_data.get("xpath")
-#     if xpath:
-#         element = driver.find_element("xpath", xpath)
-#         return {"message": "Element Found"}
-#     else:
-#         return {"message": "Element Not Found"}
-    
-# @router.post("/browser/findByID/")
-# async def FindByXpath(xpath_data: dict):
-#     xpath = xpath_data.get("d")
-#     if xpath:
-#         element = driver.find_element("id", xpath)
-#         return {"message": "Element Found"}
-#     else:
-#         return {"message": "Element Not Found"}
-    
-# @router.post("/browser/findByName/")
-# async def FindByXpath(xpath_data: dict):
-#     xpath = xpath_data.get("name")
-#     if xpath:
-#         element = driver.find_element("name", xpath)
-#         return {"message": "Element Found"}
-#     else:
-#         return {"message": "Element Not Found"}
 
 @router.post("/browser/findBy")
 async def FindByXpath(xpath_data: dict):
@@ -114,11 +76,42 @@ async def FindByXpath(xpath_data: dict):
 async def FindByXpath(xpath_data: dict):
     type = xpath_data.get("type")
     xpath = xpath_data.get("xpath")
+    imageFile = get_random_string(12)+".png"
     print(type, xpath)
     if type:
         element = driver.find_element("xpath", xpath)
         element.send_keys(type)
-        return {"message": "Element Found"}
+        driver.save_screenshot("storage/"+imageFile)
+        return {"message": "Element Found", }
+    else:
+        return {"message": "Element Not Found"}
+
+@router.post("/browser/findBy/click")
+async def FindByXpathClick(xpath_data: dict):
+    query = xpath_data.get("query")
+    find_by = xpath_data.get("find_by")
+    imageFile = get_random_string(12)+".png"
+
+    if query:
+        element = driver.find_element(find_by, query)
+        element.click()
+        driver.save_screenshot("storage/"+imageFile)
+        return {"message": "Element Found and Clicked", "preview" : f"http://{ip}:8000/browser/screenshot/"+ imageFile}
+    else:
+        return {"message": "Element Not Found"}
+    
+@router.post("/browser/findBy/type")
+async def FindByXpathType(xpath_data: dict):
+    query = xpath_data.get("query")
+    find_by = xpath_data.get("find_by")
+    imageFile = get_random_string(12)+".png"
+
+    type = xpath_data.get("type")
+    if query:
+        element = driver.find_element(find_by, query)
+        element.send_keys(type)
+        driver.save_screenshot("storage/"+imageFile)
+        return {"message": "Element Found and Typed", "preview" : f"http://{ip}:8000/browser/screenshot/"+ imageFile}
     else:
         return {"message": "Element Not Found"}
 
