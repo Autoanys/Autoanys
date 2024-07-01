@@ -66,6 +66,8 @@ import GlobalVariables from "../Variables/GlobalVariables";
 import CustomVariables from "../Variables/CustomVariables";
 import { debug } from "console";
 import { useTranslation } from "next-i18next";
+import { useHotkeys } from "react-hotkeys-hook";
+
 const proOptions = { hideAttribution: true };
 const addOnChangeToNodeConfig = (config, handleChange) => {
   const updatedConfig = { ...config };
@@ -345,6 +347,11 @@ const SubFlowCanva = (editing, flowid) => {
       })),
     );
   };
+
+  useHotkeys("ctrl+shift+h, cmd+shift+h", (event) => {
+    event.preventDefault();
+    toggleDesc();
+  });
 
   Object.keys(nodeConfig).forEach((key) => {
     nodeTypes[key] = CustomNode;
@@ -1863,8 +1870,14 @@ const SubFlowCanva = (editing, flowid) => {
             <Controls></Controls>
 
             <Panel position="bottom-right" className="inline">
-              <p className="float-right font-semibold">
-                Hide Description <input type="checkbox" onChange={toggleDesc} />
+              <p className="float-right font-semibold ">
+                Hide Description
+                <input
+                  type="checkbox"
+                  onChange={toggleDesc}
+                  checked={showDescription}
+                  className="ml-2"
+                />
               </p>
               <br></br>
               <p className="font-semibold">

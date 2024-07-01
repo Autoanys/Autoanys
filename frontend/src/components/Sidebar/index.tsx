@@ -222,9 +222,15 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
           <div className="fixed bottom-0 m-auto items-center justify-center text-sm text-black">
             <span
-              className={`pb-12 font-medium dark:text-white ${sidebarExpanded ? "ml-4" : "ml-0"}`}
+              className={`pb-12 font-medium dark:text-white ${sidebarExpanded ? "ml-2" : "ml-0"}`}
             >
-              {/* <span className={`  ${sidebarExpanded ? "" : "hidden"}`}> */}
+              {/* {sidebarExpanded && (
+                <div>
+                  <button className="mb-2 rounded-lg border border-slate-400 bg-white p-2 hover:bg-slate-100 dark:bg-black">
+                    System Hotkeys (Shift+S)
+                  </button>
+                </div>
+              )} */}
 
               <span className={``}>
                 {" "}
