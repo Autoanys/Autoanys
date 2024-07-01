@@ -1446,25 +1446,60 @@ const SubFlowCanva = (editing, flowid) => {
         </p>
 
         <br></br>
+        {nodes.find((n) => n.id == node_id)?.data?.saveResult && (
+          <p>
+            <label>Save Result to</label>
 
-        <p>
-          <label>Save Result to</label>
-          <select
-            id={`${node_id}-saveResult`}
-            key={`${node_id}-saveResult`}
-            className="h-10 w-full rounded-lg  border border-slate-200 px-3 py-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-sky-500"
-          >
-            <option key={`${node_id}-saveResult-null`} value="null">
-              Null
-            </option>
-            <option key={`${node_id}-saveResult-static`} value="static">
-              Static{" "}
-            </option>
-            <option key={`${node_id}-saveResult-variable`} value="variable">
-              Variable{" "}
-            </option>
-          </select>
-        </p>
+            <select
+              id={`${node_id}-saveResult`}
+              key={`${node_id}-saveResult`}
+              value={
+                nodes.find((n) => n.id == node_id)?.data.saveResultSelected
+              }
+              onChange={(e) => changeSaveResultValue(e, node_id)}
+              className="h-10 w-full rounded-lg  border border-slate-200 px-3 py-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-sky-500"
+            >
+              {nodes
+                .find((n) => n.id == node_id)
+                ?.data?.saveResult?.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+            </select>
+
+            {nodes.find((n) => n.id == node_id)?.data.saveResultSelected ===
+              "variable" && (
+              <input
+                id={`${node_id}-saveResultValue`}
+                key={`${node_id}-saveResultValue`}
+                className="mt-2 h-10 w-full rounded-lg border border-slate-200 px-3 py-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-sky-500"
+                type="text"
+                placeholder="Select Variable Name to Save Result"
+                value={nodes.find((n) => n.id == node_id)?.data.resultValue}
+                onChange={(e) => changeResultValue(e, node_id)}
+              />
+            )}
+            {nodes.find((n) => n.id == node_id)?.data.saveResultSelected ===
+              "variable" &&
+              suggestions.length > 0 && (
+                <div className="suggestions-dropdown mt-1 rounded-lg border border-slate-200 bg-white shadow-lg">
+                  {suggestions.map((variable) => (
+                    <div
+                      key={variable.id}
+                      className="suggestion-item cursor-pointer px-3 py-2 hover:bg-sky-100"
+                      onClick={() =>
+                        handleSaveSuggestionClick(variable.key, node_id)
+                      }
+                    >
+                      {variable.key}
+                    </div>
+                  ))}
+                </div>
+              )}
+          </p>
+        )}
+
         <br></br>
       </div>
     );
@@ -1483,8 +1518,79 @@ const SubFlowCanva = (editing, flowid) => {
     }
   };
 
+  const changeResultValue = (e, node_id) => {
+    const newValue = e.target.value;
+    if (newValue == "variable") {
+      console.log("IN suggfestion");
+      setSuggestions(
+        customVariables.filter((variable) =>
+          variable.key.toLowerCase().includes(newValue.toLowerCase()),
+        ),
+      );
+    }
+
+    const newNodes = nodes.map((node) => {
+      if (node.id == node_id) {
+        return {
+          ...node,
+          data: {
+            ...node.data,
+            resultValue: newValue,
+          },
+        };
+      } else {
+        return node;
+      }
+    });
+    setNodes(newNodes);
+    setSuggestions(
+      customVariables.filter((variable) =>
+        variable.key.toLowerCase().includes(newValue.toLowerCase()),
+      ),
+    );
+  };
+
+  const changeSaveResultValue = (e, node_id) => {
+    const newValue = e.target.value;
+
+    const newNodes = nodes.map((node) => {
+      if (node.id == node_id) {
+        return {
+          ...node,
+          data: {
+            ...node.data,
+            saveResultSelected: newValue,
+            resultValue: "CAAS$",
+          },
+        };
+      } else {
+        return node;
+      }
+    });
+    setNodes(newNodes);
+    console.log("newNodes", newNodes);
+  };
+
   const handleSuggestionClick = (suggestion, input_id) => {
     changeNodeValue({ target: { value: suggestion } }, selectedNodes, input_id);
+    setSuggestions([]);
+  };
+
+  const handleSaveSuggestionClick = (suggestion, node_id) => {
+    const newNodes = nodes.map((node) => {
+      if (node.id == node_id) {
+        return {
+          ...node,
+          data: {
+            ...node.data,
+            resultValue: suggestion,
+          },
+        };
+      } else {
+        return node;
+      }
+    });
+    setNodes(newNodes);
     setSuggestions([]);
   };
 

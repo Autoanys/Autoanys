@@ -13,6 +13,8 @@ const nodeConfigInit = {
     doc: "https://github.com/autoanys/autoanys",
     icon: "/images/nodes/chrome_icon.png",
     inputs: [],
+    saveResult: ["null", "variable"],
+    resultValue: "",
   },
   closeBrowser: {
     label: "Close Browser",
@@ -21,10 +23,11 @@ const nodeConfigInit = {
     category: "Browser",
     description: "This is a close browser node",
     showDescription: true,
-
     doc: "https://github.com/autoanys/autoanys",
     icon: "/images/nodes/chrome_icon.png",
     inputs: [],
+    saveResult: ["null", "variable"],
+    resultValue: "",
   },
   openBrowserLink: {
     label: "Access Website",
@@ -33,7 +36,6 @@ const nodeConfigInit = {
     method: "POST",
     description: "This is an access website node",
     showDescription: true,
-
     doc: "https://github.com/autoanys/autoanys",
     icon: "/images/nodes/website_icon.png",
     inputs: [
@@ -48,6 +50,8 @@ const nodeConfigInit = {
         variableValue: "",
       },
     ],
+    saveResult: ["null", "variable"],
+    resultValue: "",
   },
   waitSecond: {
     label: "Wait Second",
@@ -56,7 +60,6 @@ const nodeConfigInit = {
     method: "POST",
     description: "This is a wait second node",
     showDescription: true,
-
     doc: "https://github.com/autoanys/autoanys",
     icon: "/images/nodes/stopwatch_icon.png",
     inputs: [
@@ -71,6 +74,9 @@ const nodeConfigInit = {
         variableValue: "",
       },
     ],
+    saveResult: ["null", "variable"],
+    saveResultSelected: "null",
+    resultValue: "",
   },
   sshMachine: {
     label: "ssh session",
@@ -79,7 +85,6 @@ const nodeConfigInit = {
     method: "POST",
     description: "This is a open ssh session node",
     showDescription: true,
-
     doc: "",
     icon: "/images/nodes/ssh_icon.png",
     inputs: [
@@ -104,6 +109,9 @@ const nodeConfigInit = {
         variableValue: "",
       },
     ],
+    saveResult: ["null", "variable"],
+    saveResultSelected: "null",
+    resultValue: "",
   },
   findElement: {
     label: "Find Element",
@@ -112,7 +120,6 @@ const nodeConfigInit = {
     method: "POST",
     description: "This is a find element node",
     showDescription: true,
-
     doc: "https://github.com/autoanys/autoanys",
     icon: "/images/nodes/find.png",
     inputs: [
@@ -138,6 +145,9 @@ const nodeConfigInit = {
         variableValue: "",
       },
     ],
+    saveResult: ["null", "variable"],
+    saveResultSelected: "null",
+    resultValue: "",
   },
   findElementClick: {
     label: "Find and Click",
@@ -146,7 +156,6 @@ const nodeConfigInit = {
     method: "POST",
     description: "This is a find and click element node",
     showDescription: true,
-
     doc: "",
     icon: "/images/nodes/click_icon.png",
     inputs: [
@@ -172,6 +181,9 @@ const nodeConfigInit = {
         variableValue: "",
       },
     ],
+    saveResult: ["null", "variable"],
+    saveResultSelected: "null",
+    resultValue: "",
   },
   findElementType: {
     label: "Find and Type",
@@ -180,7 +192,6 @@ const nodeConfigInit = {
     method: "POST",
     description: "This is a find element and type node",
     showDescription: true,
-
     doc: "",
     icon: "/images/nodes/type_icon.png",
     inputs: [
@@ -216,17 +227,18 @@ const nodeConfigInit = {
         variableValue: "",
       },
     ],
+    saveResult: ["null", "variable"],
+    saveResultSelected: "null",
+    resultValue: "",
   },
 
   readCSV: {
     label: "Read CSV",
     category: "Excel / CSV",
-    // api: "/csv/read",
     api: "/upload/read",
     method: "POST",
     description: "This is a read CSV node",
     showDescription: true,
-
     doc: "",
     icon: "/images/nodes/csv_icon.png",
     inputs: [
@@ -241,11 +253,13 @@ const nodeConfigInit = {
         variableValue: "",
       },
     ],
+    saveResult: ["null", "variable"],
+    saveResultSelected: "null",
+    resultValue: "",
   },
   uploadFile: {
     label: "Upload File",
     category: "General",
-    // api: "/csv/read",
     api: "/upload/read",
     method: "POST",
     description: "Uploading files",
@@ -265,7 +279,11 @@ const nodeConfigInit = {
         variableValue: "",
       },
     ],
+    saveResult: ["null", "variable"],
+    saveResultSelected: "null",
+    resultValue: "",
   },
+
   ifCondition: {
     label: "IF Else Condition",
     category: "General",
@@ -273,7 +291,6 @@ const nodeConfigInit = {
     method: "POST",
     description: "If condition",
     showDescription: true,
-
     doc: "",
     icon: "/images/nodes/if_icon.png",
     inputs: [
@@ -288,6 +305,9 @@ const nodeConfigInit = {
         variableValue: "",
       },
     ],
+    saveResult: ["null", "variable"],
+    saveResultSelected: "null",
+    resultValue: "",
   },
   askPromt: {
     label: "Input Prompt",
@@ -296,7 +316,6 @@ const nodeConfigInit = {
     method: "function",
     description: "Ask for Input",
     showDescription: true,
-
     doc: "",
     icon: "/images/nodes/input_icon.png",
     inputs: [
@@ -332,6 +351,9 @@ const nodeConfigInit = {
         variableValue: "",
       },
     ],
+    saveResult: ["null", "variable"],
+    saveResultSelected: "null",
+    resultValue: "",
   },
 };
 
