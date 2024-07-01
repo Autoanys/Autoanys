@@ -336,6 +336,10 @@ const SubFlowCanva = (editing, flowid) => {
     nodeTypes[key] = CustomNode;
   });
 
+  const handleEdgeRemove = useCallback((id) => {
+    setEdges((eds) => eds.filter((edge) => edge.id !== id));
+  }, []);
+
   useEffect(() => {
     if (editing && flowid) {
       if (parms.get("flowid")) {
@@ -356,8 +360,15 @@ const SubFlowCanva = (editing, flowid) => {
             if (data && flowData) {
               const { x = 0, y = 0, zoom = 1 } = flowData.viewport;
               const updatedNodes = addOnChangeHandler(flowData.nodes || []);
+              const updatedEdges = (flowData.edges || []).map((edge) => ({
+                ...edge,
+                data: {
+                  ...edge.data,
+                  onRemove: handleEdgeRemove,
+                },
+              }));
               setNodes(updatedNodes);
-              setEdges(flowData.edges || []);
+              setEdges(updatedEdges);
               setViewport({ x, y, zoom });
               const parsedVariables = JSON.parse(flowData.variables);
               setCustomVariables(parsedVariables);
@@ -370,7 +381,7 @@ const SubFlowCanva = (editing, flowid) => {
         fetchData().then(() => setLoading(false));
       }
     }
-  }, []);
+  }, [editing, flowid, parms, handleEdgeRemove]);
 
   useOnSelectionChange({
     onChange: ({ nodes, edges }) => {
@@ -558,6 +569,7 @@ const SubFlowCanva = (editing, flowid) => {
           2,
         );
 
+        console.log("POST DATA", post_data);
         const res = await fetch(
           process.env.NEXT_PUBLIC_BACKEND_URL + "/flow/v2",
           {
@@ -1007,10 +1019,6 @@ const SubFlowCanva = (editing, flowid) => {
   const today = new Date();
   const time = today.getHours() + "_" + today.getMinutes();
 
-  const handleEdgeRemove = useCallback((id) => {
-    setEdges((eds) => eds.filter((edge) => edge.id !== id));
-  }, []);
-
   const { project } = useReactFlow();
 
   const onDragStart = (event, nodeType) => {
@@ -1269,27 +1277,29 @@ const SubFlowCanva = (editing, flowid) => {
               ?.data.inputs.map((input) => {
                 const options = input.options || [];
                 return (
-                  <div>
+                  <div className="mt-2 ">
                     <span className="font-medium">{input.label}</span>
                     <span className="mb-2	 ml-2 text-sm ">
                       <button
                         id={`${node_id}-${input.label}-static`}
-                        className={` mb-2 rounded-l-lg border border-black pl-1 pr-1 hover:bg-slate-500 hover:text-white ${!input.variable && "cursor-not-allowed bg-slate-500 text-white"}`}
+                        className={` ${input.type === "select" ? "rounded-r-lg" : ""} mb-2 rounded-l-lg border border-black pl-1 pr-1 hover:bg-slate-500 hover:text-white ${!input.variable && "cursor-not-allowed bg-slate-500 text-white"}`}
                         onClick={(e) =>
                           chooseInputMethod(selectedNodes, input.id, e)
                         }
                       >
                         Static{" "}
                       </button>
-                      <button
-                        id={`${node_id}-${input.label}-variable`}
-                        className={`mb-2 rounded-r-lg border border-black pl-1 pr-1 hover:bg-slate-500 hover:text-white ${input.variable && "cursor-not-allowed bg-slate-500 text-white "}`}
-                        onClick={(e) =>
-                          chooseInputMethod(selectedNodes, input.id, e)
-                        }
-                      >
-                        Variable{" "}
-                      </button>
+                      {input.type !== "select" && (
+                        <button
+                          id={`${node_id}-${input.label}-variable`}
+                          className={`mb-2 rounded-r-lg border border-black pl-1 pr-1 hover:bg-slate-500 hover:text-white ${input.variable && "cursor-not-allowed bg-slate-500 text-white "}`}
+                          onClick={(e) =>
+                            chooseInputMethod(selectedNodes, input.id, e)
+                          }
+                        >
+                          Variable{" "}
+                        </button>
+                      )}
                     </span>
                     {input.type === "select" ? (
                       <select

@@ -84,78 +84,78 @@ async def analyze_json(json_datas: dict):
     print(json_datas)
     try:
         startToEnd = checkStartToEnd(json_datas)
-        if(startToEnd):
+        if startToEnd:
             temp = {}
             post_data = {}
             steps = []
-            for step in json_datas["edges"]:
-                if step["source"] != "start-node" and step["source"] != "end-node":
-                    # get node details from edges and nodes
-                    source = step["source"]
-                    source_node = next((node for node in json_datas["nodes"] if node["id"] == source), None)
-                          
-                    if len(source_node['data']['inputs']) > 0 and source_node['data']['method'] == "POST":
-                        temp["api"] = f"http://{ip}:8000" + source_node['data']['api']
-                        temp["method"] = source_node['data']['method']
-                        temp["function"] = Correspondence_function_list[source_node['type']]
-                        # temp["function"] = Correspondence_function(source_node['type'])
-                        
-                        for i in source_node['data']['inputs']:
-                            print(i, "i", i['id'], i['value'])
-                            if(i['variable'] and i['value'].startswith("CAAS$") or i['variable'] and i['value'].startswith("AAS$")):
+
+            # Helper function to find the source node details
+            def get_node_details(node_id):
+                return next((node for node in json_datas["nodes"] if node["id"] == node_id), None)
+
+            # Initialize the start node
+            current_node_id = "start-node"
+            visited_nodes = set()
+
+            while current_node_id and current_node_id != "end-node":
+                if current_node_id in visited_nodes:
+                    break
+                visited_nodes.add(current_node_id)
+
+                # Get the current node details
+                current_node = get_node_details(current_node_id)
+
+                # Process the current node if it is not the start or end node
+                if current_node and current_node_id != "start-node":
+                    if len(current_node['data']['inputs']) > 0 and current_node['data']['method'] == "POST":
+                        temp["api"] = f"http://{ip}:8000" + current_node['data']['api']
+                        temp["method"] = current_node['data']['method']
+                        temp["function"] = Correspondence_function_list[current_node['type']]
+
+                        for i in current_node['data']['inputs']:
+                            if (i['variable'] and i['value'].startswith("CAAS$")) or (i['variable'] and i['value'].startswith("AAS$")):
                                 try:
-                                 
                                     for var in json_datas["variables"]:
-                                        print("this is var", var)
                                         if var['key'] == i['value'] and var['value']:
                                             post_data[i['id']] = var['value']
-                                            print("this is post_data", post_data)
                                         else:
                                             post_data[i['id']] = i['value']
-                                            print("this is post_data", post_data)
                                 except Exception as e:
                                     try:
                                         for var in json.loads(json_datas["variables"]):
-                                            print("this is var", var)
                                             if var['key'] == i['value'] and var['value']:
                                                 post_data[i['id']] = var['value']
-                                                print("this is post_data", post_data)
                                             else:
                                                 post_data[i['id']] = i['value']
-                                                print("this is post_data", post_data)
                                     except Exception as e:
                                         print(e)
-                                        raise HTTPException(status_code=450,  detail="Error in analyzing flow")
-
-                                
+                                        raise HTTPException(status_code=450, detail="Error in analyzing flow")
                             else:
                                 post_data[i['id']] = i['value']
-                                print("this is post_data", post_data)
-                            
                         temp["post_data"] = post_data
-                        print(temp, "temp")
-                        print(post_data, "post_data")
                         post_data = {}
                         steps.append(temp)
                         temp = {}
                     else:
-                        temp["api"] = f"http://{ip}:8000" + source_node['data']['api']
-                        temp["method"] = source_node['data']['method']
-                        temp["function"] = Correspondence_function_list[source_node['type']]
-
+                        temp["api"] = f"http://{ip}:8000" + current_node['data']['api']
+                        temp["method"] = current_node['data']['method']
+                        temp["function"] = Correspondence_function_list[current_node['type']]
                         steps.append(temp)
                         temp = {}
+
+                # Find the next node from the edges
+                next_edge = next((edge for edge in json_datas["edges"] if edge["source"] == current_node_id), None)
+                current_node_id = next_edge["target"] if next_edge else None
 
             for node in json_datas["nodes"]:
                 if node["id"] == "end-node" and node["data"]["inputs"][0]["value"]:
                     print("-------------------END-------------------")
                     print(node)
 
-                      
             print("STEP", steps)
-            return {"message":"Start to end valid", "steps":steps}
+            return {"message": "Start to end valid", "steps": steps}
         else:
             raise HTTPException(status_code=451, detail="Error in analyzing flow")
     except Exception as e:
         print(e)
-        raise HTTPException(status_code=450,  detail="Errosr in analyzing flow")
+        raise HTTPException(status_code=450, detail="Error in analyzing flow")

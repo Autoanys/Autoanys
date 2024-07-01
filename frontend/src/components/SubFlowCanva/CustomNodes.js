@@ -4,7 +4,7 @@ import "./styles.css";
 
 const CustomNode = ({ data, isConnectable }) => {
   return (
-    <div className="rounded-md border-2 border-stone-400 bg-white px-4 py-2 shadow-md dark:bg-[#2C2C3E]">
+    <div className="rounded-md border-2 border-stone-400 bg-white px-4 py-1 shadow-md dark:bg-[#2C2C3E]">
       <Handle
         type="target"
         position={Position.Top}
