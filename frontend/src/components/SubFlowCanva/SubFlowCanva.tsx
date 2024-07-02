@@ -1818,6 +1818,7 @@ const SubFlowCanva = (editing, flowid) => {
           label: `${type.charAt(0).toUpperCase() + type.slice(1)} Node`,
           ...nodeConfig[type],
           onChange: handleNodeChange,
+          showDescription: showDescription,
         },
       };
 
@@ -1977,7 +1978,7 @@ const SubFlowCanva = (editing, flowid) => {
 
             <Panel position="bottom-right" className="inline">
               <p className="float-right font-semibold ">
-                Hide Description
+                Show Description
                 <input
                   type="checkbox"
                   onChange={toggleDesc}

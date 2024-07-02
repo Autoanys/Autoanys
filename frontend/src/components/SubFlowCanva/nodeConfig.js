@@ -9,7 +9,7 @@ const nodeConfigInit = {
     method: "GET",
     category: "Browser",
     description: "This is an open browser node",
-    showDescription: true,
+    showDescription: false,
     doc: "https://github.com/autoanys/autoanys",
     icon: "/images/nodes/chrome_icon.png",
     inputs: [],
@@ -22,7 +22,7 @@ const nodeConfigInit = {
     api: "/browser/close",
     category: "Browser",
     description: "This is a close browser node",
-    showDescription: true,
+    showDescription: false,
     doc: "https://github.com/autoanys/autoanys",
     icon: "/images/nodes/chrome_icon.png",
     inputs: [],
@@ -35,7 +35,7 @@ const nodeConfigInit = {
     category: "Browser",
     method: "POST",
     description: "This is an access website node",
-    showDescription: true,
+    showDescription: false,
     doc: "https://github.com/autoanys/autoanys",
     icon: "/images/nodes/website_icon.png",
     inputs: [
@@ -59,7 +59,7 @@ const nodeConfigInit = {
     api: "/general/wait",
     method: "POST",
     description: "This is a wait second node",
-    showDescription: true,
+    showDescription: false,
     doc: "https://github.com/autoanys/autoanys",
     icon: "/images/nodes/stopwatch_icon.png",
     inputs: [
@@ -84,7 +84,7 @@ const nodeConfigInit = {
     api: "/ssh/open",
     method: "POST",
     description: "This is a open ssh session node",
-    showDescription: true,
+    showDescription: false,
     doc: "",
     icon: "/images/nodes/ssh_icon.png",
     inputs: [
@@ -119,7 +119,7 @@ const nodeConfigInit = {
     api: "/browser/findBy",
     method: "POST",
     description: "This is a find element node",
-    showDescription: true,
+    showDescription: false,
     doc: "https://github.com/autoanys/autoanys",
     icon: "/images/nodes/find.png",
     inputs: [
@@ -155,7 +155,7 @@ const nodeConfigInit = {
     api: "/browser/findBy/click",
     method: "POST",
     description: "This is a find and click element node",
-    showDescription: true,
+    showDescription: false,
     doc: "",
     icon: "/images/nodes/click_icon.png",
     inputs: [
@@ -191,7 +191,7 @@ const nodeConfigInit = {
     api: "/browser/findBy/type",
     method: "POST",
     description: "This is a find element and type node",
-    showDescription: true,
+    showDescription: false,
     doc: "",
     icon: "/images/nodes/type_icon.png",
     inputs: [
@@ -238,7 +238,7 @@ const nodeConfigInit = {
     api: "/upload/read",
     method: "POST",
     description: "This is a read CSV node",
-    showDescription: true,
+    showDescription: false,
     doc: "",
     icon: "/images/nodes/csv_icon.png",
     inputs: [
@@ -263,7 +263,7 @@ const nodeConfigInit = {
     api: "/upload/read",
     method: "POST",
     description: "Uploading files",
-    showDescription: true,
+    showDescription: false,
 
     doc: "",
     icon: "/images/nodes/upload.png",
@@ -290,7 +290,7 @@ const nodeConfigInit = {
     api: "null",
     method: "POST",
     description: "If condition",
-    showDescription: true,
+    showDescription: false,
     doc: "",
     icon: "/images/nodes/if_icon.png",
     inputs: [
@@ -315,7 +315,7 @@ const nodeConfigInit = {
     api: "null",
     method: "function",
     description: "Ask for Input",
-    showDescription: true,
+    showDescription: false,
     doc: "",
     icon: "/images/nodes/input_icon.png",
     inputs: [
