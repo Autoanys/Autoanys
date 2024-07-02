@@ -1,17 +1,48 @@
 import Link from "next/link";
 import DarkModeSwitcher from "./DarkModeSwitcher";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useHotkeys } from "react-hotkeys-hook";
-
 const Header = (props: {
   sidebarOpen: string | boolean | undefined;
   setSidebarOpen: (arg0: boolean) => void;
 }) => {
   const [showInfoBox, setShowInfoBox] = useState(false);
+  const [isPromptVisible, setIsPromptVisible] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
   const togglePopup = () => {
     setShowInfoBox(!showInfoBox);
   };
+  useHotkeys("ctrl+k, cmd+k", (event) => {
+    event.preventDefault();
+    if (inputRef.current) {
+      inputRef.current.focus();
+      setIsPromptVisible(true);
+    }
+  });
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (inputRef.current && !inputRef.current.contains(event.target)) {
+        setIsPromptVisible(false);
+      }
+    };
+
+    const handleEsc = (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === "Escape") {
+        setIsPromptVisible(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEsc);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEsc);
+    };
+  }, []);
 
   return (
     <header className="sticky top-0 z-999 flex w-full bg-slate-50	 drop-shadow-1 dark:bg-[#1A1A29] dark:drop-shadow-none">
@@ -68,40 +99,68 @@ const Header = (props: {
           </Link>
         </div>
 
-        <div className="hidden sm:block">
-          <form action="https://formbold.com/s/unique_form_id" method="POST">
-            <div className="relative  rounded-full">
-              <button className="border-lg absolute left-0 top-1/2 -translate-y-1/2 pl-5">
+        <div className="hidden rounded-lg sm:block">
+          <div className="relative  rounded-lg">
+            <div className="relative rounded-lg">
+              <div className="relative flex items-center rounded-lg">
                 <svg
-                  className="fill-body hover:fill-primary dark:fill-bodydark dark:hover:fill-primary"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  className="text-gray-500 absolute left-3 h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
                 >
                   <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M9.16666 3.33332C5.945 3.33332 3.33332 5.945 3.33332 9.16666C3.33332 12.3883 5.945 15 9.16666 15C12.3883 15 15 12.3883 15 9.16666C15 5.945 12.3883 3.33332 9.16666 3.33332ZM1.66666 9.16666C1.66666 5.02452 5.02452 1.66666 9.16666 1.66666C13.3088 1.66666 16.6667 5.02452 16.6667 9.16666C16.6667 13.3088 13.3088 16.6667 9.16666 16.6667C5.02452 16.6667 1.66666 13.3088 1.66666 9.16666Z"
-                    fill=""
-                  />
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M13.2857 13.2857C13.6112 12.9603 14.1388 12.9603 14.4642 13.2857L18.0892 16.9107C18.4147 17.2362 18.4147 17.7638 18.0892 18.0892C17.7638 18.4147 17.2362 18.4147 16.9107 18.0892L13.2857 14.4642C12.9603 14.1388 12.9603 13.6112 13.2857 13.2857Z"
-                    fill=""
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                   />
                 </svg>
-              </button>
+                <input
+                  type="text"
+                  placeholder="Type to search..."
+                  className="w-96 bg-white p-2 pl-10 pr-4 font-medium focus:outline-none"
+                  ref={inputRef}
+                  onFocus={() => setIsPromptVisible(true)}
+                />
+              </div>
 
-              <input
+              <div className="text-gray-500 absolute right-4 top-1/2 -translate-y-1/2 transform">
+                {navigator.platform.includes("Mac") ? (
+                  <div className="ml-2">
+                    <span className=" rounded-lg border pl-2 pr-2">CMD</span>
+                    <span className="r ml-1">+</span>
+                    <span className="ml-1 rounded-lg border pl-2 pr-2">K</span>
+                  </div>
+                ) : (
+                  <div className="ml-2">
+                    <span className=" rounded-lg border pl-2 pr-2">Ctrl</span>
+                    <span className="r ml-1">+</span>
+
+                    <span className="ml-1 rounded-lg border pl-2 pr-2">K</span>
+                  </div>
+                  // <Image
+                  //   src="/images/general/search_hotkey.png"
+                  //   width={55}
+                  //   height={30}
+                  //   alt="Ctrl"
+                  // />
+                )}
+              </div>
+              {isPromptVisible && (
+                <div className="border-gray-300 absolute left-0 top-full z-10 w-full border bg-white p-4 shadow-lg">
+                  <p className="text-gray-700">Search Prompt...</p>
+                </div>
+              )}
+            </div>
+
+            {/* <input
                 type="text"
                 placeholder="Type to search..."
                 className="w-full bg-white p-2 pl-12 pr-4 font-medium focus:outline-none xl:w-125"
-              />
-            </div>
-          </form>
+              /> */}
+          </div>
         </div>
 
         <div className="flex items-center gap-3 2xsm:gap-7">

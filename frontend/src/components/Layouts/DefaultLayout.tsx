@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import Flowbar from "@/components/FlowBar";
-import { useHotkeys } from "react-hotkeys-hook";
+
 import { useTranslation } from "react-i18next";
 
 export default function DefaultLayout({
@@ -12,38 +12,30 @@ export default function DefaultLayout({
   children: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isPromptVisible, setIsPromptVisible] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
-  useHotkeys("ctrl+k, cmd+k", (event) => {
-    event.preventDefault();
-    if (inputRef.current) {
-      inputRef.current.focus();
-      setIsPromptVisible(true);
-    }
-  });
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (inputRef.current && !inputRef.current.contains(event.target)) {
-        setIsPromptVisible(false);
-      }
-    };
+  // useEffect(() => {
+  //   const handleClickOutside = (event) => {
+  //     if (inputRef.current && !inputRef.current.contains(event.target)) {
+  //       setIsPromptVisible(false);
+  //     }
+  //   };
 
-    const handleEsc = (event: React.KeyboardEvent<HTMLInputElement>) => {
-      if (event.key === "Escape") {
-        setIsPromptVisible(false);
-      }
-    };
+  //   const handleEsc = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  //     if (event.key === "Escape") {
+  //       setIsPromptVisible(false);
+  //     }
+  //   };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("keydown", handleEsc);
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   document.addEventListener("keydown", handleEsc);
 
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleEsc);
-    };
-  }, []);
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleClickOutside);
+  //     document.removeEventListener("keydown", handleEsc);
+  //   };
+  // }, []);
 
   return (
     <>
