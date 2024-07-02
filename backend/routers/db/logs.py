@@ -48,14 +48,28 @@ async def update_failed(triggerID: str):
     prisma = Prisma()
     print(triggerID)
     await prisma.connect()
-    flow_data = await prisma.logs.update(
+    
+    # Find the log entry by triggerID using findFirst
+    log_entry = await prisma.logs.find_first(
         where={
             "triggerID": triggerID
+        }
+    )
+
+    if not log_entry:
+        await prisma.disconnect()
+        raise HTTPException(status_code=404, detail="Log entry not found")
+
+    # Update the log entry using the id field
+    flow_data = await prisma.logs.update(
+        where={
+            "id": log_entry.id
         },
         data={
             "result": "Failed"
         }
     )
+    
     await prisma.disconnect()
     return {"log_id": f"{flow_data}"}
 

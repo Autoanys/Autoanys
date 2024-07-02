@@ -4,7 +4,7 @@ from PIL import Image
 from pathlib import Path
 from routers.db.logs import write_logging
 import socket
-from routers.chrome.browser import OpenBrowser, OpenWebsite, GetScreenshot, CloseBrowser, FindByXpathType, FindByXpathClick
+from routers.chrome.browser import OpenBrowser, OpenWebsite, GetScreenshot, CloseBrowser, FindByXpathType, FindByXpathClick, FindBy
 from routers.utility.general import sleep_wait
 import json
 
@@ -77,6 +77,7 @@ Correspondence_function_list = {
     "getScreenshot" : "GetScreenshot",
     "findElementClick" : "FindByXpathClick",
     "findElementType" : "FindByXpathType",
+    "findElement" : "FindBy"
 }
 
 @router.post("/flow/v2/")

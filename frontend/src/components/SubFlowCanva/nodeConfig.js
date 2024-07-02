@@ -130,7 +130,7 @@ const nodeConfigInit = {
         placeholder: "Choose find by",
         required: true,
         options: ["class", "xpath", "id", "css", "name"],
-        value: "",
+        value: "xpath",
         variable: false,
         variableValue: "",
       },

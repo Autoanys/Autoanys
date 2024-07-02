@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
@@ -62,15 +62,19 @@ async def CloseBrowser():
 
 
 @router.post("/browser/findBy")
-async def FindByXpath(xpath_data: dict):
-    query = xpath_data.get("query")
-    find_by = xpath_data.get("find_by")
-    if query:
-        print(find_by, query)
-        element = driver.find_element(find_by, query)
-        return {"message": "Element Found", "data": element.text}
-    else:
-        return {"message": "Element Not Found"}
+async def FindBy(xpath_data: dict):
+    try:
+        query = xpath_data.get("query")
+        find_by = xpath_data.get("find_by")
+        if query:
+            print(find_by, query)
+            element = driver.find_element(find_by, query)
+            return {"message": "Element Found", "data": element.text}
+        else:
+            raise HTTPException(status_code=450, detail="Error, cannot allocated element, {e}")
+
+    except Exception as e:
+        raise HTTPException(status_code=450, detail="Error, cannot allocated element, {e}")
 
 @router.post("/browser/type/")
 async def FindByXpath(xpath_data: dict):

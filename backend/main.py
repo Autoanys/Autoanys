@@ -11,6 +11,7 @@ from routers.utility import flow, general
 from fastapi.middleware.cors import CORSMiddleware
 from routers.databases.mysql import query
 from routers.db import subflow, logs, dashboard, plugins,components, mainflow
+from routers.cmd import cmd
 from routers.ssh import ssh
 from routers.mail import mail
 from routers.excel import csv
@@ -25,7 +26,7 @@ app = FastAPI()
 scheduler = AsyncIOScheduler()
 prisma = Prisma()
 
-builtIn_list = [browser, flow,
+builtIn_list = [browser, flow, cmd,
                 components, general, query, subflow, logs, dashboard, plugins, ssh, mail, csv, mainflow]
 for router in builtIn_list:
     app.include_router(router.router)

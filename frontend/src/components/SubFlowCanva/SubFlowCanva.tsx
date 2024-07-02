@@ -650,10 +650,37 @@ const SubFlowCanva = (editing, flowid) => {
               message: "Required inputs are missing",
             });
           }, 3000);
-
+          await setPlaying(false);
+          await setResultLoading(false);
           return;
         } else {
           const data = await res.json();
+
+          if (res.status === 450) {
+            console.log("IN");
+            setShowNotification({
+              show: true,
+              code: 450,
+              message: "Failed analyzing the flow",
+            });
+            setTimeout(() => {
+              setShowNotification({
+                show: false,
+                code: 450,
+                message: "Failed analyzing the flow",
+              });
+            }, 3000);
+
+            await fetch(
+              process.env.NEXT_PUBLIC_BACKEND_URL + "/logs/failed/" + triggerID,
+              {
+                method: "GET",
+              },
+            );
+            await setResultLoading(false);
+            await setPlaying(false);
+            return;
+          }
 
           console.log("from api", data);
           let tmp_id;
@@ -689,6 +716,26 @@ const SubFlowCanva = (editing, flowid) => {
                   ? JSON.stringify(data.steps[i].post_data)
                   : null,
             });
+
+            if (curRes.status === 450) {
+              console.log("IN");
+              setShowNotification({
+                show: true,
+                code: 450,
+                message: "Failed running the flow",
+              });
+              setTimeout(() => {
+                setShowNotification({
+                  show: false,
+                  code: 450,
+                  message: "Failed running the flow",
+                });
+              }, 3000);
+              console.log("IN 450");
+              await setPlaying(false);
+              await setResultLoading(false);
+              return;
+            }
 
             let resData = await curRes.json();
 
