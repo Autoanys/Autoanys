@@ -119,8 +119,11 @@ async def analyze_json(json_datas: dict):
                                     for var in json_datas["variables"]:
                                         if var['key'] == i['value'] and var['value']:
                                             post_data[i['id']] = var['value']
+                                            post_data[i['usevariable']] = True
                                         else:
                                             post_data[i['id']] = i['value']
+                                            post_data[i['usevariable']] = True
+
                                 except Exception as e:
                                     try:
                                         for var in json.loads(json_datas["variables"]):

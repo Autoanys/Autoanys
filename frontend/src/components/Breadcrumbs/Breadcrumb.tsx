@@ -43,7 +43,7 @@ const Breadcrumb = ({
              dark:hover:bg-meta-4`}
             >
               <p>Currently this feature is disabled</p>
-              <button className="disabled font hover:bg-blue cursor-not-allowed rounded-full bg-blue-400 px-4 py-2 text-white hover:bg-blue-500 hover:shadow-2xl">
+              <button className="disabled font hover:bg-blue cursor-not-allowed rounded-full bg-slate-400 px-4 py-2 text-white hover:bg-blue-500 hover:shadow-2xl">
                 Create Multi-Flows
               </button>
             </Link>

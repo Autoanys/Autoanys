@@ -101,7 +101,8 @@ const SubFlowCanva = (editing, flowid) => {
   const [selectedEdges, setSelectedEdges] = useState([]);
   const [flowbar, setFlowbar] = useState(false);
   const [rfInstance, setRfInstance] = useState(null);
-  const { setViewport } = useReactFlow();
+  const { setViewport, getViewport, zoomTo, zoomIn, setCenter } =
+    useReactFlow();
   const [playing, setPlaying] = useState(false);
   const [playingPreviewSideBar, setPlayingPreviewSideBar] = useState(false);
   const [autoSaving, setAutoSaving] = useState(false);
@@ -504,10 +505,19 @@ const SubFlowCanva = (editing, flowid) => {
     // console.log("selectedNodes", selectedNodes);
     if (selectedNodes.length === 0) {
       // console.log("Keep Repeat");
+
       setFlowbar(false);
     } else {
-      // console.log("Keep Repeat");
+      let posx, posy, zoom;
+      getViewport();
+      console.log("Viewport", getViewport());
+      console.log(
+        "selectedNodes Position",
+        nodes.find((node) => node.id),
+      );
+
       setFlowbar(true);
+      // setViewport({ x: -511, y: -359, zoom: 1.7 });
     }
     console.log(nodes.map((node) => node));
   }, [selectedNodes]);
