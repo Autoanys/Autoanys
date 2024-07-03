@@ -27,6 +27,8 @@ import ReactFlow, {
   BackgroundVariant,
   Panel,
 } from "reactflow";
+import { FaSortUp, FaSortDown } from "react-icons/fa";
+
 import "reactflow/dist/style.css";
 import { act } from "react-dom/test-utils";
 import { useTranslation } from "next-i18next";
@@ -60,6 +62,10 @@ const SubflowTable = () => {
     setShowConfirm(true);
   };
   const [viewPopup, setViewPopup] = useState(null);
+  const [sortConfig, setSortConfig] = useState({
+    key: "name",
+    direction: "asc",
+  });
 
   const handleTriggerType = async (e, flowID) => {
     let changeValue =
@@ -509,7 +515,7 @@ const SubflowTable = () => {
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentSubflows = subflows.slice(startIndex, endIndex);
+
   const handleFileChange = (event) => {
     setDeleted(true);
     const file = event.target.files[0];
@@ -539,6 +545,54 @@ const SubflowTable = () => {
 
       reader.readAsText(file);
     }
+  };
+  const sortedSubflows = [...subflows].sort((a, b) => {
+    if (sortConfig.key === "update") {
+      const dateA = new Date(a.updated_at);
+      const dateB = new Date(b.updated_at);
+      return sortConfig.direction === "asc" ? dateA - dateB : dateB - dateA;
+    } else {
+      if (a[sortConfig.key] < b[sortConfig.key]) {
+        return sortConfig.direction === "asc" ? -1 : 1;
+      }
+      if (a[sortConfig.key] > b[sortConfig.key]) {
+        return sortConfig.direction === "asc" ? 1 : -1;
+      }
+      return 0;
+    }
+  });
+
+  // const parseDateString = (dateString) => {
+  //   const [datePart, timePart] = dateString.split(", ");
+  //   const [year, month, day] = datePart.match(/\d+/g);
+  //   const [hours, minutes, seconds] = timePart.split(":");
+  //   return new Date(year, month - 1, day, hours, minutes, seconds);
+  // };
+
+  // const sortedSubflows = [...subflows].sort((a, b) => {
+  //   if (sortConfig.key === "update") {
+  //     const dateA = parseDateString(a[sortConfig.key]);
+  //     const dateB = parseDateString(b[sortConfig.key]);
+  //     return sortConfig.direction === "asc" ? dateA - dateB : dateB - dateA;
+  //   } else {
+  //     if (a[sortConfig.key] < b[sortConfig.key]) {
+  //       return sortConfig.direction === "asc" ? -1 : 1;
+  //     }
+  //     if (a[sortConfig.key] > b[sortConfig.key]) {
+  //       return sortConfig.direction === "asc" ? 1 : -1;
+  //     }
+  //     return 0;
+  //   }
+  // });
+
+  const currentSubflows = sortedSubflows.slice(startIndex, endIndex);
+
+  const requestSort = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
   };
 
   const handleButtonClick = () => {
@@ -739,42 +793,96 @@ const SubflowTable = () => {
 
       <div className="flex flex-col rounded-t-lg border	border-slate-300 text-black">
         <div className="grid grid-cols-8 divide-x divide-slate-300 rounded-t-lg border-b border-slate-300 bg-indigo-50 uppercase dark:bg-[#1E1E2F] dark:text-white sm:grid-cols-8">
-          <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5 ">
-            <h5 className=" text-sm font-medium xsm:text-sm">
+          <div
+            className="xl:bt-5 flex cursor-pointer items-center pb-2 pl-2.5 pt-3 xl:pb-2.5 xl:pl-2.5"
+            onClick={() => requestSort("name")}
+          >
+            <h5 className="flex items-center text-sm font-medium xsm:text-sm">
               <b>{t("name")}</b>
+              {sortConfig.key === "name" &&
+                (sortConfig.direction === "asc" ? (
+                  <FaSortUp className="ml-2" />
+                ) : (
+                  <FaSortDown className="ml-2" />
+                ))}
             </h5>
           </div>
-
-          <div className="xl:bt-5 col-span-2 hidden pb-2 pl-2.5 pt-3  sm:block xl:pb-2.5 xl:pl-2.5">
-            <h5 className=" text-sm font-medium xsm:text-sm">
+          <div
+            className="xl:bt-5 col-span-2 hidden cursor-pointer pb-2 pl-2.5 pt-3 sm:block xl:pb-2.5 xl:pl-2.5"
+            onClick={() => requestSort("description")}
+          >
+            <h5 className="flex items-center text-sm font-medium xsm:text-sm">
               <b>{t("description")}</b>
+              {sortConfig.key === "description" &&
+                (sortConfig.direction === "asc" ? (
+                  <FaSortUp className="ml-2" />
+                ) : (
+                  <FaSortDown className="ml-2" />
+                ))}
             </h5>
           </div>
-
-          <div className="xl:bt-5 hidden pb-2 pl-2.5 pt-3 sm:block  xl:pb-2.5 xl:pl-2.5">
-            <h5 className=" text-sm font-medium xsm:text-sm">
+          <div
+            className="xl:bt-5 hidden cursor-pointer pb-2 pl-2.5 pt-3 sm:block xl:pb-2.5 xl:pl-2.5"
+            onClick={() => requestSort("update")}
+          >
+            <h5 className="flex items-center text-sm font-medium xsm:text-sm">
               <b>{t("update")}</b>
+              {sortConfig.key === "update" &&
+                (sortConfig.direction === "asc" ? (
+                  <FaSortUp className="ml-2" />
+                ) : (
+                  <FaSortDown className="ml-2" />
+                ))}
             </h5>
           </div>
-
-          <div className="xl:bt-5 hidden pb-2 pl-2.5 pt-3 sm:block  xl:pb-2.5 xl:pl-2.5">
-            <h5 className=" text-sm font-medium xsm:text-sm">
-              <b>{t("active")} </b>
+          <div className="xl:bt-5 hidden cursor-pointer pb-2 pl-2.5 pt-3 sm:block xl:pb-2.5 xl:pl-2.5">
+            <h5 className="text-sm font-medium xsm:text-sm">
+              <b>{t("active")}</b>
             </h5>
           </div>
-
-          <div className="xl:bt-5 hidden pb-2 pl-2.5 pt-3 sm:block  xl:pb-2.5 xl:pl-2.5">
-            <h5 className=" text-sm font-medium xsm:text-sm">
-              <b>{t("scheduler")} </b>
+          <div className="xl:bt-5 hidden cursor-pointer pb-2 pl-2.5 pt-3 sm:block xl:pb-2.5 xl:pl-2.5">
+            <h5 className="text-sm font-medium xsm:text-sm">
+              <b>{t("scheduler")}</b>
             </h5>
           </div>
-
-          <div className="xl:bt-5 col-span-2 hidden pb-2 pl-2.5 pt-3 sm:block  xl:pb-2.5 xl:pl-2.5">
-            <h5 className=" text-sm font-medium xsm:text-sm">
+          <div className="xl:bt-5 col-span-2 hidden cursor-pointer pb-2 pl-2.5 pt-3 sm:block xl:pb-2.5 xl:pl-2.5">
+            <h5 className="text-sm font-medium xsm:text-sm">
               <b>{t("actions")}</b>
             </h5>
           </div>
         </div>
+
+        {/* {sortedSubflows.map((subflow, index) => (
+          <div
+            key={index}
+            title={decodeURI(
+              "Double Click - Edit Flow%0ARight Click - For more options",
+            )}
+            onContextMenu={(e) => {
+              tableRowContextMenu(e, subflow);
+            }}
+            className="grid grid-cols-8 divide-x divide-slate-300 border-b border-slate-300 dark:border-strokedark dark:bg-boxdark"
+          >
+            <div className="xl:bt-5 pb-2 pl-2.5 pt-3 xl:pb-2.5 xl:pl-2.5">
+              <p>{subflow.name}</p>
+            </div>
+            <div className="xl:bt-5 col-span-2 hidden pb-2 pl-2.5 pt-3 sm:block xl:pb-2.5 xl:pl-2.5">
+              <p>{subflow.description}</p>
+            </div>
+            <div className="xl:bt-5 hidden pb-2 pl-2.5 pt-3 sm:block xl:pb-2.5 xl:pl-2.5">
+              <p>{subflow.update}</p>
+            </div>
+            <div className="xl:bt-5 hidden pb-2 pl-2.5 pt-3 sm:block xl:pb-2.5 xl:pl-2.5">
+              <p>{subflow.active}</p>
+            </div>
+            <div className="xl:bt-5 hidden pb-2 pl-2.5 pt-3 sm:block xl:pb-2.5 xl:pl-2.5">
+              <p>{subflow.scheduler}</p>
+            </div>
+            <div className="xl:bt-5 col-span-2 hidden pb-2 pl-2.5 pt-3 sm:block xl:pb-2.5 xl:pl-2.5">
+              <p>{subflow.actions}</p>
+            </div>
+          </div>
+        ))} */}
 
         {currentSubflows.length === 0 && (
           <div className="grid grid-cols-8 divide-x divide-slate-300  border-b border-slate-300 dark:border-strokedark dark:bg-boxdark">

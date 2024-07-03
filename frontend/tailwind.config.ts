@@ -11,6 +11,7 @@ const config: Config = {
   theme: {
     fontFamily: {
       satoshi: ["Satoshi", "sans-serif"],
+      defa: ["Arial", "Tahoma", "Verdana", "sans-serif"],
     },
     screens: {
       "2xsm": "375px",

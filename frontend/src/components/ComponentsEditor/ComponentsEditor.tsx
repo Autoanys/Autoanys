@@ -4,7 +4,6 @@ import "reactflow/dist/style.css";
 import "./styles.css";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
 import Link from "next/link";
-import { useRouter, useParams, useSearchParams } from "next/navigation";
 import path from "path";
 import {
   useSignal,
@@ -14,6 +13,7 @@ import {
 } from "@preact/signals";
 import Editor, { DiffEditor, useMonaco, loader } from "@monaco-editor/react";
 import comConfig from "./comConfig";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 
 const ComponentsEditor = (editing, componentID) => {
   const [codingValue, setCodingValue] = useState("");
@@ -24,7 +24,7 @@ const ComponentsEditor = (editing, componentID) => {
     component_description: "test",
   });
   const parms = useSearchParams();
-
+  const router = useRouter();
   const validateCoding = async () => {
     try {
       let res = await fetch(
@@ -102,25 +102,33 @@ const ComponentsEditor = (editing, componentID) => {
 
   const saveComponent = async () => {
     try {
-      await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/components/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const saveRes = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_URL + "/components/create",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            component_name: componentInfo.component_name,
+            component_category: componentInfo.component_category,
+            component_description: componentInfo.component_description,
+            component_coding: codingValue,
+          }),
         },
-        body: JSON.stringify({
-          component_name: componentInfo.component_name,
-          component_category: componentInfo.component_category,
-          component_description: componentInfo.component_description,
-          component_coding: codingValue,
-        }),
-      }).then((response) => {
-        if (response.ok) {
-          // alert("Component saved successfully");
-          alert(JSON.stringify(response.body));
-        } else {
-          alert(JSON.stringify(response.body));
-        }
-      });
+      );
+
+      let data = await saveRes.json();
+      if (data) {
+        // alert("Component saved successfully");
+        // alert(JSON.stringify(response.body));
+        console.log("Data", data);
+        await router.push("/componentedit?componentid=" + data.id, {
+          scroll: false,
+        });
+      } else {
+        alert(JSON.stringify(response.body));
+      }
     } catch (error) {
       console.error("Error:", error);
     }

@@ -408,7 +408,7 @@ const SubFlowCanva = (editing, flowid) => {
   useOnSelectionChange({
     onChange: ({ nodes, edges }) => {
       setSelectedNodes(nodes.map((node) => node.id));
-      console.log("Selected Nodes:", selectedNodes);
+
       setSelectedEdges(edges.map((edge) => edge.id));
     },
   });
