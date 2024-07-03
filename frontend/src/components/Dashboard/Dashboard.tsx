@@ -5,6 +5,7 @@ import ExecutionTableTwo from "../Charts/ExecutionTableTwo";
 import CardDataStats from "../CardDataStats";
 import { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
+import { useRouter } from "next/navigation";
 
 const Dashboard: React.FC = () => {
   const [totalflow, setTotalFlow] = useState([]);
@@ -18,6 +19,47 @@ const Dashboard: React.FC = () => {
   const [totalExecution, setTotalExecution] = useState([]);
   const [totalSuccessful, setTotalSuccessful] = useState([]);
   const { t } = useTranslation("dashboard");
+  const router = useRouter();
+  const [isBackendFailed, setBackendFailed] = useState(false);
+  const [isLoading, setLoading] = useState(true);
+
+  const fetchBackend = () => {
+    setLoading(true);
+    const timer = setTimeout(() => {
+      if (isLoading) {
+        setBackendFailed(true);
+        setLoading(false);
+      }
+    }, 10000);
+
+    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setBackendFailed(true);
+      })
+      .finally(() => {
+        clearTimeout(timer);
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    fetchBackend();
+  }, []);
+
+  const retry = () => {
+    location.reload();
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,6 +116,26 @@ const Dashboard: React.FC = () => {
   return (
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
+        {isBackendFailed && (
+          <div className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-black bg-opacity-75 p-4 text-white">
+            <h2 className="mb-2 text-xl font-semibold">
+              Failed Connecting to the Backend
+            </h2>
+            <p className="mb-1 text-sm">
+              Please check if the service below is available:
+            </p>
+            <p className="font-mono rounded bg-white bg-opacity-10 p-2 text-sm text-white">
+              {process.env.NEXT_PUBLIC_BACKEND_URL}
+            </p>
+            <button
+              onClick={retry}
+              className="mt-4 border border-white px-5 py-2.5 text-lg transition-colors duration-150 hover:bg-white hover:text-black"
+            >
+              Retry
+            </button>
+          </div>
+        )}
+
         <CardDataStats
           title={t("total_workflows")}
           // total={totalflow ? totalflow : ""}
