@@ -119,7 +119,7 @@ const Dashboard: React.FC = () => {
         {isBackendFailed && (
           <div className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-black bg-opacity-75 p-4 text-white">
             <h2 className="mb-2 text-xl font-semibold">
-              Failed Connecting to the Backend
+              🚨 Failed Connecting to the Backend
             </h2>
             <p className="mb-1 text-sm">
               Please check if the service below is available:
