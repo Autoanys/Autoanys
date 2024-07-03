@@ -593,6 +593,7 @@ const SubFlowCanva = (editing, flowid) => {
   // Flow V2
   const getFlow = async (debug) => {
     await setCurrentResult([]);
+    await setPreviewButton(false);
     if (!debug) {
       try {
         let post_data = JSON.stringify(

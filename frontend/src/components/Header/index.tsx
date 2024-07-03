@@ -167,6 +167,7 @@ const Header = (props: {
                   {navigator.platform.includes("Mac") ? (
                     <div className="ml-2">
                       <span className="rounded-lg border pl-2 pr-2">CMD</span>
+                      
                       <span className="r ml-1">+</span>
                       <span className="ml-1 rounded-lg border pl-2 pr-2">
                         K

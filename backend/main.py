@@ -22,9 +22,18 @@ from scheduler.test import schedule_subflows , run_subflow
 import threading
 import asyncio
 import signal
+from uvicorn import Config, Server
+import logging
+import os
+
 app = FastAPI()
 scheduler = AsyncIOScheduler()
 prisma = Prisma()
+
+class WorkerIDFilter(logging.Filter):
+    def filter(self, record):
+        record.worker_id = os.getenv("WORKER_ID", "main")
+        return True
 
 builtIn_list = [browser, flow, 
                 # cmd,
@@ -126,3 +135,8 @@ async def shutdown_event():
 @app.get("/")
 async def root():
     return {"message": "Welcome to the AutoAnys api service. Please use the /docs endpoint to see the available endpoints. Thankss"}
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, log_config="logging_config.json", reload=True, workers=4)

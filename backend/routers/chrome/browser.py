@@ -10,6 +10,8 @@ from general.header import *
 import random
 import string
 import socket
+import asyncio
+
 
 hostname = socket.getfqdn()
 ip = socket.gethostbyname_ex(hostname)[2][1]
