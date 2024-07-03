@@ -183,13 +183,16 @@ const SubflowTable = () => {
   };
 
   const triggerID = crypto.randomBytes(8).toString("hex");
-  let type = "Playground";
+  let type = "On Demand";
   let result = "Success";
+  let flowType = "Flow";
 
   const getFlow = async (flow_id) => {
+    setPlaying(true);
     let logData = {
       trigger_id: triggerID,
       flow_id: flow_id,
+      flow_type: flowType,
       type: type,
       result: result,
     };
@@ -202,7 +205,9 @@ const SubflowTable = () => {
         },
       );
 
+      console.log("This is post_data", post_data);
       post_data = await post_data.json();
+      console.log("This is post_data", post_data.data.flowjson);
 
       const res = await fetch(
         process.env.NEXT_PUBLIC_BACKEND_URL + "/flow/v2",
@@ -222,10 +227,10 @@ const SubflowTable = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(logData),
+          body: logData,
         },
       );
-
+      console.log("This is logres", logRes);
       console.log("TGhis is post_data", post_data);
       console.log(res.status);
       if (res.status === 450) {
@@ -249,13 +254,14 @@ const SubflowTable = () => {
             method: "GET",
           },
         );
+        setPlaying(false);
       } else {
         const data = await res.json();
 
         console.log("from api", data);
         let tmp_id;
         for (let i = 0, l = data.steps.length; i < l; i++) {
-          setPlaying(true);
+          console.log("This is the step", data.steps[i]);
 
           if (
             data.steps[i]["method"] === "POST" &&
@@ -289,21 +295,35 @@ const SubflowTable = () => {
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({
+              body: {
                 log_id: triggerID,
                 api: data.steps[i].api,
                 step: i + 1,
                 result: JSON.stringify(resData),
-              }),
+              },
             },
           );
 
+          console.log("This is steplog", stepLog);
           if (i === data.steps.length - 1) {
             setPlaying(false);
           }
         }
       }
     } catch (err) {
+      setPlaying(false);
+      setShowNotification({
+        show: true,
+        code: 500,
+        message: "Failed to complete the flow",
+      });
+      setTimeout(() => {
+        setShowNotification({
+          show: false,
+          code: 500,
+          message: "Failed to complete the flow",
+        });
+      }, 3000);
       console.log(err);
     }
   };
