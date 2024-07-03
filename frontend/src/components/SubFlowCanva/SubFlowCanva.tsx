@@ -592,6 +592,7 @@ const SubFlowCanva = (editing, flowid) => {
 
   // Flow V2
   const getFlow = async (debug) => {
+    await setCurrentResult([]);
     if (!debug) {
       try {
         let post_data = JSON.stringify(
@@ -2230,7 +2231,7 @@ const SubFlowCanva = (editing, flowid) => {
                 playingPreviewSideBar ? "translate-x-0 " : "translate-x-full"
               }`}
             >
-              <h3 className="text-2xl">🧪 Testing Preview</h3>
+              <h3 className="text-2xl">🧪 Playing Preview</h3>
               <p className="text-md mt-4 font-semibold">
                 Node ID : {selectedNodes}
               </p>
@@ -2300,8 +2301,8 @@ const SubFlowCanva = (editing, flowid) => {
               <button
                 className="hover:bg-red-700 focus:shadow-outline fixed bottom-0 right-0 m-auto mb-2.5 mr-2.5 items-center justify-center rounded bg-red px-4 py-2 text-lg font-semibold text-white focus:outline-none"
                 onClick={() => {
-                  setCurrentResult([]);
                   setPlayingPreviewSideBar(false);
+                  setPreviewButton(true);
                 }}
               >
                 Close
@@ -2432,7 +2433,14 @@ const SubFlowCanva = (editing, flowid) => {
 
       {previewButton && (
         <div className="preViewButton hover:border-transparent hover:bg-blue-500 hover:text-white">
-          <button>Preview</button>
+          <button
+            onClick={() => {
+              setPlayingPreviewSideBar(true);
+              setPreviewButton(false);
+            }}
+          >
+            Preview
+          </button>
         </div>
       )}
 

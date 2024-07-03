@@ -133,13 +133,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
       } lg:static lg:translate-x-0 ${sidebarExpanded ? "w-64" : "w-25"}`}
     >
       <div
-        className={`flex items-center justify-between gap-2 bg-slate-50 px-6 py-4 shadow-1 drop-shadow-1 dark:bg-slate-900 dark:drop-shadow 
-        ${sidebarExpanded ? " pb-7" : " pb-8"}`}
+        className={`spt-1 hadow-1 flex items-center justify-between gap-2 bg-slate-50 px-6 py-4 drop-shadow-1 dark:bg-slate-900 dark:drop-shadow 
+        ${sidebarExpanded ? " pb-7.5" : " pb-8.5"}`}
       >
         <Link href="/">
           <Image
             className="dark:hidden"
-            width={sidebarExpanded ? 245 : 50}
+            width={sidebarExpanded ? 400 : 50}
             height={50}
             src={
               sidebarExpanded

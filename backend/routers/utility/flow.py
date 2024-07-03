@@ -67,7 +67,7 @@ async def analyze_json(json_datas: dict):
     except Exception as e:
         print(e)
         # raise HTTPException(status_code=404, detail="Error in analyzing flow")
-        raise HTTPException(status_code=450,  detail="Error in analyzing flow")
+        raise HTTPException(status_code=452,  detail="Error in analyzing flow")
 
 Correspondence_function_list = {
     "openBrowser" : "OpenBrowser",
@@ -89,7 +89,7 @@ async def analyze_json(json_datas: dict):
             temp = {}
             post_data = {}
             steps = []
-
+            print("Step 1")
             # Helper function to find the source node details
             def get_node_details(node_id):
                 return next((node for node in json_datas["nodes"] if node["id"] == node_id), None)
@@ -97,33 +97,31 @@ async def analyze_json(json_datas: dict):
             # Initialize the start node
             current_node_id = "start-node"
             visited_nodes = set()
-
+            print("Step 2")
             while current_node_id and current_node_id != "end-node":
                 if current_node_id in visited_nodes:
                     break
                 visited_nodes.add(current_node_id)
-
+                
                 # Get the current node details
                 current_node = get_node_details(current_node_id)
-
+                print("Step 3")
                 # Process the current node if it is not the start or end node
                 if current_node and current_node_id != "start-node":
                     if len(current_node['data']['inputs']) > 0 and current_node['data']['method'] == "POST":
                         temp["api"] = f"http://{ip}:8000" + current_node['data']['api']
                         temp["method"] = current_node['data']['method']
                         temp["function"] = Correspondence_function_list[current_node['type']]
-
+                        print("Step 4")
                         for i in current_node['data']['inputs']:
                             if (i['variable'] and i['value'].startswith("CAAS$")) or (i['variable'] and i['value'].startswith("AAS$")):
                                 try:
+                                    print("Step 5")
                                     for var in json_datas["variables"]:
                                         if var['key'] == i['value'] and var['value']:
                                             post_data[i['id']] = var['value']
-                                            post_data[i['usevariable']] = True
                                         else:
                                             post_data[i['id']] = i['value']
-                                            post_data[i['usevariable']] = True
-
                                 except Exception as e:
                                     try:
                                         for var in json.loads(json_datas["variables"]):
@@ -133,7 +131,7 @@ async def analyze_json(json_datas: dict):
                                                 post_data[i['id']] = i['value']
                                     except Exception as e:
                                         print(e)
-                                        raise HTTPException(status_code=450, detail="Error in analyzing flow")
+                                        raise HTTPException(status_code=451, detail="Error in analyzing flow")
                             else:
                                 post_data[i['id']] = i['value']
                         temp["post_data"] = post_data
@@ -159,7 +157,7 @@ async def analyze_json(json_datas: dict):
             print("STEP", steps)
             return {"message": "Start to end valid", "steps": steps}
         else:
-            raise HTTPException(status_code=451, detail="Error in analyzing flow")
+            raise HTTPException(status_code=452, detail="Error in analyzing flow")
     except Exception as e:
         print(e)
-        raise HTTPException(status_code=450, detail="Error in analyzing flow")
+        raise HTTPException(status_code=453, detail="Error in analyzing flow")

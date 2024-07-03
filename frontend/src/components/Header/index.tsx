@@ -3,6 +3,8 @@ import DarkModeSwitcher from "./DarkModeSwitcher";
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useHotkeys } from "react-hotkeys-hook";
+import { useRouter } from "next/navigation";
+
 const Header = (props: {
   sidebarOpen: string | boolean | undefined;
   setSidebarOpen: (arg0: boolean) => void;
@@ -10,6 +12,40 @@ const Header = (props: {
   const [showInfoBox, setShowInfoBox] = useState(false);
   const [isPromptVisible, setIsPromptVisible] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
+  const [inputValue, setInputValue] = useState("");
+
+  const suggestions = [
+    { label: "Create Flow", path: "/subflowdraw" },
+    { label: "Multi-Flow Table", path: "/mainflow" },
+    { label: "Flow Table", path: "/subflow" },
+    { label: "Logging", path: "/logging" },
+    { label: "Settings", path: "/settings" },
+    { label: "Components", path: "/customcomponents" },
+    { label: "Plugins & Extensions", path: "/plugins" },
+  ];
+
+  const filteredSuggestions = suggestions.filter((suggestion) =>
+    suggestion.label.toLowerCase().includes(inputValue.toLowerCase()),
+  );
+
+  const handleSelect = async (path) => {
+    setInputValue("");
+    setIsPromptVisible(false);
+    console.log("Good", path);
+    await router.push(path, { scroll: false });
+  };
+
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
+    setIsPromptVisible(true);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && filteredSuggestions.length > 0) {
+      handleSelect(filteredSuggestions[0].path);
+    }
+  };
 
   const togglePopup = () => {
     setShowInfoBox(!showInfoBox);
@@ -120,46 +156,57 @@ const Header = (props: {
                 <input
                   type="text"
                   placeholder="Type to search..."
-                  className="w-96 bg-white p-2 pl-10 pr-4 font-medium focus:outline-none"
+                  className="w-72 rounded-lg border border-slate-300 bg-white p-2 pl-10 pr-4 font-medium hover:border-slate-500 focus:border-slate-500 focus:outline-none"
+                  value={inputValue}
                   ref={inputRef}
+                  onChange={handleInputChange}
+                  onKeyDown={handleKeyDown}
                   onFocus={() => setIsPromptVisible(true)}
                 />
-              </div>
-
-              <div className="text-gray-500 absolute right-4 top-1/2 -translate-y-1/2 transform">
-                {navigator.platform.includes("Mac") ? (
-                  <div className="ml-2">
-                    <span className=" rounded-lg border pl-2 pr-2">CMD</span>
-                    <span className="r ml-1">+</span>
-                    <span className="ml-1 rounded-lg border pl-2 pr-2">K</span>
+                <div className="text-gray-500 absolute right-4 top-1/2 -translate-y-1/2 transform">
+                  {navigator.platform.includes("Mac") ? (
+                    <div className="ml-2">
+                      <span className="rounded-lg border pl-2 pr-2">CMD</span>
+                      <span className="r ml-1">+</span>
+                      <span className="ml-1 rounded-lg border pl-2 pr-2">
+                        K
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="ml-2">
+                      <span className="rounded-lg border pl-2 pr-2">Ctrl</span>
+                      <span className="r ml-1">+</span>
+                      <span className="ml-1 rounded-lg border pl-2 pr-2">
+                        K
+                      </span>
+                    </div>
+                  )}
+                </div>
+                {isPromptVisible && inputValue && (
+                  <div className="border-gray-300 absolute left-0 top-full z-10 w-full border bg-white  shadow-lg">
+                    {filteredSuggestions.length > 0 ? (
+                      filteredSuggestions.map((suggestion, index) => (
+                        // <Link href={suggestion.path}>
+                        <p
+                          key={suggestion.path}
+                          className={`text-gray-700 hover:bg-gray-200 cursor-pointer p-2 ${index === 0 ? "bg-slate-200" : ""}`}
+                          // onClick={() => handleSelect(suggestion.path)}
+                          onClick={() => {
+                            console.log("Click detected");
+                            handleSelect(suggestion.path);
+                          }}
+                        >
+                          {suggestion.label}
+                        </p>
+                        // </Link>
+                      ))
+                    ) : (
+                      <p className="text-gray-700">No results found</p>
+                    )}
                   </div>
-                ) : (
-                  <div className="ml-2">
-                    <span className=" rounded-lg border pl-2 pr-2">Ctrl</span>
-                    <span className="r ml-1">+</span>
-
-                    <span className="ml-1 rounded-lg border pl-2 pr-2">K</span>
-                  </div>
-                  // <Image
-                  //   src="/images/general/search_hotkey.png"
-                  //   width={55}
-                  //   height={30}
-                  //   alt="Ctrl"
-                  // />
                 )}
               </div>
-              {isPromptVisible && (
-                <div className="border-gray-300 absolute left-0 top-full z-10 w-full border bg-white p-4 shadow-lg">
-                  <p className="text-gray-700">Search Prompt...</p>
-                </div>
-              )}
             </div>
-
-            {/* <input
-                type="text"
-                placeholder="Type to search..."
-                className="w-full bg-white p-2 pl-12 pr-4 font-medium focus:outline-none xl:w-125"
-              /> */}
           </div>
         </div>
 
