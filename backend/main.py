@@ -50,6 +50,7 @@ def checkJobs():
     return scheduler.print_jobs()
 
 
+
 # def update_scheduler(flow_id):
 #     print("Scheduling subflows...")
 #     subflows =  prisma.subflow.find_unique(where={'id': flow_id})

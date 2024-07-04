@@ -256,8 +256,15 @@ const ComponentsEditor = (editing, componentID) => {
             <div className="items-right flex w-full justify-end gap-1 border-b border-slate-300 bg-white p-0 ">
               <div className="mr-auto">
                 <button
+                  onClick={() => router.push("/components")}
+                  className={`mb-2 ml-2 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white dark:border-slate-400 dark:text-white 
+                  `}
+                >
+                  ↩️ Back
+                </button>
+                <button
                   onClick={() => saveComponent()}
-                  className={`mb-2 ml-4 rounded border border-blue-500 bg-transparent px-4 py-2 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white `}
+                  className={`mb-2 ml-1 rounded border border-blue-500 bg-transparent px-2 py-1 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white dark:border-slate-400 dark:text-white `}
                 >
                   💾 Save
                 </button>

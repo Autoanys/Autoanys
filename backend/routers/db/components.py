@@ -62,6 +62,19 @@ def validate_code(code):
         return False, str(e)
     
 
+@router.get("/components/active/")
+async def get_active_components():
+    try:
+        prisma = Prisma()
+        await prisma.connect()
+        components = await prisma.component.find_many(where={"active": True})
+        await prisma.disconnect()
+    
+        return {"message": "Sucessfully", "data": components}
+    except Exception as e:
+        return {"message": f"Error: {e}"}
+    
+    
 @router.get("/components/active/{comp_id}")
 async def activate_component(comp_id : str):
     prisma = Prisma()
