@@ -119,7 +119,7 @@ const ComponentsEditor = (editing, componentID) => {
       );
 
       let data = await saveRes.json();
-      if (saveRes.status === 422) {
+      if (saveRes.status === 450) {
         alert("The code cannot be validate");
       }
       if (saveRes.status === 200 && data) {
