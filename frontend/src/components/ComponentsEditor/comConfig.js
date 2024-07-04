@@ -15,6 +15,17 @@ const comConfig = {
     value: "return {'message': 'Endpoint return data'}",
     icon: "/images/components/return_icon.png",
   },
+  simpleRun: {
+    label: "Simple Run",
+    value: "async def simple_run():\n    return {'message': 'Simple Run'}",
+    icon: "/images/components/get_icon.png",
+  },
+  openGoogle: {
+    label: "Open Google",
+    value:
+      "async def open_google():\n    try:\n        driver.get('https://www.google.com')\n        return {'message': 'Google Opened'}\n    except Exception as e:\n        return {'message': f'Error Occured {e}'}",
+    icon: "/images/components/google_icon.png",
+  },
 };
 
 export default comConfig;

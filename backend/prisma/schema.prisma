@@ -28,7 +28,7 @@ model MainFlow {
   name    String
   description String  @default("")
   flowjson String 
-  active Boolean @default(false)
+  active Boolean @default(true)
   schedule String @default("")
 }
 
@@ -46,6 +46,7 @@ model Component {
   description String
   category String
   coding String
+  active Boolean @default(true)
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
 }

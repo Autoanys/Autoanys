@@ -8,6 +8,13 @@ import {
   signal,
 } from "@preact/signals";
 import { useRouter } from "next/navigation";
+import {
+  CheckCircleIcon,
+  ExclamationCircleIcon,
+} from "@heroicons/react/outline";
+import { Transition } from "@headlessui/react";
+import { XIcon } from "@heroicons/react/solid";
+import { Fragment } from "react";
 
 const ComponentTable = () => {
   const [components, setComponents] = useState([]);
@@ -233,12 +240,178 @@ const ComponentTable = () => {
     setDeleted(false);
   }, [deleted]);
 
+  const handleActiveToggle = async (compID) => {
+    try {
+      setComponents((prevComponents) => {
+        const updatedComponents = prevComponents.map((component) => {
+          if (component.id === compID) {
+            return {
+              ...component,
+              active: !component.active,
+            };
+          }
+          return component;
+        });
+        return updatedComponents;
+      });
+
+      const res = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_URL + "/components/active/" + compID,
+        {
+          method: "GET",
+        },
+      );
+
+      if (res.status === 200) {
+        const data = await res.json();
+        console.log("Response from active toggle:", data);
+        setShowNotification({
+          show: true,
+          code: 200,
+          message: data.message,
+        });
+        setTimeout(() => {
+          setShowNotification({
+            show: false,
+            code: 200,
+            message: data.message,
+          });
+        }, 3000);
+      } else {
+        setComponents((prevComponents) => {
+          const updatedComponents = prevComponents.map((component) => {
+            if (component.id === compID) {
+              return {
+                ...component,
+                active: !component.active,
+              };
+            }
+            return component;
+          });
+          return updatedComponents;
+        });
+        setShowNotification({
+          show: true,
+          code: 500,
+          message: "Failed to toggle active status",
+        });
+        setTimeout(() => {
+          setShowNotification({
+            show: false,
+            code: 500,
+            message: "Failed to toggle active status",
+          });
+        }, 3000);
+      }
+    } catch (error) {
+      setComponents((prevComponents) => {
+        const updatedComponents = prevComponents.map((component) => {
+          if (component.id === compID) {
+            return {
+              ...component,
+              active: !component.active,
+            };
+          }
+          return component;
+        });
+        return updatedComponents;
+      });
+    }
+  };
+
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentComponent = components.slice(startIndex, endIndex);
 
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+
+    const dateOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+
+    const timeOptions = {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    };
+
+    const formattedDate = date.toLocaleDateString(undefined, dateOptions);
+    const formattedTime = date.toLocaleTimeString(undefined, timeOptions);
+
+    return `${formattedDate}, ${formattedTime}`;
+  }
+
   return (
     <div className="rounded-sm  bg-white px-5 pb-2.5 pt-6  dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+      {showNotification.show && (
+        <div
+          aria-live="assertive"
+          className="pointer-events-none fixed inset-0 z-999 mt-30 flex items-end px-4 py-6 sm:items-start sm:p-6"
+        >
+          <div className="flex w-full flex-col items-center space-y-4 sm:items-end">
+            <Transition
+              show={showNotification.show}
+              as={Fragment}
+              enter="transform ease-out duration-300 transition"
+              enterFrom="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+              enterTo="translate-y-0 opacity-100 sm:translate-x-0"
+              leave="transition ease-in duration-100"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="pointer-events-auto w-1/3 overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+                <div className="p-4">
+                  <div className="flex items-start">
+                    <div className="flex-shrink-0">
+                      {showNotification.code == 200 ? (
+                        <CheckCircleIcon
+                          className="h-6 w-6 text-emerald-700"
+                          aria-hidden="true"
+                        />
+                      ) : (
+                        <ExclamationCircleIcon
+                          className="h-6 w-6 text-red"
+                          aria-hidden="true"
+                        />
+                      )}
+                    </div>
+                    <div className="ml-3 w-0 flex-1 pt-0.5">
+                      <p
+                        className={`text-sm font-medium ${showNotification.code == 200 ? "text-emerald-700" : "text-red"} `}
+                      >
+                        {showNotification.code}
+                      </p>
+                      <p className="text-gray-500 mt-1 text-sm">
+                        {showNotification.message}
+                      </p>
+                    </div>
+                    <div className="ml-4 flex flex-shrink-0">
+                      <button
+                        className="text-gray-400 hover:text-gray-500 inline-flex rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        onClick={() => {
+                          setShowNotification({
+                            show: false,
+                            code: 200,
+                            message: "",
+                          });
+                        }}
+                      >
+                        <span className="sr-only">Close</span>
+                        <XIcon className="h-5 w-5" aria-hidden="true" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Transition>
+          </div>
+        </div>
+      )}
+
       <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
         Custom Components List
       </h4>
@@ -260,24 +433,31 @@ const ComponentTable = () => {
       />
 
       <div className="flex flex-col rounded-t-lg border	border-slate-300 text-black">
-        <div className="grid grid-cols-4 divide-x divide-slate-300 rounded-t-lg border-b border-slate-300 bg-indigo-50 uppercase dark:bg-[#1E1E2F] dark:text-white sm:grid-cols-4">
+        <div className="grid grid-cols-6 divide-x divide-slate-300 rounded-t-lg border-b border-slate-300 bg-indigo-50 uppercase dark:bg-[#1E1E2F] dark:text-white sm:grid-cols-6">
           <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
             <h5 className=" text-sm font-medium xsm:text-sm">
-              <b>Component Name</b>
+              <b> Name</b>
+            </h5>
+          </div>
+
+          <div className="xl:bt-5 col-span-2 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
+            {" "}
+            <h5 className=" text-sm font-medium xsm:text-sm">
+              <b> Description</b>
             </h5>
           </div>
 
           <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
             {" "}
             <h5 className=" text-sm font-medium xsm:text-sm">
-              <b>Component ID</b>
+              <b>Updated at</b>
             </h5>
           </div>
 
           <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
             {" "}
             <h5 className=" text-sm font-medium xsm:text-sm">
-              <b>Component Description</b>
+              <b>Active</b>
             </h5>
           </div>
 
@@ -290,7 +470,7 @@ const ComponentTable = () => {
         </div>
 
         {currentComponent.length === 0 && (
-          <div className="grid grid-cols-8 divide-x divide-slate-300  border-b border-slate-300 dark:border-strokedark dark:bg-boxdark">
+          <div className="grid grid-cols-6 divide-x divide-slate-300  border-b border-slate-300 dark:border-strokedark dark:bg-boxdark">
             <div className="col-span-8 flex items-center justify-center p-5">
               <p className="text-black dark:text-white">
                 No components found, please add a new component.
@@ -304,7 +484,7 @@ const ComponentTable = () => {
             onContextMenu={(e) => {
               tableRowContextMenu(e, comp);
             }}
-            className={`grid cursor-alias grid-cols-4 divide-x divide-slate-300 hover:bg-orange-50	 dark:hover:bg-black sm:grid-cols-4 ${
+            className={`grid cursor-alias grid-cols-6 divide-x divide-slate-300 hover:bg-orange-50	 dark:hover:bg-black sm:grid-cols-6 ${
               index === components.length - 1
                 ? ""
                 : "border-b border-stroke dark:border-strokedark"
@@ -320,10 +500,10 @@ const ComponentTable = () => {
               </p>
             </div>
 
-            <div className="flex items-center gap-3 pl-2.5 ">
+            <div className="col-span-2 flex items-center gap-3 pl-2.5 ">
               <p className="hidden text-black dark:text-white sm:block">
                 {/* {subflow.id} */}
-                {truncateText(comp.id, 15)}
+                {truncateText(comp.description, 15)}
               </p>
             </div>
 
@@ -332,9 +512,35 @@ const ComponentTable = () => {
                 className="hidden text-black dark:text-white sm:block"
                 title={comp.description}
               >
-                {truncateText(comp.description, 30)}
+                {formatDate(comp.updated_at)}
               </p>
             </div>
+
+            <div className="  mr-1  hidden items-center gap-1 pl-1.5 pt-2 sm:flex">
+              <div
+                className="flex cursor-pointer items-center"
+                onClick={() => handleActiveToggle(comp.id)}
+              >
+                <div className="relative">
+                  <input
+                    type="checkbox"
+                    checked={comp.active}
+                    onClick={() => handleActiveToggle(comp.id)}
+                    className="sr-only"
+                  />
+                  <div
+                    className={`block border border-slate-200 ${comp.active ? "bg-green-500" : "bg-slate-500"} h-6 w-12 rounded-full`}
+                  ></div>
+                  <div
+                    className={`dot  absolute top-1 h-5 w-5 rounded-full transition ${comp.active ? "translate-x-6" : "translate-x-0"}`}
+                  ></div>
+                </div>
+              </div>
+              <span className="text-gray-700 hidden text-xs dark:text-white md:block">
+                {comp.active ? "actived" : "disabled"}
+              </span>
+            </div>
+
             <div className=" hidden items-center gap-1 pl-2.5 sm:flex">
               <p className="hidden text-black dark:text-white sm:block">
                 <div className="flex gap-1">
@@ -381,28 +587,6 @@ const ComponentTable = () => {
                       </span>
                     </button>
                   </Link>
-
-                  <button
-                    className="font-sans from-gray-900 to-gray-800 shadow-gray-900/10 hover:shadow-gray-900/20 relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg bg-gradient-to-tr text-center align-middle text-xs font-medium uppercase text-white  transition-all hover:shadow-lg active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                    type="button"
-                    onClick={getFlow(comp.id)}
-                  >
-                    <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 16 16"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M2.78 2L2 2.41v12l.78.42 9-6V8l-9-6zM3 13.48V3.35l7.6 5.07L3 13.48z" />
-                        <path
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
-                          d="M6 14.683l8.78-5.853V8L6 2.147V3.35l7.6 5.07L6 13.48v1.203z"
-                        />
-                      </svg>
-                    </span>
-                  </button>
 
                   <button
                     className="font-sans from-gray-900 to-gray-800 shadow-gray-900/10 hover:shadow-gray-900/20 relative mr-2 h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg bg-gradient-to-tr pl-6 text-center align-middle text-xs font-medium uppercase text-white  transition-all hover:shadow-lg active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"

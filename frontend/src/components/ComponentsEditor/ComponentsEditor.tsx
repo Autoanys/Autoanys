@@ -15,16 +15,56 @@ import Editor, { DiffEditor, useMonaco, loader } from "@monaco-editor/react";
 import comConfig from "./comConfig";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
 
+const componentKey = signal("new-component");
+
 const ComponentsEditor = (editing, componentID) => {
   const [codingValue, setCodingValue] = useState("");
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [componentDescription, setComponentDescription] = useState("");
+  const popupRef = useRef(null);
+  const [exportDropdownOpen, setExportDropdownOpen] = useState(false);
+
   const [codeValidate, setCodeValidate] = useState("");
   const [componentInfo, setcCmponentInfo] = useState({
     component_name: "test",
     component_category: "test",
     component_description: "test",
   });
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      setExportDropdownOpen(false);
+      if (popupRef.current && !popupRef.current.contains(event.target)) {
+        setIsPopupOpen(false);
+      }
+    };
+
+    if (isPopupOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isPopupOpen]);
+
   const parms = useSearchParams();
   const router = useRouter();
+
+  const togglePopup = () => {
+    setIsPopupOpen(!isPopupOpen);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log(event.target.component_name.value);
+    componentKey.value = event.target.component_description.value;
+    setComponentDescription(event.target.component_description.value);
+    setIsPopupOpen(false);
+  };
+
   const validateCoding = async () => {
     try {
       let res = await fetch(
@@ -110,9 +150,11 @@ const ComponentsEditor = (editing, componentID) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            component_name: componentInfo.component_name,
+            component_name: componentKey ? componentKey : "new-component",
             component_category: componentInfo.component_category,
-            component_description: componentInfo.component_description,
+            component_description: componentDescription
+              ? componentDescription
+              : "",
             component_coding: codingValue,
           }),
         },
@@ -221,6 +263,7 @@ const ComponentsEditor = (editing, componentID) => {
                 </button>
 
                 <button
+                  onClick={togglePopup}
                   className={`mb-2 ml-1 rounded border border-blue-500 bg-transparent px-3 py-2 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white 
                   `}
                 >
@@ -286,6 +329,75 @@ const ComponentsEditor = (editing, componentID) => {
             />
           </div>
         </div>
+        {isPopupOpen && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div
+              ref={popupRef}
+              className="w-2/5 rounded bg-white p-6 shadow-lg"
+            >
+              <h2 className="mb-4 text-xl font-semibold">Component Setting</h2>
+              <form onSubmit={handleSubmit}>
+                <div className="mb-4">
+                  {parms.get("componentid") && (
+                    <label
+                      className="text-gray-700 mb-2 block text-sm font-bold"
+                      htmlFor="website-url"
+                    >
+                      Component ID : {parms}
+                    </label>
+                  )}
+                </div>
+                <div className="mb-4">
+                  <label
+                    className="text-gray-700 mb-2 block text-sm font-bold"
+                    htmlFor="website-parm"
+                  >
+                    Component Name :
+                  </label>
+                  <input
+                    className="text-gray-900 focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight shadow focus:outline-none"
+                    id="component_name"
+                    type="text"
+                    placeholder="Component name"
+                    defaultValue={componentKey}
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label
+                    className="text-gray-700 mb-2 block text-sm font-bold"
+                    htmlFor="flow_description"
+                  >
+                    Component Description :
+                  </label>
+                  <textarea
+                    className="text-gray-900 focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight shadow focus:outline-none"
+                    id="component_description"
+                    placeholder="Component Description"
+                    defaultValue={componentDescription}
+                    rows="5"
+                  ></textarea>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <button
+                    className="focus:shadow-outline rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700 focus:outline-none"
+                    type="submit"
+                  >
+                    Save
+                  </button>
+                  <button
+                    className="hover:bg-red-700 focus:shadow-outline rounded bg-rose-500 px-4 py-2 font-bold text-white focus:outline-none"
+                    onClick={togglePopup}
+                    type="button"
+                  >
+                    Close
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

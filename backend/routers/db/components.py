@@ -60,6 +60,31 @@ def validate_code(code):
             return True, process.stdout
     except Exception as e:
         return False, str(e)
+    
+
+@router.get("/components/active/{comp_id}")
+async def activate_component(comp_id : str):
+    prisma = Prisma()
+    await prisma.connect()
+    orginal_comp = await prisma.component.find_unique(where={
+        "id": comp_id
+    })
+
+    switch = False if orginal_comp.active else True
+    activation = "activated" if switch else "deactivated"
+    comp_data = await prisma.component.update(
+        where={
+            "id": comp_id
+        },
+        data={
+            "active": switch
+        }
+    )
+    
+    await prisma.disconnect()
+    return {"message": f"Subflow {comp_data} {activation} successfully"}
+
+
 
 @router.post("/components/create")
 async def save_component(json_data: dict):
