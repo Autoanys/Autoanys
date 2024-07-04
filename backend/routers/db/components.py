@@ -82,7 +82,7 @@ async def activate_component(comp_id : str):
     )
     
     await prisma.disconnect()
-    return {"message": f"Subflow {comp_data} {activation} successfully"}
+    return {"message": f"Component {orginal_comp.name}, {comp_id} {activation} successfully"}
 
 
 

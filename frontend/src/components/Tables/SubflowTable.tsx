@@ -717,7 +717,7 @@ const SubflowTable = () => {
                       <p
                         className={`text-sm font-medium ${showNotification.code == 200 ? "text-emerald-700" : "text-red"} `}
                       >
-                        {showNotification.code}
+                        Status - {showNotification.code}
                       </p>
                       <p className="text-gray-500 mt-1 text-sm">
                         {showNotification.message}

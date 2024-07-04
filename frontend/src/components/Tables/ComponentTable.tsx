@@ -15,6 +15,7 @@ import {
 import { Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/solid";
 import { Fragment } from "react";
+import Editor, { DiffEditor, useMonaco, loader } from "@monaco-editor/react";
 
 const ComponentTable = () => {
   const [components, setComponents] = useState([]);
@@ -28,6 +29,8 @@ const ComponentTable = () => {
     code: 200,
     message: "",
   });
+  const [viewPopup, setViewPopup] = useState(null);
+
   const [showConfirm, setShowConfirm] = useState(false);
   const [componentToDelete, setComponentToDelete] = useState(null);
 
@@ -383,7 +386,7 @@ const ComponentTable = () => {
                       <p
                         className={`text-sm font-medium ${showNotification.code == 200 ? "text-emerald-700" : "text-red"} `}
                       >
-                        {showNotification.code}
+                        Status - {showNotification.code}
                       </p>
                       <p className="text-gray-500 mt-1 text-sm">
                         {showNotification.message}
@@ -546,6 +549,7 @@ const ComponentTable = () => {
                 <div className="flex gap-1">
                   <button
                     className="font-sans bg-gray-900 shadow-gray-900/10 hover:shadow-gray-900/20 relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle text-xs font-medium uppercase text-white  transition-all hover:shadow-lg focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                    onClick={() => setViewPopup(comp)}
                     type="button"
                   >
                     <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform">
@@ -670,6 +674,78 @@ const ComponentTable = () => {
             )}
           </div>
         ))}
+
+        {viewPopup && (
+          <div className="fixed inset-0 flex items-center justify-center  bg-slate-900 bg-opacity-50">
+            <div className="grid w-3/4 grid-cols-3 divide-y divide-slate-300 rounded-lg bg-white p-4  shadow-lg lg:ml-60">
+              <div className="h-96">
+                <h2 className=" pb-4 pt-2 text-lg font-semibold">
+                  📄 Component Details
+                </h2>
+                <div className="col-span-1 h-96 pb-2 pt-2">
+                  <p>
+                    <b>Component ID:</b> {viewPopup.id}
+                  </p>
+                  <p>
+                    <b>Component Name:</b> {viewPopup.name}
+                  </p>
+                  <p>
+                    <b>Component Description:</b>{" "}
+                    {viewPopup.description.length < 1
+                      ? "No description"
+                      : viewPopup.description}
+                  </p>
+
+                  <p>
+                    <b>Active Status:</b>{" "}
+                    {viewPopup.active ? "Active 🟢" : "Inactive 🚫"}
+                  </p>
+
+                  <p>
+                    <b>Created At:</b> {formatDate(viewPopup.created_at)}
+                  </p>
+                  <p>
+                    <b>Updated At:</b> {formatDate(viewPopup.updated_at)}
+                  </p>
+                </div>
+                <div className="flex justify-start pt-4">
+                  <button
+                    className="rounded-lg bg-slate-500 px-4 py-1 text-white"
+                    onClick={() => {
+                      setViewPopup(null);
+                      router.push("/componentedit?componentid=" + viewPopup.id);
+                    }}
+                  >
+                    Edit Component
+                  </button>
+                </div>
+              </div>
+
+              <div className="col-span-2">
+                <h3 className="text-center text-lg font-semibold">
+                  Component Coding
+                </h3>
+
+                <div className="z-20 mt-1 h-96 w-full border border-stroke">
+                  <Editor
+                    value={viewPopup.coding}
+                    defaultLanguage="python"
+                    theme="light"
+                    options={{ readOnly: true }}
+                  />
+                </div>
+                <div className="mt-4 flex justify-end pt-4">
+                  <button
+                    className="rounded-lg bg-rose-400 px-4 py-1 text-white"
+                    onClick={() => setViewPopup(null)}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       <div className="mt-4 flex items-center justify-between">
         <div>
