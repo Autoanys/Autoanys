@@ -10,6 +10,7 @@ import subprocess
 import tempfile
 from fastapi import FastAPI
 from pydantic import BaseModel
+import datetime
 
 router = APIRouter()
 
@@ -34,8 +35,7 @@ def validate_code(code):
         return False, str(e)
     
 @router.post("/components/create")
-async def save_component(json_data: dict):
-    # print(json_data)
+async def save_component(json_data: dict, payload: CodePayload):
     try:
         prisma = Prisma()
         await prisma.connect()
@@ -43,20 +43,78 @@ async def save_component(json_data: dict):
         component_category = json_data["component_category"]
         component_description = json_data["component_description"]
         component_coding = json_data["component_coding"]
-        component = await prisma.component.create(
-            data={
-                "name": component_name,
-                "category": component_category,
-                "description": component_description,
-                "coding": component_coding
-            }
-        )
-        print(json_data)
-        await prisma.disconnect()
-    
-        return {"message": f"{component} saved successfully"}
+        code = payload.component_coding
+        is_valid, message = validate_code(code)
+
+        print("is valid and message", is_valid, message)
+        if is_valid:
+            component = await prisma.component.create(
+                data={
+                    "name": component_name,
+                    "category": component_category,
+                    "description": component_description,
+                    "coding": component_coding
+                }
+            )
+            print(json_data)
+            await prisma.disconnect()
+            return {"message": f"{component} saved successfully"}
+        else:
+            raise HTTPException(status_code=450, detail=f"Error: {message}")
+
     except Exception as e:
         return {"message": f"Error: {e}"}
+
+
+@router.post("/components/edit/{comp_id}")
+async def edit_component(json_data: dict, comp_id: str, payload: CodePayload):
+    try:
+        prisma = Prisma()
+        await prisma.connect()
+        component_name = json_data["component_name"]
+        component_category = json_data["component_category"]
+        component_description = json_data["component_description"]
+        component_coding = json_data["component_coding"]
+        code = payload.component_coding
+        is_valid, message = validate_code(code)
+
+        print("is valid and message", is_valid, message)
+        if is_valid:
+            component = await prisma.component.update(
+                where={
+                    "id": comp_id
+                },
+                data={
+                    "name": component_name,
+                    "category": component_category,
+                    "description": component_description,
+                    "coding": component_coding,
+                    "updated_at": datetime.datetime.now()
+                }
+            ),
+            await prisma.disconnect()
+            return {"message": f"{component} updated successfully"}
+        else:
+            raise HTTPException(status_code=450, detail=f"Error: {message}")
+
+    except Exception as e:
+        return {"message": f"Error: {e}"}
+
+
+
+@router.get("/components/delete/{comp_id}")
+async def delete_component(comp_id : str):
+    prisma = Prisma()
+    await prisma.connect()
+
+
+    comp_data = await prisma.component.delete(
+        where={
+            "id": comp_id
+        }
+    ),
+    await prisma.disconnect()
+    return {"message": f"Component {comp_id} deleted successfully"}
 
 
 @router.get("/components/componentID/{component_id}")
@@ -92,5 +150,4 @@ async def validate_component(payload: CodePayload):
         return {"message": "Code is valid", "output": message}
     else:
         print("NOT Valid")
-
         return {"message": "Code is invalid", "error": message}

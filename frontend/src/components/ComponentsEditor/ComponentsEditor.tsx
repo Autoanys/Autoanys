@@ -119,11 +119,16 @@ const ComponentsEditor = (editing, componentID) => {
       );
 
       let data = await saveRes.json();
-      if (data) {
+      if (saveRes.status === 422) {
+        alert("The code cannot be validate");
+      }
+      if (saveRes.status === 200 && data) {
         // alert("Component saved successfully");
         // alert(JSON.stringify(response.body));
         console.log("Data", data);
-        await router.push("/componentedit?componentid=" + data.id, {
+        console.log("data.id", data.id);
+        const idMatch = data.message.match(/id='([^']+)'/);
+        await router.push("/componentedit?componentid=" + idMatch[1], {
           scroll: false,
         });
       } else {
@@ -265,7 +270,11 @@ const ComponentsEditor = (editing, componentID) => {
 
           <div className="mr-2 mt-5 h-4/5 border border-slate-300 pt-5">
             <p className="inline pl-6   ">Custom Component / </p>
-            <p className="inline   font-semibold">New Component</p>
+            <p className="inline   font-semibold">
+              {parms?.get("componentid")
+                ? parms.get("componentid")
+                : "New Component"}
+            </p>
             <Editor
               defaultValue={codingValue}
               value={codingValue}

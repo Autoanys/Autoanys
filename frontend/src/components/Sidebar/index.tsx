@@ -66,7 +66,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
     {
       name: t("sidebar_main_custom_component"),
       icon: <ComponentIcon />,
-      link: "/customcomponents",
+      link: "/components",
       sn: "component",
     },
     {

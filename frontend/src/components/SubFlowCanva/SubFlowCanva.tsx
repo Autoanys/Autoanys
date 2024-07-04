@@ -580,7 +580,7 @@ const SubFlowCanva = (editing, flowid) => {
     logFlowID = String(parms.get("flowid"));
   }
   let type = "Playground";
-  let flow_type = "Subflow";
+  let flow_type = "Flow";
   let result = "Success";
   let logData = {
     trigger_id: triggerID,

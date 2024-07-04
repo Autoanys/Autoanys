@@ -200,7 +200,7 @@ const Flowbar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Settings --> */}
               <li>
                 <Link
-                  href="/customcomponents"
+                  href="/components"
                   className={`bold group relative flex items-center gap-2.5 rounded-lg  px-4 py-4	text-sm
                   font-medium font-semibold text-black duration-300 ease-in-out hover:bg-white hover:shadow-2xl dark:hover:bg-meta-4 ${
                     pathname.includes("components") &&

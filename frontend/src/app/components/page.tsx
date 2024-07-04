@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: "AutoAnys, Automate Anything. Components",
 };
 
-const CustomComponents = () => {
+const Components = () => {
   return (
     <DefaultLayout>
       <Breadcrumb pageName="component" newComponent="true" />
@@ -19,4 +19,4 @@ const CustomComponents = () => {
   );
 };
 
-export default CustomComponents;
+export default Components;
