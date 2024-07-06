@@ -1153,7 +1153,6 @@ const SubFlowCanva = (editing, flowid) => {
   const { getNodes } = useReactFlow();
   const exportConfig = async () => {
     try {
-      // Step 1: Post the configuration and get the filename
       const res = await fetch(
         process.env.NEXT_PUBLIC_BACKEND_URL + "/subflow/exportconfig/",
         {
@@ -1171,7 +1170,6 @@ const SubFlowCanva = (editing, flowid) => {
 
       const data = await res.json();
 
-      // Step 2: Fetch the file blob using the filename
       const download = await fetch(
         process.env.NEXT_PUBLIC_BACKEND_URL +
           "/subflow/exportconfig/download/" +
@@ -1187,13 +1185,11 @@ const SubFlowCanva = (editing, flowid) => {
 
       const blob = await download.blob();
 
-      // Step 3: Create a URL for the blob
       const url = URL.createObjectURL(blob);
 
-      // Step 4: Create an anchor element and trigger a download
       const a = document.createElement("a");
       a.href = url;
-      a.download = data.filename; // You can also set a default filename if needed
+      a.download = data.filename;
       document.body.appendChild(a);
       a.click();
 

@@ -30,26 +30,10 @@ async def read_csv(profile_json: dict):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.post("/upload")
-def upload(file: UploadFile = File(...)):
-    try:
-        # Upload to the storage folder
-        save_path = f"storage/{file.filename}"
-        contents = file.file.read()
-        with open(save_path, 'wb') as f:
-            f.write(contents)
-
-        print(file.filename)
-    except Exception:
-        return {"message": "There was an error uploading the file"}
-    finally:
-        file.file.close()
-
-    return {"message": f"Successfully uploaded {file.filename}"}
 
 
 @router.post("/upload/read")
-def upload(csv_file: UploadFile = File(...)):
+def upload_read(csv_file: UploadFile = File(...)):
     print("Check", csv_file)
     try:
         # Upload to the storage folder

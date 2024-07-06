@@ -260,11 +260,10 @@ const nodeConfigInit = {
   uploadFile: {
     label: "Upload File",
     category: "General",
-    api: "/upload/read",
+    api: "/upload",
     method: "POST",
     description: "Uploading files",
     showDescription: false,
-
     doc: "",
     icon: "/images/nodes/upload.png",
     inputs: [
@@ -273,7 +272,7 @@ const nodeConfigInit = {
         label: "Files",
         id: "files",
         placeholder: "Upload CSV file",
-        required: true,
+        required: false,
         value: "",
         variable: false,
         variableValue: "",

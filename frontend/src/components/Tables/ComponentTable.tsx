@@ -24,6 +24,7 @@ const ComponentTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(20);
   const [playing, setPlaying] = useState(false);
+  const [trLoading, setTrLoading] = useState(false);
   const [showNotification, setShowNotification] = useState({
     show: false,
     code: 200,
@@ -226,6 +227,8 @@ const ComponentTable = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setTrLoading(true);
+
       try {
         const res = await fetch(
           process.env.NEXT_PUBLIC_BACKEND_URL + "/components/all/",
@@ -239,7 +242,9 @@ const ComponentTable = () => {
         console.error("Error fetching data:", error);
       }
     };
-    fetchData();
+    fetchData().then(() => {
+      setTrLoading(false);
+    });
     setDeleted(false);
   }, [deleted]);
 
@@ -435,6 +440,18 @@ const ComponentTable = () => {
         }}
       />
 
+      {trLoading && (
+        <div className="bg-gray-900 fixed inset-0 flex items-center justify-center bg-opacity-50">
+          <p className="hidden text-black dark:text-white sm:block">
+            <img
+              src={"/images/general/loading.gif"}
+              alt="Loading"
+              className="mx-auto h-10 w-10 animate-spin"
+            />
+          </p>
+        </div>
+      )}
+
       <div className="flex flex-col rounded-t-lg border	border-slate-300 text-black">
         <div className="grid grid-cols-6 divide-x divide-slate-300 rounded-t-lg border-b border-slate-300 bg-indigo-50 uppercase dark:bg-[#1E1E2F] dark:text-white sm:grid-cols-6">
           <div className="xl:bt-5 pb-2 pl-2.5 pt-3  xl:pb-2.5 xl:pl-2.5">
@@ -494,7 +511,13 @@ const ComponentTable = () => {
             }`}
             key={comp.id}
           >
-            <div className="flex items-center gap-3 pl-2.5 ">
+            <div
+              className="flex items-center gap-3 pl-2.5 "
+              onDoubleClick={() => {
+                setTrLoading(true);
+                router.push("/componentedit?componentid=" + comp.id);
+              }}
+            >
               <p
                 className="text-bla ck
               hidden dark:text-white sm:block"
@@ -503,14 +526,28 @@ const ComponentTable = () => {
               </p>
             </div>
 
-            <div className="col-span-2 flex items-center gap-3 pl-2.5 ">
+            <div
+              className="col-span-2 flex items-center gap-3 pl-2.5 "
+              onDoubleClick={() => {
+                setTrLoading(true);
+
+                router.push("/componentedit?componentid=" + comp.id);
+              }}
+            >
               <p className="hidden text-black dark:text-white sm:block">
                 {/* {subflow.id} */}
                 {truncateText(comp.description, 15)}
               </p>
             </div>
 
-            <div className="flex items-center gap-3 pl-2.5 ">
+            <div
+              className="flex items-center gap-3 pl-2.5 "
+              onDoubleClick={() => {
+                setTrLoading(true);
+
+                router.push("/componentedit?componentid=" + comp.id);
+              }}
+            >
               <p
                 className="hidden text-black dark:text-white sm:block"
                 title={comp.description}
@@ -631,6 +668,18 @@ const ComponentTable = () => {
                 </div>
               </p>
             </div>
+
+            {trLoading && (
+              <div className="bg-gray-900 fixed inset-0 flex items-center justify-center bg-opacity-50">
+                <p className="hidden text-black dark:text-white sm:block">
+                  <img
+                    src={"/images/general/loading.gif"}
+                    alt="Loading"
+                    className="mx-auto h-10 w-10 animate-spin"
+                  />
+                </p>
+              </div>
+            )}
 
             {showConfirm && (
               <div className="fixed inset-0 flex items-center justify-center bg-slate-900 bg-opacity-10">
