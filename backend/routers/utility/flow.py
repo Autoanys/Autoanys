@@ -12,6 +12,7 @@ import json
 hostname = socket.getfqdn()
 ip = socket.gethostbyname_ex(hostname)[2][1]
 
+
 router = APIRouter()
 
 
@@ -88,31 +89,24 @@ Correspondence_function_list = {
 
 @router.post("/flow/v2/")
 async def analyze_json(json_datas: dict):
-    print(json_datas)
     try:
         startToEnd = checkStartToEnd(json_datas)
         if startToEnd:
             temp = {}
             post_data = {}
             steps = []
-            print("Step 1")
-            # Helper function to find the source node details
             def get_node_details(node_id):
                 return next((node for node in json_datas["nodes"] if node["id"] == node_id), None)
 
-            # Initialize the start node
             current_node_id = "start-node"
             visited_nodes = set()
             print("Step 2")
             while current_node_id and current_node_id != "end-node":
                 if current_node_id in visited_nodes:
-                    break
+                    raise HTTPException(status_code=451, detail="Cycle detected in flow at node: " + current_node_id)
                 visited_nodes.add(current_node_id)
                 
-                # Get the current node details
                 current_node = get_node_details(current_node_id)
-                print("Step 3")
-                # Process the current node if it is not the start or end node
                 if current_node and current_node_id != "start-node":
                     if len(current_node['data']['inputs']) > 0 and current_node['data']['method'] == "POST":
                         temp["api"] = f"http://{ip}:8000" + current_node['data']['api']
@@ -121,15 +115,13 @@ async def analyze_json(json_datas: dict):
                         save_result_selected = current_node.get('data', {}).get('saveResultSelected', None)
                         if (save_result_selected == "variable" and current_node['data']['resultValue'] and check_key_contains(json_datas["variables"], current_node['data']['resultValue'])):
                             temp["saveResult"] = current_node['data']['resultValue']
-                            
+
                         steps.append(temp)
                         print("Step 4")
                         for i in current_node['data']['inputs']:
                             print(i['variable'], i['value'], "OK")
                             if (i['variable'] and i['value'].startswith("CAAS$")) or (i['variable'] and i['value'].startswith("AAS$")):
-                                print("Step 5")
                                 try:
-                                    print("Step 5")
                                     for var in json_datas["variables"]:
                                         if var['key'] == i['value'] and var['value']:
                                             post_data[i['id']] = var['value']
@@ -144,7 +136,7 @@ async def analyze_json(json_datas: dict):
                                                 post_data[i['id']] = i['value']
                                     except Exception as e:
                                         print(e)
-                                        raise HTTPException(status_code=451, detail="Error in analyzing flow")
+                                        raise HTTPException(status_code=451, detail=f"Error processing variables in inputs: {str(e)}")
                             else:
                                 post_data[i['id']] = i['value']
                         temp["post_data"] = post_data
@@ -163,7 +155,6 @@ async def analyze_json(json_datas: dict):
                         steps.append(temp)
                         temp = {}
 
-                # Find the next node from the edges
                 next_edge = next((edge for edge in json_datas["edges"] if edge["source"] == current_node_id), None)
                 current_node_id = next_edge["target"] if next_edge else None
 
@@ -172,10 +163,11 @@ async def analyze_json(json_datas: dict):
                     print("-------------------END-------------------")
                     print(node)
 
-            print("STEP", steps)
             return {"message": "Start to end valid", "steps": steps}
         else:
-            raise HTTPException(status_code=452, detail="Error in analyzing flow")
+            raise HTTPException(status_code=452, detail="Nodes did not connect from start to end")
+    except HTTPException as e:
+        raise e
     except Exception as e:
         print(e)
-        raise HTTPException(status_code=453, detail="Error in analyzing flow")
+        raise HTTPException(status_code=453, detail=f"Unexpected error: {str(e)}")
