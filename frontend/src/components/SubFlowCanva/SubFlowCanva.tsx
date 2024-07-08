@@ -11,6 +11,7 @@ import ReactFlow, {
   addEdge,
   applyEdgeChanges,
   applyNodeChanges,
+  MiniMap,
   ReactFlowProvider,
   Controls,
   ControlButton,
@@ -1597,6 +1598,7 @@ const SubFlowCanva = (editing, flowid) => {
                 key={`${node_id}-saveResultValue`}
                 className="mt-2 h-10 w-full rounded-lg border border-slate-200 px-3 py-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-sky-500"
                 type="text"
+                autoComplete="off"
                 placeholder="Select Variable Name to Save Result"
                 value={nodes.find((n) => n.id == node_id)?.data.resultValue}
                 onChange={(e) => changeResultValue(e, node_id)}
@@ -2095,6 +2097,13 @@ const SubFlowCanva = (editing, flowid) => {
             edgeTypes={edgeTypes}
             proOptions={proOptions}
           >
+            {/* <MiniMap
+              className="mb-10"
+              nodeClassName="mb-12"
+              nodeStrokeWidth={3}
+              offsetScale={5}
+            /> */}
+
             <Background id="2" color="#333" />
 
             <Controls></Controls>
