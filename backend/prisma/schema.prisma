@@ -70,6 +70,7 @@ model StepLogs {
   created_at DateTime @default(now())
   log   Logs @relation(fields: [logID], references: [id])
   logID String
+  variables String @default("{}")
 }
 
 model EmailProfile {

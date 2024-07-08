@@ -14,8 +14,13 @@ ip = socket.gethostbyname_ex(hostname)[2][1]
 
 router = APIRouter()
 
-def sda(json_data):
-    return
+
+
+def check_key_contains(variables, substring):
+    for variable in variables:
+        if substring in variable["key"]:
+            return True
+    return False
 
 def checkStartToEnd(json_data: dict):
     edges = json_data.get("edges", [])
@@ -113,9 +118,16 @@ async def analyze_json(json_datas: dict):
                         temp["api"] = f"http://{ip}:8000" + current_node['data']['api']
                         temp["method"] = current_node['data']['method']
                         temp["function"] = Correspondence_function_list[current_node['type']]
+                        save_result_selected = current_node.get('data', {}).get('saveResultSelected', None)
+                        if (save_result_selected == "variable" and current_node['data']['resultValue'] and check_key_contains(json_datas["variables"], current_node['data']['resultValue'])):
+                            temp["saveResult"] = current_node['data']['resultValue']
+                            
+                        steps.append(temp)
                         print("Step 4")
                         for i in current_node['data']['inputs']:
+                            print(i['variable'], i['value'], "OK")
                             if (i['variable'] and i['value'].startswith("CAAS$")) or (i['variable'] and i['value'].startswith("AAS$")):
+                                print("Step 5")
                                 try:
                                     print("Step 5")
                                     for var in json_datas["variables"]:
@@ -143,6 +155,11 @@ async def analyze_json(json_datas: dict):
                         temp["api"] = f"http://{ip}:8000" + current_node['data']['api']
                         temp["method"] = current_node['data']['method']
                         temp["function"] = Correspondence_function_list[current_node['type']]
+                        print(current_node)
+                        save_result_selected = current_node.get('data', {}).get('saveResultSelected', None)
+
+                        if (save_result_selected == "variable" and current_node['data']['resultValue'] and check_key_contains(json_datas["variables"], current_node['data']['resultValue'])):
+                            temp["saveResult"] = current_node['data']['resultValue']
                         steps.append(temp)
                         temp = {}
 
