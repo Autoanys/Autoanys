@@ -116,7 +116,7 @@ async def analyze_json(json_datas: dict):
                         if (save_result_selected == "variable" and current_node['data']['resultValue'] and check_key_contains(json_datas["variables"], current_node['data']['resultValue'])):
                             temp["saveResult"] = current_node['data']['resultValue']
 
-                        steps.append(temp)
+                        # steps.append(temp)
                         print("Step 4")
                         for i in current_node['data']['inputs']:
                             print(i['variable'], i['value'], "OK")
