@@ -15,6 +15,7 @@ const nodeConfigInit = {
     inputs: [],
     saveResult: ["null", "variable"],
     resultValue: "",
+    flowDirection: "vertical",
   },
   closeBrowser: {
     label: "Close Browser",
@@ -28,6 +29,7 @@ const nodeConfigInit = {
     inputs: [],
     saveResult: ["null", "variable"],
     resultValue: "",
+    flowDirection: "vertical",
   },
   openBrowserLink: {
     label: "Access Website",
@@ -52,6 +54,7 @@ const nodeConfigInit = {
     ],
     saveResult: ["null", "variable"],
     resultValue: "",
+    flowDirection: "vertical",
   },
   waitSecond: {
     label: "Wait Second",
@@ -77,6 +80,7 @@ const nodeConfigInit = {
     saveResult: ["null", "variable"],
     saveResultSelected: "null",
     resultValue: "",
+    flowDirection: "vertical",
   },
   sshMachine: {
     label: "ssh session",
@@ -112,6 +116,7 @@ const nodeConfigInit = {
     saveResult: ["null", "variable"],
     saveResultSelected: "null",
     resultValue: "",
+    flowDirection: "vertical",
   },
   findElement: {
     label: "Find Element",
@@ -148,6 +153,7 @@ const nodeConfigInit = {
     saveResult: ["null", "variable"],
     saveResultSelected: "null",
     resultValue: "",
+    flowDirection: "vertical",
   },
   findElementClick: {
     label: "Find and Click",
@@ -184,6 +190,7 @@ const nodeConfigInit = {
     saveResult: ["null", "variable"],
     saveResultSelected: "null",
     resultValue: "",
+    flowDirection: "vertical",
   },
   findElementType: {
     label: "Find and Type",
@@ -230,6 +237,7 @@ const nodeConfigInit = {
     saveResult: ["null", "variable"],
     saveResultSelected: "null",
     resultValue: "",
+    flowDirection: "vertical",
   },
 
   readCSV: {
@@ -256,6 +264,7 @@ const nodeConfigInit = {
     saveResult: ["null", "variable"],
     saveResultSelected: "null",
     resultValue: "",
+    flowDirection: "vertical",
   },
   uploadFile: {
     label: "Upload File",
@@ -281,6 +290,7 @@ const nodeConfigInit = {
     saveResult: ["null", "variable"],
     saveResultSelected: "null",
     resultValue: "",
+    flowDirection: "vertical",
   },
 
   ifCondition: {
@@ -307,6 +317,7 @@ const nodeConfigInit = {
     saveResult: ["null", "variable"],
     saveResultSelected: "null",
     resultValue: "",
+    flowDirection: "vertical",
   },
   askPromt: {
     label: "Input Prompt",
@@ -353,6 +364,7 @@ const nodeConfigInit = {
     saveResult: ["null", "variable"],
     saveResultSelected: "null",
     resultValue: "",
+    flowDirection: "vertical",
   },
 };
 

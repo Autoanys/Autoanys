@@ -95,6 +95,7 @@ const SubFlowCanva = (editing, flowid) => {
     message: "",
   });
   const [suggestions, setSuggestions] = useState([]);
+  const [flowDirection, setFlowDirection] = useState("horizontal");
 
   const [cateLoading, setCateLoading] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -380,6 +381,20 @@ const SubFlowCanva = (editing, flowid) => {
     );
   };
 
+  const toggleFlowDirection = (va) => {
+    setFlowDirection(va);
+
+    setNodes((nds) =>
+      nds.map((node) => ({
+        ...node,
+        data: {
+          ...node.data,
+          flowDirection: va,
+        },
+      })),
+    );
+  };
+
   useHotkeys("ctrl+shift+h, cmd+shift+h", (event) => {
     event.preventDefault();
     toggleDesc();
@@ -409,7 +424,7 @@ const SubFlowCanva = (editing, flowid) => {
             const flowData = JSON.parse(data.data.flowjson);
             flowKeys.value = data.data.name;
             setFlowDescription(data.data.description);
-
+            setFlowDirection(flowData.flowDirection || "horizontal");
             if (data && flowData) {
               const { x = 0, y = 0, zoom = 1 } = flowData.viewport;
               const updatedNodes = addOnChangeHandler(flowData.nodes || []);
@@ -799,7 +814,7 @@ const SubFlowCanva = (editing, flowid) => {
 
               setCurrentResult((currentResult) => [
                 ...currentResult,
-                { type: "text", value: resData.detail },
+                { type: "text", value: resData.detail, error: true },
               ]);
 
               continue;
@@ -825,12 +840,12 @@ const SubFlowCanva = (editing, flowid) => {
               console.log("Preview data", resData.preview);
               setCurrentResult((currentResult) => [
                 ...currentResult,
-                { type: "image", value: resData.preview },
+                { type: "image", value: resData.preview, error: false },
               ]);
             } else {
               setCurrentResult((currentResult) => [
                 ...currentResult,
-                { type: "text", value: resData.message },
+                { type: "text", value: resData.message, error: false },
               ]);
             }
             console.log("Current Index", i);
@@ -1320,12 +1335,12 @@ const SubFlowCanva = (editing, flowid) => {
           console.log("Preview data", resData.preview);
           setCurrentDebugResult((currentDebugResult) => [
             ...currentDebugResult,
-            { type: "image", value: resData.preview },
+            { type: "image", value: resData.preview, error: false },
           ]);
         } else {
           setCurrentDebugResult((currentDebugResult) => [
             ...currentDebugResult,
-            { type: "text", value: resData.message },
+            { type: "text", value: resData.message, error: false },
           ]);
         }
       }
@@ -2366,7 +2381,9 @@ const SubFlowCanva = (editing, flowid) => {
                         }
                       >
                         {currentResult[currentIndex].value
-                          ? currentResult[currentIndex].value
+                          ? currentResult[currentIndex].error === true
+                            ? "Error, Click to view details"
+                            : currentResult[currentIndex].value
                           : "Loading"}
                       </span>
                     </div>
@@ -2458,7 +2475,9 @@ const SubFlowCanva = (editing, flowid) => {
                     <div>
                       <p>
                         {currentDebugResult[currentDebugIndex].value
-                          ? currentDebugResult[currentDebugIndex].value
+                          ? currentDebugResult[currentDebugIndex].error === true
+                            ? "Error, Click to view details"
+                            : currentDebugResult[currentDebugIndex].value
                           : "Loading"}
                       </p>
                     </div>
@@ -2641,6 +2660,26 @@ const SubFlowCanva = (editing, flowid) => {
                   rows="5"
                 ></textarea>
               </div>
+
+              {/* <div className="mb-4">
+                <label
+                  className="text-gray-700 mb-2 block text-sm font-bold"
+                  htmlFor="flow_description"
+                >
+                  Flow Direction :{" "}
+                </label>
+                <select
+                  className="text-gray-900 focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight shadow focus:outline-none"
+                  id="flow_direction"
+                  placeholder="Flow Direction"
+                  defaultValue={flowDirection}
+                  onChange={(e) => toggleFlowDirection(e.target.value)}
+                  rows="5"
+                >
+                  <option value="vertical">Vertical</option>
+                  <option value="horizontal">Horizontal</option>
+                </select>
+              </div> */}
 
               <div className="flex items-center justify-between">
                 <button
