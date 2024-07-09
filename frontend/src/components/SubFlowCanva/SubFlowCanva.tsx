@@ -133,6 +133,7 @@ const SubFlowCanva = (editing, flowid) => {
   const [debugData, setDebugData] = useState([]);
   const [debugStep, setDebugStep] = useState(0);
   const [debugging, setDebugging] = useState(false);
+  let isRunning = useRef(false);
 
   const initialNodes = [
     {
@@ -724,9 +725,8 @@ const SubFlowCanva = (editing, flowid) => {
             return;
           }
 
-          console.log("from api", data);
-          let tmp_id;
           for (let i = 0, l = data.steps.length; i < l; i++) {
+            console.log("Loop iteration", i);
             setPlaying(true);
             setPlayingPreviewSideBar(true);
             setResultLoading(true);
@@ -748,7 +748,9 @@ const SubFlowCanva = (editing, flowid) => {
                 body: formData,
               });
             }
-            let curRes = await fetch(data.steps[i].api, {
+            console.log(`Fetching: ${data.steps[i].api}`);
+
+            const curRes = await fetch(data.steps[i].api, {
               method: data.steps[i].method,
               headers: {
                 "Content-Type": "application/json",
@@ -779,7 +781,7 @@ const SubFlowCanva = (editing, flowid) => {
               return;
             }
 
-            let resData = await curRes.json();
+            const resData = await curRes.json();
 
             let stepLog = await fetch(
               process.env.NEXT_PUBLIC_BACKEND_URL + "/logs/step/",
@@ -809,6 +811,7 @@ const SubFlowCanva = (editing, flowid) => {
                 { type: "text", value: resData.message },
               ]);
             }
+            console.log("Current Index", i);
 
             if (i === data.steps.length - 1) {
               setPlaying(false);

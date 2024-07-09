@@ -1,5 +1,9 @@
 import Link from "next/link";
 
+const retry = () => {
+  location.reload();
+};
+
 export default function NotFound() {
   return (
     <div className="flex h-screen flex-col items-center justify-center">
@@ -10,9 +14,9 @@ export default function NotFound() {
       />
       <h1 className="text-4xl font-bold">404</h1>
       <p className="text-2xl">Page not found</p>
-      <Link href="/">
-        <p className="text-blue-500">Go back to home</p>
-      </Link>
+      <a className="text-blue-500" href="/">
+        Go back to home
+      </a>
     </div>
   );
 }
