@@ -2,64 +2,9 @@ import { ApexOptions } from "apexcharts";
 import React, { useState } from "react";
 import ReactApexChart from "react-apexcharts";
 
-const options: ApexOptions = {
-  colors: ["#3C50E0", "#80CAEE"],
-  chart: {
-    fontFamily: "Satoshi, sans-serif",
-    type: "bar",
-    height: 335,
-    stacked: true,
-    toolbar: {
-      show: false,
-    },
-    zoom: {
-      enabled: false,
-    },
-  },
-
-  responsive: [
-    {
-      breakpoint: 1536,
-      options: {
-        plotOptions: {
-          bar: {
-            borderRadius: 0,
-            columnWidth: "25%",
-          },
-        },
-      },
-    },
-  ],
-  plotOptions: {
-    bar: {
-      horizontal: false,
-      borderRadius: 0,
-      columnWidth: "25%",
-      borderRadiusApplication: "end",
-      borderRadiusWhenStacked: "last",
-    },
-  },
-  dataLabels: {
-    enabled: false,
-  },
-
-  xaxis: {
-    categories: ["M", "T", "W", "T", "F", "S", "S"],
-  },
-  legend: {
-    position: "top",
-    horizontalAlign: "left",
-    fontFamily: "Satoshi",
-    fontWeight: 500,
-    fontSize: "14px",
-
-    markers: {
-      radius: 99,
-    },
-  },
-  fill: {
-    opacity: 1,
-  },
+const getCurrentDayIndex = () => {
+  const today = new Date();
+  return today.getDay();
 };
 
 interface ChartTwoState {
@@ -70,6 +15,76 @@ interface ChartTwoState {
 }
 
 const ExecutionTableTwo: React.FC = (tData) => {
+  const currentDayIndex = getCurrentDayIndex();
+
+  const options: ApexOptions = {
+    colors: ["#3C50E0", "#80CAEE"],
+    chart: {
+      fontFamily: "Satoshi, sans-serif",
+      type: "bar",
+      height: 335,
+      stacked: true,
+      toolbar: {
+        show: false,
+      },
+      zoom: {
+        enabled: false,
+      },
+    },
+    responsive: [
+      {
+        breakpoint: 1536,
+        options: {
+          plotOptions: {
+            bar: {
+              borderRadius: 0,
+              columnWidth: "25%",
+            },
+          },
+        },
+      },
+    ],
+    plotOptions: {
+      bar: {
+        horizontal: false,
+        borderRadius: 0,
+        columnWidth: "25%",
+        borderRadiusApplication: "end",
+        borderRadiusWhenStacked: "last",
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    xaxis: {
+      categories: ["S", "M", "T", "W", "T", "F", "S"],
+      labels: {
+        formatter: (val, index) => {
+          if (index === currentDayIndex) {
+            return `<span style="font-weight: bold;">${val}</span>`;
+          }
+          return val;
+        },
+        style: {
+          colors: ["#333", "#333", "#333", "#333", "#333", "#333", "#333"],
+        },
+      },
+    },
+    legend: {
+      position: "top",
+      horizontalAlign: "left",
+      fontFamily: "Satoshi",
+      fontWeight: 500,
+      fontSize: "14px",
+      markers: {
+        radius: 99,
+      },
+    },
+    fill: {
+      opacity: 1,
+    },
+  };
+
   const weekData = [
     {
       name: "Execution",
@@ -97,14 +112,17 @@ const ExecutionTableTwo: React.FC = (tData) => {
           </h4>
         </div>
         <div>
-          <div className="relative z-20 inline-block">
+          <div className="inline-flex items-center rounded-md bg-whiter p-1.5 dark:bg-meta-4">
             {/* <select
               name="#"
               id="#"
               className="relative z-20 inline-flex appearance-none bg-transparent py-1 pl-3 pr-8 text-sm font-medium outline-none"
             >
+              
               <option value="" className="dark:bg-boxdark"> */}
-            This Week
+            <button className="rounded bg-white px-3 py-1 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark">
+              Week
+            </button>
             {/* </option> */}
             {/* <option value="" className="dark:bg-boxdark">
                 Last Week

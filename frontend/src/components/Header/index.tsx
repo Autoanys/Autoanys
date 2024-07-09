@@ -156,7 +156,7 @@ const Header = (props: {
                 <input
                   type="text"
                   placeholder="Type to search..."
-                  className="w-72 rounded-lg border border-slate-300 bg-white p-2 pl-10 pr-4 font-medium hover:border-slate-500 focus:border-slate-500 focus:outline-none"
+                  className="w-72 rounded-lg  border border-slate-300 bg-white p-2 pl-10 pr-4 font-medium hover:border-slate-500 focus:border-slate-500 focus:outline-none dark:border-slate-600 dark:bg-slate-900"
                   value={inputValue}
                   ref={inputRef}
                   onChange={handleInputChange}

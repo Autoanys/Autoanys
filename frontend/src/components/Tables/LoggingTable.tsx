@@ -389,6 +389,9 @@ const LoggingTable = () => {
                         >
                           <span className="font-semibold">
                             Step {item.step}
+                            {result.message.includes("Error")
+                              ? " ⛔ Failed"
+                              : " ✅ Passed"}
                           </span>
                           <span
                             className="transform transition-transform duration-300"
@@ -403,7 +406,8 @@ const LoggingTable = () => {
                               <strong>API:</strong> {item.api}
                             </p>
                             <p className="">
-                              <strong>Result:</strong> {result.message}
+                              <strong>Result:</strong>{" "}
+                              {truncateText(result.message, 50)}
                               <p className="inline">
                                 {result.preview && (
                                   <button className="ml-5 inline rounded-lg bg-blue-500 px-2 py-1 text-white">
@@ -411,6 +415,11 @@ const LoggingTable = () => {
                                       {" "}
                                       Image Preview{" "}
                                     </a>
+                                  </button>
+                                )}
+                                {result.message.includes("Error") && (
+                                  <button className="ml-5 inline rounded-lg bg-rose-500 px-2 py-1 text-white">
+                                    <a> Error Details </a>
                                   </button>
                                 )}
                               </p>

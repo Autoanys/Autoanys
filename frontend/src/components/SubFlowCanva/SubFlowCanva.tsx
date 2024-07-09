@@ -793,8 +793,15 @@ const SubFlowCanva = (editing, flowid) => {
                 });
               }, 3000);
               console.log("IN 450");
-              await setPlaying(false);
-              await setResultLoading(false);
+
+              await fetch(
+                process.env.NEXT_PUBLIC_BACKEND_URL +
+                  "/logs/failed/" +
+                  triggerID,
+                {
+                  method: "GET",
+                },
+              );
 
               let stepLog = await fetch(
                 process.env.NEXT_PUBLIC_BACKEND_URL + "/logs/step/",
@@ -807,7 +814,9 @@ const SubFlowCanva = (editing, flowid) => {
                     log_id: triggerID,
                     api: data.steps[i].api,
                     step: i + 1,
-                    result: JSON.stringify(resData.detail),
+                    result: JSON.stringify({
+                      message: JSON.stringify(resData.detail),
+                    }),
                   }),
                 },
               );

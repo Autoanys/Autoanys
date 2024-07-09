@@ -212,7 +212,7 @@ const ExtensionsGrid = () => {
           {plugins.map((plugin) => (
             <li
               key={plugin.name}
-              className="col-span-1  divide-y divide-slate-100 rounded-lg bg-white shadow-xl dark:bg-boxdark dark:text-white"
+              className="col-span-1  divide-y divide-slate-100 rounded-lg bg-white shadow-xl dark:divide-slate-600 dark:bg-boxdark dark:text-white"
             >
               <div className="flex w-full items-center justify-between space-x-6 p-6">
                 <div className="flex-1 truncate">
@@ -236,9 +236,10 @@ const ExtensionsGrid = () => {
               </div>
               <div className="grid grid-cols-2">
                 <div className="divide-gray-200 col-span-1 -mt-px flex">
-                  <div className="flex w-0 flex-1">
+                  <div className="flex w-0 flex-1 hover:bg-slate-100">
                     <a
-                      href={`mailto:${plugin.doc}`}
+                      href={plugin.doc}
+                      target="_blank"
                       className="text-gray-700 hover:text-gray-500 relative -mr-px inline-flex w-0 flex-1 items-center justify-center rounded-bl-lg border border-transparent py-4 text-sm font-medium"
                     >
                       {/* <MailIcon
