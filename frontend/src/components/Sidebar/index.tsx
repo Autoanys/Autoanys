@@ -128,9 +128,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   return (
     <aside
       ref={sidebar}
-      className={`fixed left-0 top-0 z-40 h-screen flex-col overflow-y-hidden bg-slate-50 duration-200 ease-linear dark:bg-slate-900  ${
-        sidebarOpen ? "translate-x-0" : "-translate-x-full"
-      } lg:static lg:translate-x-0 ${sidebarExpanded ? "w-64" : "w-25"}`}
+      className={`fixed left-0 top-0 z-40 h-screen flex-col overflow-y-hidden border-r border-slate-800/[.10]
+
+	 bg-slate-50 duration-200 ease-linear dark:bg-slate-900  ${
+     sidebarOpen ? "translate-x-0" : "-translate-x-full"
+   } lg:static lg:translate-x-0 ${sidebarExpanded ? "w-64" : "w-25"}`}
     >
       <div
         className={`spt-1 hadow-1 flex items-center justify-between gap-2 bg-slate-50 px-6 py-4 drop-shadow-1 dark:bg-slate-900 dark:drop-shadow 
