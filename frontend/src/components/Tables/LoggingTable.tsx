@@ -349,7 +349,7 @@ const LoggingTable = () => {
         >
           <div className="relative h-3/5 w-1/2 rounded-lg bg-white p-4 shadow-lg">
             <button
-              className="absolute right-2 top-2 text-black"
+              className="absolute right-2 top-2 rounded-lg bg-rose-500 p-2 text-white"
               onClick={closePopup}
             >
               Close
@@ -419,7 +419,10 @@ const LoggingTable = () => {
                                 )}
                                 {result.message.includes("Error") && (
                                   <button className="ml-5 inline rounded-lg bg-rose-500 px-2 py-1 text-white">
-                                    <a> Error Details </a>
+                                    <a onClick={() => alert(result.message)}>
+                                      {" "}
+                                      Error Details{" "}
+                                    </a>
                                   </button>
                                 )}
                               </p>

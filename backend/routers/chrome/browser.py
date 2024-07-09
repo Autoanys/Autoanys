@@ -94,32 +94,38 @@ async def FindByXpath(xpath_data: dict):
 
 @router.post("/browser/findBy/click")
 async def FindByXpathClick(xpath_data: dict):
-    query = xpath_data.get("query")
-    find_by = xpath_data.get("find_by")
-    imageFile = get_random_string(12)+".png"
+    try:
+        query = xpath_data.get("query")
+        find_by = xpath_data.get("find_by")
+        imageFile = get_random_string(12)+".png"
 
-    if query:
-        element = driver.find_element(find_by, query)
-        element.click()
-        driver.save_screenshot("storage/"+imageFile)
-        return {"message": "Element Found and Clicked", "preview" : f"http://{ip}:8000/browser/screenshot/"+ imageFile}
-    else:
-        return {"message": "Element Not Found"}
+        if query:
+            element = driver.find_element(find_by, query)
+            element.click()
+            driver.save_screenshot("storage/"+imageFile)
+            return {"message": "Element Found and Clicked", "preview" : f"http://{ip}:8000/browser/screenshot/"+ imageFile}
+        else:
+            return {"message": "Element Not Found"}
+    except Exception as e:
+        raise HTTPException(status_code=450, detail=f"Error, cannot allocated element, {e}")
     
 @router.post("/browser/findBy/type")
 async def FindByXpathType(xpath_data: dict):
-    query = xpath_data.get("query")
-    find_by = xpath_data.get("find_by")
-    imageFile = get_random_string(12)+".png"
+    try:
+        query = xpath_data.get("query")
+        find_by = xpath_data.get("find_by")
+        imageFile = get_random_string(12)+".png"
 
-    type = xpath_data.get("type")
-    if query:
-        element = driver.find_element(find_by, query)
-        element.send_keys(type)
-        driver.save_screenshot("storage/"+imageFile)
-        return {"message": "Element Found and Typed", "preview" : f"http://{ip}:8000/browser/screenshot/"+ imageFile}
-    else:
-        return {"message": "Element Not Found"}
+        type = xpath_data.get("type")
+        if query:
+            element = driver.find_element(find_by, query)
+            element.send_keys(type)
+            driver.save_screenshot("storage/"+imageFile)
+            return {"message": "Element Found and Typed", "preview" : f"http://{ip}:8000/browser/screenshot/"+ imageFile}
+        else:
+            return {"message": "Element Not Found"}
+    except Exception as e:
+        raise HTTPException(status_code=450, detail=f"Error, cannot allocated element, {e}")
 
 
 @router.post("/browser/click/")

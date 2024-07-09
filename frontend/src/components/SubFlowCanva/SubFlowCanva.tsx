@@ -69,6 +69,8 @@ import { debug } from "console";
 import { useTranslation } from "next-i18next";
 import { useHotkeys } from "react-hotkeys-hook";
 import { BsDatabaseAdd } from "react-icons/bs";
+import EmojiPicker from "emoji-picker-react";
+import { Emoji, EmojiStyle } from "emoji-picker-react";
 
 const proOptions = { hideAttribution: true };
 const addOnChangeToNodeConfig = (config, handleChange) => {
@@ -89,6 +91,8 @@ const SubFlowCanva = (editing, flowid) => {
   const [confirmAdding, setConfirmAdding] = useState(false);
   const pathname = usePathname();
   const [edges, setEdges] = useState([]);
+  const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
+  const [emjoiValue, setEmojiValue] = useState("1f423");
   const [showNotification, setShowNotification] = useState({
     show: false,
     code: 200,
@@ -825,8 +829,13 @@ const SubFlowCanva = (editing, flowid) => {
                 ...currentResult,
                 { type: "text", value: resData.detail, error: true },
               ]);
-
-              continue;
+              if (i === data.steps.length - 1) {
+                setPlaying(false);
+                setResultLoading(false);
+                break;
+              } else {
+                continue;
+              }
             }
 
             let stepLog = await fetch(
@@ -2626,7 +2635,12 @@ const SubFlowCanva = (editing, flowid) => {
       {isPopupOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div ref={popupRef} className="w-2/5 rounded bg-white p-6 shadow-lg">
-            <h2 className="mb-4 text-xl font-semibold">Workflow Setting</h2>
+            <h2 className="mb-4 inline-flex items-center text-xl font-semibold">
+              <span className="mr-2 rounded-lg border border-slate-400 p-1 hover:bg-slate-300">
+                <Emoji unified={emjoiValue} />
+              </span>
+              Workflow Setting {emojiPickerOpen && <EmojiPicker />}
+            </h2>
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 {parms.get("flowid") && (

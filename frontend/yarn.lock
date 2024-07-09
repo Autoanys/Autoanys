@@ -1905,6 +1905,13 @@ electron-to-chromium@^1.4.648:
   resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.4.656.tgz"
   integrity sha512-9AQB5eFTHyR3Gvt2t/NwR0le2jBSUNwCnMbUCejFWHD+so4tH40/dRLgoE+jxlPeWS43XJewyvCv+I8LPMl49Q==
 
+emoji-picker-react@^4.11.1:
+  version "4.11.1"
+  resolved "https://registry.npmjs.org/emoji-picker-react/-/emoji-picker-react-4.11.1.tgz"
+  integrity sha512-e3vhGcZyyNu7GqJaXzgoVxtASXs97duAP/vh7aL88dHJcW72DjuwYMjipzNBCjPFxXwUiQas483SKCAxPwwaUQ==
+  dependencies:
+    flairup "1.0.0"
+
 emoji-regex@^8.0.0:
   version "8.0.0"
   resolved "https://registry.npmjs.org/emoji-regex/-/emoji-regex-8.0.0.tgz"
@@ -2360,6 +2367,11 @@ find-up@^5.0.0:
   dependencies:
     locate-path "^6.0.0"
     path-exists "^4.0.0"
+
+flairup@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/flairup/-/flairup-1.0.0.tgz"
+  integrity sha512-IKlE+pNvL2R+kVL1kEhUYqRxVqeFnjiIvHWDMLFXNaqyUdFXQM2wte44EfMYJNHkW16X991t2Zg8apKkhv7OBA==
 
 flat-cache@^3.0.4:
   version "3.2.0"
@@ -4062,7 +4074,7 @@ react-time-picker@^7.0.0:
     react-fit "^2.0.0"
     update-input-width "^1.4.0"
 
-react@*, "react@^16.6.0 || 17 || 18", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0", "react@^16.8.0 || ^17.0.0-rc.1 || ^18.0.0", "react@^17.0.2 || ^18.0.0", react@^18, react@^18.2.0, "react@>= 16", "react@>= 16.8.0", "react@>= 16.8.0 || 17.x.x || ^18.0.0-0", "react@>= 17.0.2", react@>=0.13, react@>=16.8, react@>=16.8.0, react@>=16.8.1, react@>=17:
+react@*, "react@^16.6.0 || 17 || 18", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0", "react@^16.8.0 || ^17.0.0-rc.1 || ^18.0.0", "react@^17.0.2 || ^18.0.0", react@^18, react@^18.2.0, "react@>= 16", "react@>= 16.8.0", "react@>= 16.8.0 || 17.x.x || ^18.0.0-0", "react@>= 17.0.2", react@>=0.13, react@>=16, react@>=16.8, react@>=16.8.0, react@>=16.8.1, react@>=17:
   version "18.2.0"
   resolved "https://registry.npmjs.org/react/-/react-18.2.0.tgz"
   integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==

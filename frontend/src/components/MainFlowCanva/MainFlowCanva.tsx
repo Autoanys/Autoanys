@@ -30,6 +30,8 @@ import {
   OpenBrowswerLinkNode,
   findElementNode,
 } from "./BrowserNodes";
+import EmojiPicker from "emoji-picker-react";
+
 import { start } from "repl";
 import { Fragment } from "react";
 import { Transition } from "@headlessui/react";
@@ -1294,7 +1296,9 @@ const MainFlowCanva = (editing, flowid) => {
       {isPopupOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div ref={popupRef} className="w-2/5 rounded bg-white p-6 shadow-lg">
-            <h2 className="mb-4 text-xl font-semibold">Workflow Setting</h2>
+            <h2 className="mb-4 text-xl font-semibold">
+              Workflow Setting <EmojiPicker />
+            </h2>
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label

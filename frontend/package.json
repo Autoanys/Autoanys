@@ -25,6 +25,7 @@
     "@types/inquirer": "^9.0.7",
     "apexcharts": "^3.45.2",
     "drawflow": "^0.0.59",
+    "emoji-picker-react": "^4.11.1",
     "flatpickr": "^4.6.13",
     "html-to-image": "^1.11.11",
     "inquirer": "^9.2.23",
