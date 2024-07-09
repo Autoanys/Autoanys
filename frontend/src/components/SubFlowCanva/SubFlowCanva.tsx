@@ -761,6 +761,8 @@ const SubFlowCanva = (editing, flowid) => {
                   : null,
             });
 
+            const resData = await curRes.json();
+
             if (curRes.status === 450) {
               console.log("IN");
               setShowNotification({
@@ -778,10 +780,30 @@ const SubFlowCanva = (editing, flowid) => {
               console.log("IN 450");
               await setPlaying(false);
               await setResultLoading(false);
-              return;
-            }
 
-            const resData = await curRes.json();
+              let stepLog = await fetch(
+                process.env.NEXT_PUBLIC_BACKEND_URL + "/logs/step/",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    log_id: triggerID,
+                    api: data.steps[i].api,
+                    step: i + 1,
+                    result: JSON.stringify(resData.detail),
+                  }),
+                },
+              );
+
+              setCurrentResult((currentResult) => [
+                ...currentResult,
+                { type: "text", value: resData.detail },
+              ]);
+
+              continue;
+            }
 
             let stepLog = await fetch(
               process.env.NEXT_PUBLIC_BACKEND_URL + "/logs/step/",

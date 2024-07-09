@@ -73,10 +73,10 @@ async def FindBy(xpath_data: dict):
             element = driver.find_element(find_by, query)
             return {"message": "Element Found", "data": element.text}
         else:
-            raise HTTPException(status_code=450, detail="Error, cannot allocated element, {e}")
+            raise HTTPException(status_code=450, detail=f"Error, cannot allocated element, {e}")
 
     except Exception as e:
-        raise HTTPException(status_code=450, detail="Error, cannot allocated element, {e}")
+        raise HTTPException(status_code=450, detail=f"Error, cannot allocated element, {e}")
 
 @router.post("/browser/type/")
 async def FindByXpath(xpath_data: dict):

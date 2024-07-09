@@ -919,7 +919,7 @@ const SubflowTable = () => {
                 className="
               text-black dark:text-white sm:block"
               >
-                {truncateText(subflow.name, 20)}
+                {truncateText(subflow.name, 10)}
               </p>
             </div>
 
@@ -1154,7 +1154,7 @@ const SubflowTable = () => {
                     )}
                   </button>
                   <button
-                    className="font-sans from-gray-900 to-gray-800 shadow-gray-900/10 hover:shadow-gray-900/20 relative mr-2 h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg bg-gradient-to-tr pl-6 text-center align-middle text-xs font-medium uppercase text-white  transition-all hover:shadow-lg active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                    className="font-sans from-gray-900 to-gray-800 shadow-gray-900/10 hover:shadow-gray-900/20 relative mr-2 hidden h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg bg-gradient-to-tr pl-6 text-center align-middle text-xs font-medium uppercase text-white transition-all  hover:shadow-lg active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none md:block"
                     type="button"
                     title="Delete Subflow"
                     onClick={() => handleDeleteClick(subflow)}
