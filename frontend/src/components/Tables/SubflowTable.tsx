@@ -797,7 +797,7 @@ const SubflowTable = () => {
             className="xl:bt-5 flex cursor-pointer items-center pb-2 pl-2.5 pt-3 xl:pb-2.5 xl:pl-2.5"
             onClick={() => requestSort("name")}
           >
-            <h5 className="flex items-center text-sm font-medium xsm:text-sm">
+            <h5 className="flex items-center text-sm font-normal xsm:text-sm">
               <b>{t("name")}</b>
               {sortConfig.key === "name" &&
                 (sortConfig.direction === "asc" ? (
@@ -811,7 +811,7 @@ const SubflowTable = () => {
             className="xl:bt-5 col-span-2 hidden cursor-pointer pb-2 pl-2.5 pt-3 sm:block xl:pb-2.5 xl:pl-2.5"
             onClick={() => requestSort("description")}
           >
-            <h5 className="flex items-center text-sm font-medium xsm:text-sm">
+            <h5 className="flex items-center text-sm font-normal	 xsm:text-sm">
               <b>{t("description")}</b>
               {sortConfig.key === "description" &&
                 (sortConfig.direction === "asc" ? (
@@ -825,7 +825,7 @@ const SubflowTable = () => {
             className="xl:bt-5 hidden cursor-pointer pb-2 pl-2.5 pt-3 sm:block xl:pb-2.5 xl:pl-2.5"
             onClick={() => requestSort("update")}
           >
-            <h5 className="flex items-center text-sm font-medium xsm:text-sm">
+            <h5 className="flex items-center text-sm font-normal xsm:text-sm">
               <b>{t("update")}</b>
               {sortConfig.key === "update" &&
                 (sortConfig.direction === "asc" ? (
@@ -836,17 +836,17 @@ const SubflowTable = () => {
             </h5>
           </div>
           <div className="xl:bt-5 hidden cursor-pointer pb-2 pl-2.5 pt-3 sm:block xl:pb-2.5 xl:pl-2.5">
-            <h5 className="text-sm font-medium xsm:text-sm">
+            <h5 className="text-sm font-normal xsm:text-sm">
               <b>{t("active")}</b>
             </h5>
           </div>
           <div className="xl:bt-5 hidden cursor-pointer pb-2 pl-2.5 pt-3 sm:block xl:pb-2.5 xl:pl-2.5">
-            <h5 className="text-sm font-medium xsm:text-sm">
+            <h5 className="text-sm font-normal xsm:text-sm">
               <b>{t("scheduler")}</b>
             </h5>
           </div>
           <div className="xl:bt-5 col-span-2 hidden cursor-pointer pb-2 pl-2.5 pt-3 sm:block xl:pb-2.5 xl:pl-2.5">
-            <h5 className="text-sm font-medium xsm:text-sm">
+            <h5 className="text-sm font-normal xsm:text-sm">
               <b>{t("actions")}</b>
             </h5>
           </div>
@@ -1376,11 +1376,12 @@ const SubflowTable = () => {
             {t("ipp")}:
           </label>
           <select
+            className="rounded-md border border-stroke px-2 py-1 dark:border-strokedark dark:bg-slate-500 dark:text-white"
             id="itemsPerPage"
             value={itemsPerPage}
             onChange={(e) => {
               setItemsPerPage(Number(e.target.value));
-              setCurrentPage(1); // Reset to first page when items per page change
+              setCurrentPage(1);
             }}
           >
             <option value={5}>5</option>

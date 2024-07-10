@@ -140,9 +140,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
       >
         <Link href="/">
           <Image
-            className="dark:hidden"
-            width={sidebarExpanded ? 400 : 50}
-            height={50}
+            className={`dark:hidden ${sidebarExpanded ? "w-100" : "w-12"}`}
+            width={sidebarExpanded ? 245 : 50}
+            height={100}
             src={
               sidebarExpanded
                 ? "/images/logo/newLogo.png"
@@ -153,7 +153,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
           />
 
           <Image
-            className="hidden dark:block"
+            className={`hidden dark:block ${sidebarExpanded ? "w-100" : "w-12"}`}
             width={sidebarExpanded ? 245 : 50}
             height={50}
             src={
@@ -165,6 +165,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
             priority
           />
         </Link>
+
         <button
           ref={trigger}
           onClick={() => setSidebarOpen(!sidebarOpen)}

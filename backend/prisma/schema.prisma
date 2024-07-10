@@ -13,6 +13,7 @@ generator client {
 model SubFlow {
   id   String @id @default(cuid())
   name    String
+  flowIcon String @default("1f423")
   description String  @default("")
   flowjson String
   created_at DateTime @default(now())

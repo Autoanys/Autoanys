@@ -206,6 +206,7 @@ async def all_subflow():
         "updated_at": "asc"
     })
     print("getting all subflow")
+    print(flow_data)
 
     await prisma.disconnect()
     return {"message": f"All subflow rendered", "data" : flow_data}

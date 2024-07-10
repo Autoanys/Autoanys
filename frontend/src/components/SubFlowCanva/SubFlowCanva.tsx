@@ -93,6 +93,8 @@ const SubFlowCanva = (editing, flowid) => {
   const [edges, setEdges] = useState([]);
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
   const [emjoiValue, setEmojiValue] = useState("1f423");
+  const emojiPickerRef = useRef(null);
+
   const [showNotification, setShowNotification] = useState({
     show: false,
     code: 200,
@@ -174,6 +176,12 @@ const SubFlowCanva = (editing, flowid) => {
       },
     },
   ];
+
+  const handleEmojiClick = (event, emojiObject) => {
+    setEmojiValue(event.unified);
+    setEmojiPickerOpen(false);
+  };
+
   const [nodes, setNodes] = useState(initialNodes);
 
   const handleCustomVariableChange = (id: number, newValue: string) => {
@@ -328,8 +336,18 @@ const SubFlowCanva = (editing, flowid) => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       setExportDropdownOpen(false);
-      if (popupRef.current && !popupRef.current.contains(event.target)) {
+      if (
+        popupRef.current &&
+        !popupRef.current.contains(event.target) &&
+        !emojiPickerRef.current
+      ) {
         setIsPopupOpen(false);
+      }
+      if (
+        emojiPickerRef.current &&
+        !emojiPickerRef.current.contains(event.target)
+      ) {
+        setEmojiPickerOpen(false);
       }
       if (
         variablePopupRef.current &&
@@ -345,7 +363,12 @@ const SubFlowCanva = (editing, flowid) => {
       }
     };
 
-    if (isPopupOpen || isVariablePopupOpen || confirmAdding) {
+    if (
+      isPopupOpen ||
+      isVariablePopupOpen ||
+      confirmAdding ||
+      emojiPickerOpen
+    ) {
       document.addEventListener("mousedown", handleClickOutside);
     } else {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -354,7 +377,7 @@ const SubFlowCanva = (editing, flowid) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isPopupOpen, isVariablePopupOpen, confirmAdding]);
+  }, [isPopupOpen, isVariablePopupOpen, confirmAdding, emojiPickerOpen]);
 
   const addOnChangeHandler = (nodes) => {
     return nodes.map((node) => {
@@ -2665,14 +2688,26 @@ const SubFlowCanva = (editing, flowid) => {
         </div>
       )}
 
+      {emojiPickerOpen && (
+        <div
+          className="fixed left-1/2 top-20 z-50 -translate-x-1/2 transform"
+          ref={emojiPickerRef}
+        >
+          <EmojiPicker onEmojiClick={(e) => handleEmojiClick(e)} />
+        </div>
+      )}
+
       {isPopupOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div ref={popupRef} className="w-2/5 rounded bg-white p-6 shadow-lg">
             <h2 className="mb-4 inline-flex items-center text-xl font-semibold">
-              <span className="mr-2 rounded-lg border border-slate-400 p-1 hover:bg-slate-300">
+              <span
+                className="mr-2 rounded-lg border border-slate-400 p-1 hover:bg-slate-100"
+                onClick={() => setEmojiPickerOpen(true)}
+              >
                 <Emoji unified={emjoiValue} />
               </span>
-              Workflow Setting {emojiPickerOpen && <EmojiPicker />}
+              Workflow Setting
             </h2>
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
