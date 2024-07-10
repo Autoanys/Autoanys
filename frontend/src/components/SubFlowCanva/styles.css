@@ -18,6 +18,14 @@
   /* Add other styles for the selected state */
 }
 
+.react-flow__controls-zoomin {
+  cursor: zoom-in !important;
+}
+
+.react-flow__controls-zoomout {
+  cursor: zoom-out !important;
+}
+
 .selected {
   border: 2px solid #ff005c;
   border-radius: 7%;

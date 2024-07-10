@@ -71,6 +71,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { BsDatabaseAdd } from "react-icons/bs";
 import EmojiPicker from "emoji-picker-react";
 import { Emoji, EmojiStyle } from "emoji-picker-react";
+import { act } from "react-dom/test-utils";
 
 const proOptions = { hideAttribution: true };
 const addOnChangeToNodeConfig = (config, handleChange) => {
@@ -301,7 +302,8 @@ const SubFlowCanva = (editing, flowid) => {
         const data = await res.json();
         console.log("Component", data);
         for (let i = 0; i < data.data.length; i++) {
-          activated.push(data.data[i].name);
+          var item = data.data[i];
+          activated.push(item);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -465,6 +467,8 @@ const SubFlowCanva = (editing, flowid) => {
               setNodes(updatedNodes);
               setEdges(updatedEdges);
               setViewport({ x, y, zoom });
+              const flowIcon = JSON.parse(flowData.flowIcon);
+              setEmojiValue(flowIcon);
               const parsedVariables = JSON.parse(flowData.variables);
               setCustomVariables(parsedVariables);
             }
@@ -1329,6 +1333,8 @@ const SubFlowCanva = (editing, flowid) => {
     initialCollapsedState,
   );
 
+  const [collapseComponent, setCollapseComponent] = useState(false);
+
   const collapseAll = () => {
     setCollapsedSections((prev) =>
       Object.keys(prev).reduce((acc, key) => {
@@ -1427,44 +1433,6 @@ const SubFlowCanva = (editing, flowid) => {
       )}
     </div>
   ));
-
-  // const ComponentDiv = Object.keys(activeComponent).map((component) => (
-  //   <div
-  //     key={component}
-  //   >
-  //     <div
-  //       // className="flex cursor-pointer items-center justify-between border-b border-slate-400 px-4 py-2 hover:bg-slate-100"
-  //       className={`mt-4  flex cursor-pointer items-center justify-between border-b border-slate-400 px-4 py-2 hover:bg-slate-50 dark:bg-slate-900
-  //       ${collapsedSections[category] ? "" : "bg-slate-50  dark:bg-[#F5F5F5]"}`}
-  //       onClick={() => toggleSection(category)}
-  //     >
-  //       <span
-  //         className={`text-sm font-medium  dark:bg-slate-900 dark:text-white	${collapsedSections[category] ? "" : "bg-slate-50  text-black dark:bg-[#F5F5F5]"}`}
-  //       >
-  //         {category}
-  //       </span>
-  //       <span>{collapsedSections[category] ? "⮞" : "⮟"}</span>
-  //     </div>
-  //     {!collapsedSections[category] && (
-  //       <div className="ml-2 mr-2">
-  //         {groupedNodes[category].map((key) => (
-  //           // add cursor-grabbing when onDragStart
-  //           <div
-  //             key={key}
-  //             className="start mt-2 cursor-grab border border-slate-400 dark:border-white"
-  //             onDragStart={(event) => onDragStart(event, key)}
-  //             draggable
-  //           >
-  //             <div className="content flex py-2 dark:text-[#F5F5F5] ">
-  //               <img className="ml-2 h-5 w-5" src={nodeConfig[key].icon} />
-  //               <p className="pl-2 text-sm">{nodeConfig[key].label}</p>
-  //             </div>
-  //           </div>
-  //         ))}
-  //       </div>
-  //     )}
-  //   </div>
-  // ));
 
   const rectOfNodes = getNodesBounds(nodes);
 
@@ -2177,6 +2145,42 @@ const SubFlowCanva = (editing, flowid) => {
               {/* <button onClick={collapseAll}>Collapse All</button> */}
             </div>
             {nodeDivs}
+
+            {activeComponent.length > 0 && (
+              <div className="mb-2">
+                <div
+                  onClick={() => setCollapseComponent(!collapseComponent)}
+                  className={`mt-4  flex cursor-pointer items-center justify-between border-b border-slate-400 px-4 py-2 hover:bg-slate-50 dark:bg-slate-900 
+        ${collapseComponent ? "" : "bg-slate-50  dark:bg-[#F5F5F5]"}`}
+                >
+                  <span
+                    className={`text-sm font-medium  dark:bg-slate-900 dark:text-white	${collapseComponent ? "" : "bg-slate-50  text-black dark:bg-[#F5F5F5]"}`}
+                  >
+                    Components
+                  </span>
+                  <span>{collapseComponent ? "⮞" : "⮟"}</span>
+                </div>
+
+                <div className="ml-2 mr-2">
+                  {Array.isArray(activeComponent) &&
+                    activeComponent.map((key, index) => (
+                      <div
+                        key={index} // Ensure each item has a unique key
+                        className={` start mt-2 cursor-grab border border-slate-400 hover:bg-slate-50 dark:border-white dark:hover:bg-slate-600 ${!collapseComponent ? "" : "hidden"}`}
+                      >
+                        <div className="content flex py-2 dark:text-[#F5F5F5] ">
+                          <img
+                            className="ml-2 h-5 w-5"
+                            src="/images/nodes/custom_icon.png"
+                          />
+                          <p className="pl-2 text-sm">{key.name}</p>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
+
             {/* <p>{JSON.stringify(activeComponent)}</p> */}
             {!cateLoading && activedCategory.length === 0 && (
               <div className="flex h-64 items-center justify-center">
@@ -2702,7 +2706,7 @@ const SubFlowCanva = (editing, flowid) => {
           <div ref={popupRef} className="w-2/5 rounded bg-white p-6 shadow-lg">
             <h2 className="mb-4 inline-flex items-center text-xl font-semibold">
               <span
-                className="mr-2 rounded-lg border border-slate-400 p-1 hover:bg-slate-100"
+                className="mr-2 cursor-pointer rounded-lg border border-slate-400 p-1 hover:bg-slate-100	"
                 onClick={() => setEmojiPickerOpen(true)}
               >
                 <Emoji unified={emjoiValue} />

@@ -22,6 +22,10 @@
   font-weight: 700;
 }
 
+.react-flow__controls-button react-flow__controls-zoomin {
+  cursor: zoom-in !important;
+}
+
 .preViewButton {
   position: fixed;
   top: 16%;
