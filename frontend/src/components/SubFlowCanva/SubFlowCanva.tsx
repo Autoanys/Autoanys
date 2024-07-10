@@ -1418,6 +1418,7 @@ const SubFlowCanva = (editing, flowid) => {
           {groupedNodes[category].map((key) => (
             // add cursor-grabbing when onDragStart
             <div
+              title={nodeConfig[key].description}
               key={key}
               className="start mt-2 cursor-grab border border-slate-400 hover:bg-slate-50 dark:border-white dark:hover:bg-slate-600"
               onDragStart={(event) => onDragStart(event, key)}
@@ -2165,7 +2166,8 @@ const SubFlowCanva = (editing, flowid) => {
                   {Array.isArray(activeComponent) &&
                     activeComponent.map((key, index) => (
                       <div
-                        key={index} // Ensure each item has a unique key
+                        title={key.description}
+                        key={index}
                         className={` start mt-2 cursor-grab border border-slate-400 hover:bg-slate-50 dark:border-white dark:hover:bg-slate-600 ${!collapseComponent ? "" : "hidden"}`}
                       >
                         <div className="content flex py-2 dark:text-[#F5F5F5] ">
