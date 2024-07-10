@@ -60,7 +60,7 @@ const CustomEdge = ({
       <foreignObject
         width={100}
         height={40}
-        x={labelX - 20}
+        x={labelX - 10}
         y={labelY - 30}
         className="edgebutton-foreignobject"
         requiredExtensions="http://www.w3.org/1999/xhtml"

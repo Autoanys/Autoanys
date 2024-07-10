@@ -1239,7 +1239,7 @@ const SubFlowCanva = (editing, flowid) => {
             ref={variablePopupRef}
             className="w-2/5 rounded bg-white p-6 shadow-lg"
           >
-            <h2 className="mb-4 text-xl font-semibold">Workflow Setting</h2>
+            <h2 className="mb-4 text-xl font-semibold">Workflow Setting </h2>
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label

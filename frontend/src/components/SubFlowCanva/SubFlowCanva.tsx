@@ -1682,6 +1682,19 @@ const SubFlowCanva = (editing, flowid) => {
           </p>
         )}
 
+        <button
+          disabled={
+            edges.find((e) => e.source == node_id)?.target ? false : true
+          }
+          onClick={() => {
+            nextNode(node_id);
+          }}
+          className={`absolute bottom-2 right-2 h-10 w-14 rounded-lg text-white 
+            ${edges.find((e) => e.source == node_id)?.target ? "bg-rose-500 hover:bg-rose-600 " : "cursor-not-allowed bg-slate-500"}`}
+        >
+          Next
+        </button>
+
         <br></br>
       </div>
     );
@@ -1979,6 +1992,26 @@ const SubFlowCanva = (editing, flowid) => {
   //   },
   //   [setNodes],
   // );
+
+  const nextNode = (node_id) => {
+    const target = edges.find((e) => e.source == node_id)?.target;
+    setSelectedNodes(target);
+    setNodes(
+      nodes.map((node) => {
+        if (node.id == target) {
+          return {
+            ...node,
+            selected: true,
+          };
+        } else {
+          return {
+            ...node,
+            selected: false,
+          };
+        }
+      }),
+    );
+  };
 
   const onDrop = useCallback(
     (event) => {
@@ -2359,7 +2392,7 @@ const SubFlowCanva = (editing, flowid) => {
             </div>
 
             <div
-              className={`fixed bottom-10 right-0 z-40  h-5/6	 w-[22vw] rounded-lg border-2 border-slate-300 bg-white p-5 text-black shadow-2xl  duration-300 ease-in-out ${
+              className={`fixed bottom-10 right-0 z-40  h-full w-[22vw] rounded-lg border-2 border-slate-300 bg-white p-5 text-black shadow-2xl  duration-300 ease-in-out ${
                 playingPreviewSideBar ? "translate-x-0 " : "translate-x-full"
               }`}
             >
@@ -2451,7 +2484,7 @@ const SubFlowCanva = (editing, flowid) => {
             </div>
 
             <div
-              className={`fixed bottom-10 right-0 z-40  h-5/6	 w-[22vw] rounded-lg border-2 border-slate-300 bg-white p-5 text-black shadow-2xl  duration-300 ease-in-out ${
+              className={`fixed bottom-10 right-0 z-40  h-full	 w-[22vw] rounded-lg border-2 border-slate-300 bg-white p-5 text-black shadow-2xl  duration-300 ease-in-out ${
                 debugging ? "translate-x-0 " : "translate-x-full"
               }`}
             >
