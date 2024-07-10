@@ -173,7 +173,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
           className="block lg:hidden"
         >
           <svg
-            className="fill-current"
+            className="fill-current "
             width="20"
             height="18"
             viewBox="0 0 20 18"

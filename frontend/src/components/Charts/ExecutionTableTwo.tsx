@@ -16,6 +16,18 @@ interface ChartTwoState {
 
 const ExecutionTableTwo: React.FC = (tData) => {
   const currentDayIndex = getCurrentDayIndex();
+  const corResponse = (number) => {
+    let list = {
+      1: "Mon",
+      2: "Tue",
+      3: "Wed",
+      4: "Thu",
+      5: "Fri",
+      6: "Sat",
+      0: "Sun",
+    };
+    return list[number];
+  };
 
   const options: ApexOptions = {
     colors: ["#3C50E0", "#80CAEE"],
@@ -57,19 +69,15 @@ const ExecutionTableTwo: React.FC = (tData) => {
       enabled: false,
     },
     xaxis: {
-      categories: ["S", "M", "T", "W", "T", "F", "S"],
+      categories: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
       labels: {
-        formatter: (val, index) => {
-          if (index === currentDayIndex) {
-            return `<span style="font-weight: bold;">${val}</span>`;
-          }
-          return val;
-        },
         style: {
           colors: ["#333", "#333", "#333", "#333", "#333", "#333", "#333"],
+          fontWeight: 500,
         },
       },
     },
+
     legend: {
       position: "top",
       horizontalAlign: "left",

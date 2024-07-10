@@ -170,7 +170,7 @@ const LoggingIcon = () => (
 
 const UncollapseIcon = () => (
   <svg
-    className="fill-current"
+    className="fill-current hover:fill-black"
     width="20"
     height="20"
     viewBox="0 0 24 24"
@@ -191,7 +191,7 @@ const UncollapseIcon = () => (
 
 const CollapseIcon = () => (
   <svg
-    className="scale-x-[-1] fill-current"
+    className="scale-x-[-1] fill-current hover:fill-black"
     width="20"
     height="20"
     viewBox="0 0 24 24"

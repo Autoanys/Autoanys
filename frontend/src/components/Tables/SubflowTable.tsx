@@ -895,9 +895,6 @@ const SubflowTable = () => {
         )}
         {currentSubflows.map((subflow, index) => (
           <div
-            title={decodeURI(
-              "Double Click - Edit Flow%0ARight Click - For more options",
-            )}
             onContextMenu={(e) => {
               tableRowContextMenu(e, subflow);
             }}
@@ -910,6 +907,9 @@ const SubflowTable = () => {
           >
             <div
               className="flex items-center gap-3 pl-2.5 "
+              title={decodeURI(
+                `${subflow.name} %0ADouble Click - Edit Flow%0ARight Click - For more options`,
+              )}
               onDoubleClick={() => {
                 setTrLoading(true);
                 router.push("/subflowedit?flowid=" + subflow.id);
@@ -924,6 +924,9 @@ const SubflowTable = () => {
             </div>
 
             <div
+              title={decodeURI(
+                `${subflow.description} %0ADouble Click - Edit Flow%0ARight Click - For more options`,
+              )}
               className="col-span-2 flex hidden content-center items-center gap-3 pl-2.5 sm:block"
               onDoubleClick={() => {
                 setTrLoading(true);
@@ -944,6 +947,9 @@ const SubflowTable = () => {
 
             <div
               className="flex hidden items-center gap-3 pl-2.5 sm:block"
+              title={decodeURI(
+                `${subflow.updated_at} %0ADouble Click - Edit Flow%0ARight Click - For more options`,
+              )}
               onDoubleClick={() => {
                 setTrLoading(true);
                 router.push("/subflowedit?flowid=" + subflow.id);

@@ -1390,7 +1390,7 @@ const SubFlowCanva = (editing, flowid) => {
             // add cursor-grabbing when onDragStart
             <div
               key={key}
-              className="start mt-2 cursor-grab border border-slate-400 dark:border-white"
+              className="start mt-2 cursor-grab border border-slate-400 hover:bg-slate-50 dark:border-white dark:hover:bg-slate-600"
               onDragStart={(event) => onDragStart(event, key)}
               draggable
             >
@@ -1449,7 +1449,7 @@ const SubFlowCanva = (editing, flowid) => {
     const node = JSON.stringify(nodes.find((n) => n.id == node_id));
 
     return (
-      <div className="">
+      <div className="h-4/5">
         <p className=" pt-4 font-medium">
           {" "}
           Node Label : {nodes.find((n) => n.id == node_id)?.data.label}
@@ -1689,10 +1689,10 @@ const SubFlowCanva = (editing, flowid) => {
           onClick={() => {
             nextNode(node_id);
           }}
-          className={`absolute bottom-2 right-2 h-10 w-14 rounded-lg text-white 
+          className={`absolute bottom-2 right-2 h-10 w-22 rounded-lg text-white 
             ${edges.find((e) => e.source == node_id)?.target ? "bg-rose-500 hover:bg-rose-600 " : "cursor-not-allowed bg-slate-500"}`}
         >
-          Next
+          Next Node
         </button>
 
         <br></br>
@@ -2195,7 +2195,7 @@ const SubFlowCanva = (editing, flowid) => {
               offsetScale={5}
             /> */}
 
-            <Background id="2" color="#333" />
+            <Background id="2" />
 
             <Controls></Controls>
 

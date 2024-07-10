@@ -18,6 +18,10 @@
 @layer components {
 }
 
+.apexcharts-xaxis-label.highlight {
+  font-weight: 700;
+}
+
 .preViewButton {
   position: fixed;
   top: 16%;

@@ -138,6 +138,20 @@ const CustomNode = ({ data, isConnectable }) => {
   );
 };
 
+const descriptionNode = ({ data, isConnectable }) => {
+  return (
+    <div className="rounded-md border-2 border-stone-400 bg-white px-4 py-2 shadow-md dark:bg-[#2C2C3E]">
+      <div className="node-header">
+        <div className="content py-2">
+          <div className="flex items-center">
+            <textarea className="w-full" value={data.description} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const IfElseNode = ({ data, isConnectable }) => {
   return (
     <div className="rounded-md border-2 border-stone-400 bg-white px-4 py-2 shadow-md dark:bg-[#2C2C3E]">
@@ -205,4 +219,4 @@ const IfElseNode = ({ data, isConnectable }) => {
   );
 };
 
-export { CustomNode, IfElseNode };
+export { CustomNode, IfElseNode, descriptionNode };
