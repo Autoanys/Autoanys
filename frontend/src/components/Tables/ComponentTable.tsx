@@ -821,9 +821,8 @@ const ComponentTable = () => {
             <button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className={
-                currentPage === 1 ? "cursor-not-allowed" : "text-blue-700	"
-              }
+              className={`
+                ${currentPage === 1 ? "cursor-not-allowed" : "text-blue-700	"} `}
             >
               Previous
             </button>

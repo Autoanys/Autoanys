@@ -334,6 +334,10 @@ const SubFlowCanva = (editing, flowid) => {
   }, []);
 
   const nodeConfig = addOnChangeToNodeConfig(nodeConfigInit, handleNodeChange);
+  const activeComponentConfig = addOnChangeToNodeConfig(
+    activeComponent,
+    handleNodeChange,
+  );
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -430,6 +434,10 @@ const SubFlowCanva = (editing, flowid) => {
   });
 
   Object.keys(nodeConfig).forEach((key) => {
+    nodeTypes[key] = CustomNode;
+  });
+
+  Object.keys(activeComponent).forEach((key) => {
     nodeTypes[key] = CustomNode;
   });
 
@@ -2170,7 +2178,10 @@ const SubFlowCanva = (editing, flowid) => {
                         key={index}
                         className={` start mt-2 cursor-grab border border-slate-400 hover:bg-slate-50 dark:border-white dark:hover:bg-slate-600 ${!collapseComponent ? "" : "hidden"}`}
                       >
-                        <div className="content flex py-2 dark:text-[#F5F5F5] ">
+                        <div
+                          className="content flex py-2 dark:text-[#F5F5F5] "
+                          draggable
+                        >
                           <img
                             className="ml-2 h-5 w-5"
                             src="/images/nodes/custom_icon.png"

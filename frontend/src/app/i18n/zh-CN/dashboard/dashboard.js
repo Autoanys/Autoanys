@@ -1,6 +1,6 @@
 export default {
   total_workflows: "工作流程",
-  total_client: "總客戶端",
+  total_client: "客戶端數量",
   total_execution: "總執行次數",
   total_successful: "總成功執行次數",
   year: "本年",
