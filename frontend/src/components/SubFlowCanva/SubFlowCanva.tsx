@@ -1196,7 +1196,7 @@ const SubFlowCanva = (editing, flowid) => {
       console.log(res, "res.data");
       const data = await res.json();
       console.log(data, "data");
-      await router.push("/subflowedit?flowid=" + data.data, {
+      await router.push("/flow/edit?flowid=" + data.data, {
         scroll: false,
       });
       setAutoSaving(false);

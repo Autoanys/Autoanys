@@ -16,7 +16,7 @@ const Header = (props: {
   const [inputValue, setInputValue] = useState("");
 
   const suggestions = [
-    { label: "Create Flow", path: "/subflowdraw" },
+    { label: "Create Flow", path: "/flow/new" },
     { label: "Multi-Flow Table", path: "/mainflow" },
     { label: "Flow Table", path: "/subflow" },
     { label: "Logging", path: "/logging" },

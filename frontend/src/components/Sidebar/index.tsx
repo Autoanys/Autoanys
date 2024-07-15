@@ -54,14 +54,14 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
     {
       name: t("sidebar_main_mainflow"),
       icon: <MainFlowIcon />,
-      link: "/mainflow",
-      sn: "main",
+      link: "/multiflow",
+      sn: "multiflow",
     },
     {
       name: t("sidebar_main_subflow"),
       icon: <SubFlowIcon />,
-      link: "/subflow",
-      sn: "sub",
+      link: "/flow",
+      sn: "flow",
     },
     {
       name: t("sidebar_main_custom_component"),
@@ -205,22 +205,25 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
             )}
 
             <ul className="mb-6 flex flex-col gap-1.5">
-              {sideBarItem.map((item, index) => (
-                <li key={index}>
-                  <Link
-                    title={item.name}
-                    href={item.link}
-                    className={`gbold group relative flex items-center gap-2.5 rounded-lg px-4 py-4 text-sm font-medium font-semibold text-black duration-300 ease-in-out hover:bg-white hover:shadow-2xl dark:text-[#FFFFFF] dark:hover:bg-meta-4 ${
-                      (pathname === item.link ||
-                        (item.link !== "/" && pathname.includes(item.sn))) &&
-                      "bg-white shadow-2xl dark:bg-[#2C2C3E]"
-                    }`}
-                  >
-                    {item.icon}
-                    {sidebarExpanded && item.name}
-                  </Link>
-                </li>
-              ))}
+              {sideBarItem.map((item, index) => {
+                const isActive =
+                  pathname === item.link ||
+                  pathname.startsWith(`${item.link}/`);
+                return (
+                  <li key={index}>
+                    <Link
+                      title={item.name}
+                      href={item.link}
+                      className={`gbold group relative flex items-center gap-2.5 rounded-lg px-4 py-4 text-sm font-medium font-semibold text-black duration-300 ease-in-out hover:bg-white hover:shadow-2xl dark:text-[#FFFFFF] dark:hover:bg-meta-4 ${
+                        isActive && "bg-white shadow-2xl dark:bg-[#2C2C3E]"
+                      }`}
+                    >
+                      {item.icon}
+                      {sidebarExpanded && item.name}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
           <div className="fixed bottom-0 m-auto items-center justify-center text-sm text-black">

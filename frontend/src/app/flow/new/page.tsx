@@ -8,8 +8,8 @@ import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 
 export const metadata: Metadata = {
-  title: "AutoAnys | Create Flow",
-  description: "AutoAnys, Automate Anything. Create Flow",
+  title: "AutoAnys | New Flow",
+  description: "AutoAnys, Automate Anything. New Flow",
 };
 
 const SubFlowDraw = () => {

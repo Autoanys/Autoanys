@@ -170,7 +170,7 @@ const ComponentsEditor = (editing, componentID) => {
         console.log("Data", data);
         console.log("data.id", data.id);
         const idMatch = data.message.match(/id='([^']+)'/);
-        await router.push("/componentedit?componentid=" + idMatch[1], {
+        await router.push("/components/edit?componentid=" + idMatch[1], {
           scroll: false,
         });
       } else {

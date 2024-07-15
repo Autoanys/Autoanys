@@ -248,7 +248,7 @@ const ExtensionsGrid = () => {
       {tabMenu === "builtIn" && (
         <ul
           role="list"
-          className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-2"
+          className="grid grid-cols-1 gap-2 sm:grid-cols-3 lg:grid-cols-3"
         >
           {plugins.map((plugin) => (
             <li
@@ -259,7 +259,7 @@ const ExtensionsGrid = () => {
                 {/* First Column */}
                 <div className="flex-1 pr-4">
                   <div className="flex items-center space-x-3">
-                    <h3 className="text-gray-900 truncate text-sm font-medium dark:text-white">
+                    <h3 className="text-gray-900 truncate text-sm font-semibold dark:text-white">
                       {plugin.name}
                     </h3>
                   </div>
@@ -324,7 +324,6 @@ const ExtensionsGrid = () => {
                   )}
                 </div>
 
-                {/* Second Column */}
                 <div className="flex flex-col items-center justify-between">
                   <img
                     className="bg-gray-300 h-10 w-10 flex-shrink-0 rounded-full"
@@ -354,7 +353,7 @@ const ExtensionsGrid = () => {
                     ></div>
                   </div>
                   <span className="text-gray-700 mt-1 hidden pl-2 text-xs dark:text-white md:block">
-                    {plugin.active ? "Plugin Actived" : "Plugin Disabled"}
+                    {plugin.active ? "Plugin Activated" : "Plugin Disabled"}
                   </span>
                 </div>
               </div>

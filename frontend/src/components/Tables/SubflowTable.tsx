@@ -457,7 +457,7 @@ const SubflowTable = () => {
       {
         label: "✏️ Edit",
         onClick: () => {
-          router.push("/subflowedit?flowid=" + subflow.id);
+          router.push("/flow/edit?flowid=" + subflow.id);
           menuContainer.remove();
           currentMenu = null;
         },
@@ -912,7 +912,7 @@ const SubflowTable = () => {
               )}
               onDoubleClick={() => {
                 setTrLoading(true);
-                router.push("/subflowedit?flowid=" + subflow.id);
+                router.push("/flow/edit?flowid=" + subflow.id);
               }}
             >
               <p
@@ -930,7 +930,7 @@ const SubflowTable = () => {
               className="col-span-2 flex hidden content-center items-center gap-3 pl-2.5 sm:block"
               onDoubleClick={() => {
                 setTrLoading(true);
-                router.push("/subflowedit?flowid=" + subflow.id);
+                router.push("/flow/edit?flowid=" + subflow.id);
               }}
             >
               <p className="hidden items-center  text-black  dark:text-white sm:block">
@@ -952,7 +952,7 @@ const SubflowTable = () => {
               )}
               onDoubleClick={() => {
                 setTrLoading(true);
-                router.push("/subflowedit?flowid=" + subflow.id);
+                router.push("/flow/edit?flowid=" + subflow.id);
               }}
             >
               <p
@@ -1323,7 +1323,7 @@ const SubflowTable = () => {
                     onClick={() => {
                       setViewPopup(null);
                       setTrLoading(true);
-                      router.push("/subflowedit?flowid=" + viewPopup.id);
+                      router.push("/flow/edit?flowid=" + viewPopup.id);
                     }}
                   >
                     Edit Flow

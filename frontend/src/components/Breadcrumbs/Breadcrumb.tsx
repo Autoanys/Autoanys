@@ -88,7 +88,7 @@ const Breadcrumb = ({
           {newSubFlow && (
             <div className="flex gap-x-4">
               <Link
-                href="/subflowdraw"
+                href="/flow/new"
                 className="group relative flex items-center gap-2.5 rounded-lg px-4 py-4 text-sm font-medium font-semibold text-black duration-300 ease-in-out dark:hover:bg-meta-4"
               >
                 <button className="font hover:bg-blue rounded-full bg-blue-400 px-4 py-2 text-white hover:bg-blue-500 hover:shadow-2xl">
@@ -114,7 +114,7 @@ const Breadcrumb = ({
 
           {newComponent && (
             <Link
-              href="/createcomponents"
+              href="/components/new"
               className={`bold } group relative flex items-center gap-2.5  rounded-lg px-4	py-4
              text-sm font-medium font-semibold text-black duration-300 ease-in-out
              dark:hover:bg-meta-4`}

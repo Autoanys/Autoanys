@@ -169,7 +169,7 @@ const ComponentTable = () => {
       {
         label: "✏️ Edit",
         onClick: () => {
-          router.push("/componentedit?componentid=" + comp.id);
+          router.push("/components/edit?componentid=" + comp.id);
           menuContainer.remove();
           currentMenu = null;
         },
@@ -515,7 +515,7 @@ const ComponentTable = () => {
               className="flex items-center gap-3 pl-2.5 "
               onDoubleClick={() => {
                 setTrLoading(true);
-                router.push("/componentedit?componentid=" + comp.id);
+                router.push("/components/edit?componentid=" + comp.id);
               }}
             >
               <p
@@ -531,7 +531,7 @@ const ComponentTable = () => {
               onDoubleClick={() => {
                 setTrLoading(true);
 
-                router.push("/componentedit?componentid=" + comp.id);
+                router.push("/components/edit?componentid=" + comp.id);
               }}
             >
               <p className="hidden text-black dark:text-white sm:block">
@@ -545,7 +545,7 @@ const ComponentTable = () => {
               onDoubleClick={() => {
                 setTrLoading(true);
 
-                router.push("/componentedit?componentid=" + comp.id);
+                router.push("/components/edit?componentid=" + comp.id);
               }}
             >
               <p
@@ -603,7 +603,7 @@ const ComponentTable = () => {
 
                   <Link
                     href={{
-                      pathname: "/componentedit",
+                      pathname: "/components/edit",
                       query: { componentid: comp.id },
                     }}
                   >
@@ -762,7 +762,9 @@ const ComponentTable = () => {
                     className="rounded-lg bg-slate-500 px-4 py-1 text-white"
                     onClick={() => {
                       setViewPopup(null);
-                      router.push("/componentedit?componentid=" + viewPopup.id);
+                      router.push(
+                        "/components/edit?componentid=" + viewPopup.id,
+                      );
                     }}
                   >
                     Edit Component
