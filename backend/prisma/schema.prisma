@@ -103,6 +103,8 @@ model ExtensionList {
   doc String
   imageUrl String
   active Boolean @default(true)
+  setting Boolean @default(false)
+  settingArrayJson String @default("[]")
 }
 
   // const plugins = [

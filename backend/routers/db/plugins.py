@@ -14,6 +14,7 @@ async def get_plugins_cate():
     await prisma.connect()
     plugin_categories = await prisma.extensionlist.find_many()
     await prisma.disconnect()
+    print(plugin_categories)
 
 
     return {"message" : "successful", "plugins": plugin_categories}
