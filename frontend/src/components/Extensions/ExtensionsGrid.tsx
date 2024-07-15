@@ -234,6 +234,7 @@ const ExtensionsGrid = () => {
                   alt=""
                 />
               </div>
+
               <div className="grid grid-cols-2">
                 <div className="divide-gray-200 col-span-1 -mt-px flex">
                   <div className="flex w-0 flex-1 hover:bg-slate-100">
@@ -286,6 +287,9 @@ const ExtensionsGrid = () => {
                   <span className="text-gray-700 hidden pl-2 text-xs dark:text-white md:block">
                     {plugin.active ? "Active" : "Disabled"}
                   </span>
+                </div>
+                <div className="grid grid-cols-1">
+                  <a>Settings</a>
                 </div>
               </div>
             </li>

@@ -2432,7 +2432,7 @@ const SubFlowCanva = (editing, flowid) => {
             </div>
 
             <div
-              className={`fixed bottom-10 right-0 z-40  h-full w-[22vw] rounded-lg border-2 border-slate-300 bg-white p-5 text-black shadow-2xl  duration-300 ease-in-out ${
+              className={`fixed bottom-10 right-0 z-40  h-4/5 w-[22vw] rounded-lg border-2 border-slate-300 bg-white p-5 text-black shadow-2xl  duration-300 ease-in-out ${
                 playingPreviewSideBar ? "translate-x-0 " : "translate-x-full"
               }`}
             >
@@ -2524,7 +2524,7 @@ const SubFlowCanva = (editing, flowid) => {
             </div>
 
             <div
-              className={`fixed bottom-10 right-0 z-40  h-full	 w-[22vw] rounded-lg border-2 border-slate-300 bg-white p-5 text-black shadow-2xl  duration-300 ease-in-out ${
+              className={`fixed bottom-10 right-0 z-40  h-4/5	 w-[22vw] rounded-lg border-2 border-slate-300 bg-white p-5 text-black shadow-2xl  duration-300 ease-in-out ${
                 debugging ? "translate-x-0 " : "translate-x-full"
               }`}
             >
