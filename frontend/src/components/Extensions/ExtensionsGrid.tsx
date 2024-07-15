@@ -212,7 +212,7 @@ const ExtensionsGrid = () => {
           {plugins.map((plugin) => (
             <li
               key={plugin.name}
-              className="col-span-1  divide-y divide-slate-100 rounded-lg bg-white shadow-xl dark:divide-slate-600 dark:bg-boxdark dark:text-white"
+              className="col-span-1   rounded-lg bg-white shadow-xl dark:divide-slate-600 dark:bg-boxdark dark:text-white"
             >
               <div className="flex w-full items-center justify-between space-x-6 p-6">
                 <div className="flex-1 truncate">
@@ -224,7 +224,7 @@ const ExtensionsGrid = () => {
                   {plugin.role}
                 </span> */}
                   </div>
-                  <p className="text-gray-500 mt-1 truncate text-sm">
+                  <p className="text-gray-500 mt-1 h-full w-3/5 text-sm">
                     {plugin.title}
                   </p>
                 </div>
@@ -233,6 +233,10 @@ const ExtensionsGrid = () => {
                   src={plugin.imageUrl}
                   alt=""
                 />
+                <br></br>
+              </div>
+              <div className="flex w-full items-center justify-end divide-y divide-slate-100 ">
+                <span className="pr-3 text-xs		font-medium">Settings</span>
               </div>
 
               <div className="grid grid-cols-2">
@@ -280,6 +284,7 @@ const ExtensionsGrid = () => {
                     <div
                       className={`block border border-slate-200 ${plugin.active ? "bg-green-500" : "bg-slate-500"} h-6 w-12 rounded-full`}
                     ></div>
+
                     <div
                       className={`dot  absolute top-1 h-5 w-5 rounded-full transition ${plugin.active ? "translate-x-6" : "translate-x-0"}`}
                     ></div>
@@ -287,9 +292,6 @@ const ExtensionsGrid = () => {
                   <span className="text-gray-700 hidden pl-2 text-xs dark:text-white md:block">
                     {plugin.active ? "Active" : "Disabled"}
                   </span>
-                </div>
-                <div className="grid grid-cols-1">
-                  <a>Settings</a>
                 </div>
               </div>
             </li>
