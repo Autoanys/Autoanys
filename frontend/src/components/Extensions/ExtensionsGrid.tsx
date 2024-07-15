@@ -167,6 +167,7 @@ const ExtensionsGrid = () => {
         <h2 className="text-gray-900 mt-6 text-xl font-semibold">
           {tabMenu === "builtIn" ? "Built-In Extensions" : "Marketplace"}
         </h2>
+
         <div className="flex space-x-4">
           <button
             onClick={() => setTabMenu("builtIn")}
@@ -190,6 +191,46 @@ const ExtensionsGrid = () => {
           </button>
         </div>
       </div>
+
+      <input
+        type="text"
+        placeholder={` 🔍 Search Extension / Plugin by name or description`}
+        className="mb-6 h-10 w-full rounded-md border border-stroke px-3 dark:border-strokedark dark:bg-boxdark"
+        onChange={(e) => {
+          const search = e.target.value;
+          setPlugins((prevPlugins) => {
+            return prevPlugins.filter((plugin) => {
+              return (
+                plugin.name.toLowerCase().includes(search.toLowerCase()) ||
+                plugin.title.toLowerCase().includes(search.toLowerCase())
+              );
+            });
+          });
+          if (search === "") {
+            const fetchDatas = async () => {
+              setResultLoading(true);
+              try {
+                const res = await fetch(
+                  process.env.NEXT_PUBLIC_BACKEND_URL + "/plugins/",
+                  {
+                    method: "GET",
+                  },
+                );
+
+                const data = await res.json();
+
+                setPlugins(data.plugins);
+                // console.log("TTE", data.total_workflows);
+              } catch (error) {
+                console.error("Error fetching data:", error);
+              }
+            };
+            fetchDatas().then(() => {
+              setResultLoading(false);
+            });
+          }
+        }}
+      />
 
       {resultLoading && (
         <div className="bg-gray-900 fixed inset-0 flex items-center justify-center bg-opacity-50">
