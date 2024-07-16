@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 // import { MailIcon, PhoneIcon } from "@heroicons/react/solid";
-import ExtensionsGrid from "@/components/Extensions/ExtensionsGrid";
+import ExtensionsSetting from "@/components/Extensions/ExtensionsSetting";
 import { act } from "react-dom/test-utils";
 
 export const metadata: Metadata = {
@@ -11,16 +11,14 @@ export const metadata: Metadata = {
   description: "AutoAnys, Automate Anything. Plugins & Extensions",
 };
 
-const Plugins = () => {
+const Plugins = (pluginID) => {
   return (
     <DefaultLayout>
-      {/* <div className="mx-auto max-w-270">
-        <Breadcrumb pageName="extension" />
+      <Breadcrumb pageName="Extension_Configuration" />
 
-        <ExtensionsGrid />
-      </div> */}
-
-      {/* <ExtensionsGrid /> */}
+      <div className="">
+        <ExtensionsSetting pluginID={pluginID} />
+      </div>
     </DefaultLayout>
   );
 };

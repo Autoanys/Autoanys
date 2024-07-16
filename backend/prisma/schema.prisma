@@ -105,7 +105,7 @@ model ExtensionList {
   active Boolean @default(true)
   setting Boolean @default(false)
   settingArrayJson String @default("[]")
-  settingInputJson String @default("{}")
+  settingInputJson String @default("[]")
 }
 
   // const plugins = [

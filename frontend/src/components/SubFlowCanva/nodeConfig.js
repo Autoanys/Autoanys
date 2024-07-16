@@ -1,7 +1,5 @@
 // nodeConfig.js
 
-import { Label } from "@headlessui/react";
-
 const nodeConfigInit = {
   openBrowser: {
     label: "Open Browser",

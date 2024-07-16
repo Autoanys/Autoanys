@@ -5,4 +5,5 @@ export default {
   component: "Custom Component",
   extension: "Plugins & Extensions",
   logging: "Logging",
+  Extension_Configuration: "Extension Configuration",
 };

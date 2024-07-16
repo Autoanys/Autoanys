@@ -57,3 +57,14 @@ async def get_allactived():
 
 
     return {"message" : "successful", "actived": plugin_categories}
+
+@router.get("/plugins/{extensionID}")
+async def get_plugin(extensionID: str):
+    prisma = Prisma()
+    await prisma.connect()
+    plugin = await prisma.extensionlist.find_unique(where={
+        "id": extensionID
+    })
+    await prisma.disconnect()
+    return {"message" : "successful", "plugin": plugin}
+

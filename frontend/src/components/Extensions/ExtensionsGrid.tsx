@@ -293,7 +293,7 @@ const ExtensionsGrid = () => {
                   {plugin.setting && (
                     <div className="">
                       <a
-                        href={plugin.doc}
+                        href={"/plugins/settings?id=" + plugin.id}
                         target="_blank"
                         className="text-gray-700 hover:text-gray-500 inline-flex items-center text-sm font-medium"
                       >
@@ -363,23 +363,26 @@ const ExtensionsGrid = () => {
               </div>
             </li>
           ))}
-          <li className="col-span-1 flex items-center justify-center rounded-lg bg-white shadow-xl dark:divide-slate-600 dark:bg-boxdark dark:text-white">
-            <div className="flex items-center justify-center gap-x-4">
-              <button
-                className="group relative flex items-center gap-2.5 rounded-lg	px-4
+
+          {!resultLoading && (
+            <li className="col-span-1 flex items-center justify-center rounded-lg bg-white shadow-xl dark:divide-slate-600 dark:bg-boxdark dark:text-white">
+              <div className="flex items-center justify-center gap-x-4">
+                <button
+                  className="group relative flex items-center gap-2.5 rounded-lg	px-4
  py-4 text-xl text-black text-slate-500 duration-300 ease-in-out dark:text-white dark:hover:bg-meta-4"
-                onClick={handleButtonClick}
-              >
-                📥 Import Extension
-              </button>
-              <input
-                type="file"
-                id="extensionImport"
-                accept=".zip"
-                style={{ display: "none" }}
-              />
-            </div>
-          </li>
+                  onClick={handleButtonClick}
+                >
+                  📥 Import Extension
+                </button>
+                <input
+                  type="file"
+                  id="extensionImport"
+                  accept=".zip"
+                  style={{ display: "none" }}
+                />
+              </div>
+            </li>
+          )}
         </ul>
       )}
     </div>
