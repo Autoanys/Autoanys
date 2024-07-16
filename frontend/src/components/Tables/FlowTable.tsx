@@ -35,7 +35,13 @@ import { useTranslation } from "next-i18next";
 
 const proOptions = { hideAttribution: true };
 
-const SubflowTable = () => {
+let fpp = localStorage.getItem("flowPerPage") || "20";
+
+const handleChangeFpp = async (e) => {
+  localStorage.setItem("flowPerPage", e);
+};
+
+const FlowTable = () => {
   const { t } = useTranslation("subflow");
   const router = useRouter();
   const [subflows, setSubflows] = useState([]);
@@ -43,7 +49,7 @@ const SubflowTable = () => {
   const [allFlow, setAllFlow] = useState([]);
   const [deleted, setDeleted] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(20);
+  const [itemsPerPage, setItemsPerPage] = useState(fpp);
   const [playing, setPlaying] = useState(false);
   const [showNotification, setShowNotification] = useState({
     show: false,
@@ -1382,6 +1388,7 @@ const SubflowTable = () => {
             onChange={(e) => {
               setItemsPerPage(Number(e.target.value));
               setCurrentPage(1);
+              handleChangeFpp(Number(e.target.value));
             }}
           >
             <option value={5}>5</option>
@@ -1432,4 +1439,4 @@ const SubflowTable = () => {
   );
 };
 
-export default SubflowTable;
+export default FlowTable;

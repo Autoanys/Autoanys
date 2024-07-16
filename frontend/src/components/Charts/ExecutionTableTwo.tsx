@@ -136,7 +136,7 @@ const ExecutionTableTwo: React.FC = (tData) => {
                 Last Week
               </option> */}
             {/* </select> */}
-            <span className="absolute right-3 top-1/2 z-10 -translate-y-1/2">
+            {/* <span className="absolute right-3 top-1/2 z-10 -translate-y-1/2">
               <svg
                 width="10"
                 height="6"
@@ -155,7 +155,7 @@ const ExecutionTableTwo: React.FC = (tData) => {
                   fill="#637381"
                 />
               </svg>
-            </span>
+            </span> */}
           </div>
         </div>
       </div>
