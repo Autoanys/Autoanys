@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, HTTPException
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
@@ -134,8 +134,8 @@ async def shutdown_event():
 
 
 @app.get("/")
-async def root():
-    return {"message": "Welcome to the AutoAnys api service. Please use the /docs endpoint to see the available endpoints. Thankss"}
+async def root(request: Request):
+    return {"message": "Welcome to the AutoAnys api service. Please use the /docs endpoint to see the available endpoints. Thanks", "requestFrom" : request.client.host}
 
 
 if __name__ == "__main__":

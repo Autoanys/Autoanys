@@ -33,6 +33,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const trigger = useRef(null);
   const sidebar = useRef(null);
   const { t, i18n } = useTranslation("sidebar");
+  const [localIP, setLocalIP] = useState("");
 
   const storedSidebarExpanded = localStorage.getItem("sidebar-expanded");
   const [sidebarExpanded, setSidebarExpanded] = useState(
@@ -90,6 +91,16 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   ];
 
   // close on click outside
+  useEffect(() => {
+    const res = fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/", {
+      method: "GET",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setLocalIP(data.requestFrom);
+      });
+  }, []);
+
   useEffect(() => {
     const clickHandler = ({ target }) => {
       if (!sidebar.current || !trigger.current) return;
@@ -226,22 +237,20 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
               })}
             </ul>
           </div>
+          {/* <div className="p-auto fixed bottom-5 m-auto items-center justify-center text-sm text-black">
+          
+          </div> */}
           <div className="fixed bottom-0 m-auto items-center justify-center text-sm text-black">
             <span
               className={`pb-12 font-medium dark:text-white ${sidebarExpanded ? "ml-2" : "ml-0"}`}
             >
-              {/* {sidebarExpanded && (
-                <div>
-                  <button className="mb-2 rounded-lg border border-slate-400 bg-white p-2 hover:bg-slate-100 dark:bg-black">
-                    System Hotkeys (Shift+S)
-                  </button>
-                </div>
-              )} */}
-
-              <span className={``}>
-                {" "}
-                {sidebarExpanded ? "© 2023-2024 ⚙️ AutoAnys" : "AutoAnys"}
-              </span>
+              {sidebarExpanded ? (
+                <span className="">
+                  <b>Client IP </b> - {localIP} <br />© 2023-2024 ⚙️ AutoAnys
+                </span>
+              ) : (
+                <span>AutoAnys</span>
+              )}
             </span>
           </div>
         </nav>

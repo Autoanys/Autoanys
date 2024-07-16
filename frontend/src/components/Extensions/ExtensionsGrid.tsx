@@ -257,7 +257,7 @@ const ExtensionsGrid = () => {
           {plugins.map((plugin) => (
             <li
               key={plugin.name}
-              className="col-span-1 rounded-lg bg-white shadow-xl dark:divide-slate-600 dark:bg-boxdark dark:text-white"
+              className="col-span-1 rounded-lg bg-white  shadow-lg hover:shadow-xl dark:divide-slate-600 dark:bg-boxdark dark:text-white"
             >
               <div className="flex w-full p-6">
                 {/* First Column */}
@@ -365,7 +365,10 @@ const ExtensionsGrid = () => {
           ))}
 
           {!resultLoading && (
-            <li className="col-span-1 flex items-center justify-center rounded-lg bg-white shadow-xl dark:divide-slate-600 dark:bg-boxdark dark:text-white">
+            <li
+              className="col-span-1 flex cursor-pointer items-center justify-center rounded-lg bg-white shadow-lg hover:shadow-xl dark:divide-slate-600 dark:bg-boxdark dark:text-white"
+              onClick={handleButtonClick}
+            >
               <div className="flex items-center justify-center gap-x-4">
                 <button
                   className="group relative flex items-center gap-2.5 rounded-lg	px-4

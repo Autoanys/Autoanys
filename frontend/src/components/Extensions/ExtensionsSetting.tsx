@@ -110,6 +110,22 @@ const ExtensionsSetting = (pluginID) => {
       </div>
       <div className="flex h-full w-2/3 flex-col rounded-lg bg-white p-4 shadow-xl dark:bg-boxdark">
         <h2 className="mb-4 text-xl font-bold">Profile Details</h2>
+        {configInput.map((input) => (
+          <div className="mb-4">
+            <label
+              className="mb-1 block text-sm font-medium"
+              htmlFor={input.name}
+            >
+              {input.label}
+            </label>
+            <input
+              type={input.type}
+              id={input.name}
+              className="w-full rounded-lg border p-2"
+              value={input.value}
+            />
+          </div>
+        ))}
 
         {/* <div className="mb-4">
           <label className="mb-1 block text-sm font-medium" htmlFor="email">
@@ -147,7 +163,6 @@ const ExtensionsSetting = (pluginID) => {
             readOnly
           />
         </div> */}
-        <p>{JSON.stringify(plugins)}</p>
       </div>
     </div>
   );
