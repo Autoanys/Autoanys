@@ -90,15 +90,29 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
     },
   ];
 
-  // close on click outside
   useEffect(() => {
-    const res = fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/", {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => {
+    const fetchLocalIP = async () => {
+      try {
+        const response = await fetch(
+          process.env.NEXT_PUBLIC_BACKEND_URL + "/",
+          {
+            method: "GET",
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const data = await response.json();
         setLocalIP(data.requestFrom);
-      });
+      } catch (error) {
+        console.error("Fetch error:", error);
+        setLocalIP("Unknown");
+      }
+    };
+
+    fetchLocalIP();
   }, []);
 
   useEffect(() => {

@@ -68,3 +68,18 @@ async def get_plugin(extensionID: str):
     await prisma.disconnect()
     return {"message" : "successful", "plugin": plugin}
 
+
+@router.post("/plugins/{extensionID}/profile")
+async def update_plugin_profile(extensionID: str, profile: dict):
+    prisma = Prisma()
+    await prisma.connect()
+    plugin = await prisma.extensionlist.update(
+        where={
+            "id": extensionID
+        },
+        data={
+            "settingArrayJson": profile['settingArrayJson']
+        }
+    )
+    await prisma.disconnect()
+    return {"message" : "successful", "plugin": plugin}

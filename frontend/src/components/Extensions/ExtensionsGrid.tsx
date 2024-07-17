@@ -169,7 +169,7 @@ const ExtensionsGrid = () => {
 
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-gray-900 mt-6 text-xl font-semibold">
-          {tabMenu === "builtIn" ? "Built-In Extensions" : "Marketplace"}
+          {tabMenu === "builtIn" ? "Extensions" : "Marketplace"}
         </h2>
 
         <div className="flex space-x-4">
@@ -265,6 +265,11 @@ const ExtensionsGrid = () => {
                   <div className="flex items-center space-x-3">
                     <h3 className="text-gray-900 truncate text-sm font-semibold dark:text-white">
                       {plugin.name}
+                      {plugin.type == "BuiltIn" ? (
+                        <span className="pl-1 font-normal">(Built-in)</span>
+                      ) : (
+                        <span className="pl-1 font-normal">(Imported)</span>
+                      )}
                     </h3>
                   </div>
                   <p className="text-gray-500 mt-1  text-sm dark:text-slate-300">
@@ -366,14 +371,13 @@ const ExtensionsGrid = () => {
 
           {!resultLoading && (
             <li
-              className="col-span-1 flex cursor-pointer items-center justify-center rounded-lg bg-white shadow-lg hover:shadow-xl dark:divide-slate-600 dark:bg-boxdark dark:text-white"
+              className="col-span-1 flex cursor-pointer items-center justify-center rounded-lg bg-white shadow-lg hover:text-slate-800 hover:shadow-xl dark:divide-slate-600 dark:bg-boxdark dark:text-white"
               onClick={handleButtonClick}
             >
               <div className="flex items-center justify-center gap-x-4">
                 <button
                   className="group relative flex items-center gap-2.5 rounded-lg	px-4
- py-4 text-xl text-black text-slate-500 duration-300 ease-in-out dark:text-white dark:hover:bg-meta-4"
-                  onClick={handleButtonClick}
+ py-4 text-xl text-black text-slate-500 duration-300 ease-in-out hover:text-slate-800 dark:text-white dark:hover:bg-meta-4"
                 >
                   📥 Import Extension
                 </button>
